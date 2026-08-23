@@ -1,0 +1,21 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment
+venv/
+ENV/
+env/
+.env
+
+# Database & Uploads
+database/interop.db
+static/uploads/*
+!static/uploads/.gitkeep
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

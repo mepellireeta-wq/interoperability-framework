@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Apply - Maharashtra Unified Service Portal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="glass-card p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <span class="badge bg-primary rounded-pill mb-2 px-3 py-2">Schema: MH-EGOV-STD-2026</span>
+                    <h3 class="fw-bold text-dark"><i class="fa-solid fa-file-pen text-primary me-2"></i>Unified Scheme Application Form</h3>
+                    <p class="text-muted small">Your information is automatically standardized and cross-checked against Master Data Management (MDM).</p>
+                </div>
+
+                <form id="unifiedApplicationForm">
+                    <!-- Applicant Master Info -->
+                    <h6 class="fw-bold text-primary mb-3"><i class="fa-solid fa-user-check me-2"></i>1. Beneficiary Master Information (MDM Verified)</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Full Name</label>
+                            <input type="text" id="appFullName" class="form-control" value="Rahul Ramesh Patil" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Email Address</label>
+                            <input type="email" id="appEmail" class="form-control" value="rahul.patil@example.com" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Phone Number</label>
+                            <input type="text" id="appPhone" class="form-control" value="9123456789" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">State Identity Number (Aadhaar/PAN/GSTIN)</label>
+                            <input type="text" id="appStateId" class="form-control" value="MH-AADHAAR-9988" required>
+                        </div>
+                    </div>
+
+                    <!-- Scheme Selection -->
+                    <h6 class="fw-bold text-primary mb-3"><i class="fa-solid fa-sitemap me-2"></i>2. Selected Interoperable Scheme</h6>
+                    <div class="mb-4">
+                        <select id="appServiceCode" class="form-select form-select-lg fw-bold">
+                            <option value="UNIFIED_SKILL_TO_GRANT" selected>Integrated Skill-to-Entrepreneurship Pathway (Multi-Dept Interop)</option>
+                            <option value="SKILL_TRAINING_SCHEME">Pramod Mahajan Skill Development Scheme (Skills Dept)</option>
+                            <option value="EMPLOYMENT_SELF_EMPLOY">CMEGP Micro-Enterprise Credit Subsidy (Employment Dept)</option>
+                            <option value="INNOVATION_STARTUP_GRANT">Maharashtra Startup Seed Fund (Innovation Society)</option>
+                        </select>
+                    </div>
+
+                    <!-- Data Sharing Consent -->
+                    <div class="alert alert-info border-info d-flex align-items-center mb-4">
+                        <input class="form-check-input me-3 fs-4" type="checkbox" id="appConsentCheck" checked required>
+                        <div>
+                            <strong class="d-block text-dark">Data Sharing Consent</strong>
+                            <small class="text-muted">I explicitly authorize the Interoperability Middleware to share my standardized credentials across Department of Skills, Employment, and Innovation for service fulfillment.</small>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow">
+                            <i class="fa-solid fa-paper-plane me-2"></i>Submit Unified Application
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Submission Success Box -->
+                <div id="submissionResult" class="mt-4 d-none">
+                    <div class="alert alert-success border-success text-center p-4">
+                        <i class="fa-solid fa-circle-check fs-1 text-success mb-2"></i>
+                        <h4 class="fw-bold">Application Standardized & Submitted!</h4>
+                        <p class="mb-2">Your Unified State Application Tracking ID is:</p>
+                        <h2 class="fw-bold text-primary font-monospace" id="resultTrackingId">MH-2026-X8F9</h2>
+                        <p class="small text-muted mt-2">Data Quality Checks: <span class="badge bg-success">PASSED</span> | Master Data Record: <span class="badge bg-info text-dark">LINKED</span></p>
+                        <a id="trackLink" href="#" class="btn btn-outline-primary rounded-pill fw-bold mt-2">
+                            Track Status Timeline <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

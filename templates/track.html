@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Track Application - Maharashtra Unified Interoperability Portal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <!-- Search Box -->
+            <div class="glass-card p-4 mb-4">
+                <h4 class="fw-bold text-dark mb-3"><i class="fa-solid fa-magnifying-glass text-primary me-2"></i>Unified Application Tracking</h4>
+                <div class="row g-2">
+                    <div class="col-md-9">
+                        <input type="text" id="trackInputId" class="form-control form-control-lg fw-bold font-monospace" placeholder="Enter Tracking ID (e.g. MH-2026-X8F9)" value="{{ tracking_id or 'MH-2026-8A4F' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <button id="btnSearchTrack" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold shadow">
+                            <i class="fa-solid fa-search me-1"></i> Track
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline Details Card -->
+            <div id="trackResultCard" class="glass-card p-4 p-md-5">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+                    <div>
+                        <span class="badge bg-primary rounded-pill px-3 py-2 mb-2" id="trackServiceTitle">Integrated Skill-to-Entrepreneurship Pathway</span>
+                        <h3 class="fw-bold text-dark font-monospace mb-0" id="displayTrackingId">MH-2026-X8F9</h3>
+                    </div>
+                    <div class="text-md-end mt-2 mt-md-0">
+                        <span class="badge-status badge-in_workflow fs-6" id="displayStatus">IN_WORKFLOW</span>
+                        <div class="small text-muted mt-1" id="displayDate">Submitted: 2026-08-23</div>
+                    </div>
+                </div>
+
+                <hr class="mb-4">
+
+                <!-- 3-Stage Workflow Timeline -->
+                <h5 class="fw-bold text-primary mb-4"><i class="fa-solid fa-route me-2"></i>Cross-Department Multi-Stage Progress</h5>
+                <div class="timeline-container" id="timelineContainer">
+                    <div class="timeline-item">
+                        <div class="timeline-dot completed"></div>
+                        <div class="glass-card p-3 ms-2">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="fw-bold text-dark mb-1">Stage 1: Skill Development Verification</h6>
+                                <span class="badge bg-success">COMPLETED</span>
+                            </div>
+                            <small class="text-primary fw-bold">Department of Skills Development (REST API)</small>
+                            <p class="small text-muted mb-0 mt-1">Beneficiary skill certification and vocational records verified.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot in_progress"></div>
+                        <div class="glass-card p-3 ms-2">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="fw-bold text-dark mb-1">Stage 2: Employment Registry Cross-Check</h6>
+                                <span class="badge bg-warning text-dark">IN PROGRESS</span>
+                            </div>
+                            <small class="text-warning text-dark fw-bold">Directorate of Employment (Legacy SOAP Adapter)</small>
+                            <p class="small text-muted mb-0 mt-1">Cross-referencing unemployment registration and CMEGP eligibility.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot pending"></div>
+                        <div class="glass-card p-3 ms-2 opacity-75">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="fw-bold text-dark mb-1">Stage 3: Innovation Seed Grant Sanction</h6>
+                                <span class="badge bg-secondary">PENDING</span>
+                            </div>
+                            <small class="text-muted fw-bold">Maharashtra State Innovation Society (Direct DB Sync)</small>
+                            <p class="small text-muted mb-0 mt-1">Awaiting Stage 2 clearance for final grant approval.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audit Logs Accordion -->
+                <div class="mt-4 pt-3 border-top">
+                    <h6 class="fw-bold text-secondary mb-3"><i class="fa-solid fa-receipt me-2"></i>Interoperability Audit Logs</h6>
+                    <div class="bg-light p-3 rounded-3 font-monospace small" id="auditLogContainer">
+                        <div>[2026-08-23T22:14:00Z] APPLICATION_SUBMITTED: Standardized schema MH-EGOV-STD-2026 created</div>
+                        <div>[2026-08-23T22:14:05Z] DATA_SHARED: Consent verified for DEPT_SKILLS</div>
+                        <div>[2026-08-23T22:14:10Z] STAGE_1_APPROVED: DEPT_SKILLS status updated to COMPLETED</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,109 @@
+/* Maharashtra E-Governance Unified Interoperability Portal Styling */
+:root {
+    --primary-gov: #0D47A1;
+    --saffron-accent: #E65100;
+    --emerald-success: #2E7D32;
+    --bg-dark: #0f172a;
+    --text-dark: #1e293b;
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+    color: var(--text-dark);
+    min-height: 100vh;
+}
+
+.navbar-gov {
+    background: linear-gradient(90deg, #0D47A1 0%, #1565C0 100%);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.brand-emblem {
+    width: 40px;
+    height: 40px;
+    margin-right: 12px;
+}
+
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.18);
+}
+
+.hero-section {
+    background: linear-gradient(135deg, #0D47A1 0%, #1976D2 50%, #E65100 100%);
+    color: white;
+    padding: 60px 0 80px 0;
+    border-radius: 0 0 32px 32px;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-badge {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    padding: 12px 24px;
+    border-radius: 24px;
+    color: white;
+    display: inline-block;
+}
+
+.timeline-container {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline-container::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: #cbd5e1;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: -30px;
+    top: 4px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #94a3b8;
+    border: 3px solid white;
+}
+
+.timeline-dot.completed { background: #16a34a; }
+.timeline-dot.in_progress { background: #d97706; }
+.timeline-dot.pending { background: #cbd5e1; }
+
+.badge-status {
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.badge-submitted { background-color: #dbeafe; color: #1e40af; }
+.badge-in_workflow { background-color: #fef3c7; color: #92400e; }
+.badge-approved { background-color: #dcfce7; color: #166534; }
+.badge-rejected { background-color: #fee2e2; color: #991b1b; }
