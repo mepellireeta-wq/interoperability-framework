@@ -46,7 +46,7 @@ def register():
     password = data.get('password')
     full_name = data.get('full_name')
     phone = data.get('phone', '')
-    state_id = data.get('state_id', f"MH-CITIZEN-{username}")
+    state_id = data.get('state_id', f"NAT-CITIZEN-{username}")
     
     if not username or not email or not password or not full_name:
         return jsonify({'error': 'Missing required fields'}), 400
@@ -74,7 +74,6 @@ def verify_token():
     token = data.get('token')
     
     if not token:
-        # Check Authorization header
         auth_header = request.headers.get('Authorization')
         if auth_header and auth_header.startswith('Bearer '):
             token = auth_header.split(' ')[1]
@@ -93,6 +92,11 @@ def verify_token():
 
 @auth_bp.route('/logout', methods=['POST'])
 def logout():
-    """Clear SSO session"""
+    """Revoke JWT token & clear SSO session"""
+    token = request.headers.get('Authorization')
+    if token and token.startswith('Bearer '):
+        raw_token = token.split(' ')[1]
+        SSOService.revoke_token(raw_token)
+        
     session.clear()
-    return jsonify({'message': 'Logged out successfully'}), 200
+    return jsonify({'message': 'Logged out successfully, SSO Token Revoked'}), 200

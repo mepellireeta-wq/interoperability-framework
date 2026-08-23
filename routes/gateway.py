@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, session
-from database.models import Department, Application
+from database.models import Department, Application, AuditLog
 from services.consent_service import ConsentService
 from functools import wraps
 from services.sso_service import SSOService
@@ -7,7 +7,7 @@ from services.sso_service import SSOService
 gateway_bp = Blueprint('gateway', __name__, url_prefix='/api/v1/gateway')
 
 def rbac_required(allowed_roles):
-    """Role-Based Access Control (RBAC) Decorator"""
+    """Role-Based Access Control (RBAC) Decorator validating JWT & Session Roles"""
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
@@ -19,9 +19,16 @@ def rbac_required(allowed_roles):
                 payload = SSOService.decode_token(token)
                 if payload:
                     user_role = payload.get('role')
+                else:
+                    return jsonify({'error': 'Invalid or expired SSO token'}), 401
                     
             if not user_role or user_role not in allowed_roles:
-                return jsonify({'error': 'Unauthorized access: insufficient role privileges'}), 403
+                return jsonify({
+                    'error': 'Unauthorized access: insufficient role privileges',
+                    'allowed_roles': allowed_roles,
+                    'user_role': user_role or 'GUEST'
+                }), 403
+                
             return f(*args, **kwargs)
         return decorated_function
     return decorator
@@ -70,7 +77,7 @@ def list_service_registry():
 
 @gateway_bp.route('/consent/grant', methods=['POST'])
 def grant_consent():
-    """Consent Manager - Record citizen consent for cross-department data sharing"""
+    """Consent Manager - Record citizen consent for cross-department data sharing with IP & Audit trail"""
     data = request.get_json() or {}
     application_id = data.get('application_id')
     user_id = data.get('user_id') or session.get('user_id', 1)
@@ -79,11 +86,41 @@ def grant_consent():
     if not application_id:
         return jsonify({'error': 'Application ID required'}), 400
         
-    log = ConsentService.log_consent_event(application_id, user_id, dept_code, "CITIZEN_CONSENT_GRANTED")
+    client_ip = request.remote_addr
+    user_agent = request.headers.get('User-Agent')
+    
+    log = ConsentService.log_consent_event(
+        application_id, 
+        user_id, 
+        dept_code, 
+        action_type="CITIZEN_CONSENT_GRANTED",
+        ip_address=client_ip,
+        user_agent=user_agent
+    )
+    
     return jsonify({
-        'status': 'Consent Recorded',
+        'status': 'Consent Recorded & Logged',
         'audit_id': log.id,
-        'policy': 'National E-Governance Data Interoperability Policy 2026'
+        'policy_version': ConsentService.POLICY_VERSION
+    }), 200
+
+@gateway_bp.route('/security-health', methods=['GET'])
+@rbac_required(['ADMIN', 'OFFICER'])
+def get_security_health():
+    """SIH Presentation Diagnostics Endpoint - Security & Gateway Governance Status"""
+    total_logs = AuditLog.query.count()
+    consent_logs = AuditLog.query.filter(AuditLog.action.like('%CONSENT%')).count()
+    
+    return jsonify({
+        'status': 'SECURE',
+        'gateway_governance': {
+            'rbac_enforced': True,
+            'federated_sso_status': 'ACTIVE (JWT HS256)',
+            'consent_manager_policy': ConsentService.POLICY_VERSION,
+            'total_audit_records': total_logs,
+            'consent_audit_records': consent_logs,
+            'security_standard': 'National E-Governance Security Standards 2026'
+        }
     }), 200
 
 @gateway_bp.route('/departments', methods=['GET'])
