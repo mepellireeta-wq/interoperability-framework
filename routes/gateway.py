@@ -34,51 +34,141 @@ def rbac_required(allowed_roles):
         return decorated_function
     return decorator
 
+# Expanded National & State Schemes Database
+UNIVERSAL_SCHEMES = [
+    # 🎓 EDUCATION SECTOR
+    {
+        'service_code': 'EDU_SCHOLARSHIP_GRANT',
+        'title': 'National Higher Education & Merit Scholarship Scheme',
+        'domain': 'Education',
+        'department': 'Department of Higher & Technical Education',
+        'dept_code': 'DEPT_EDUCATION',
+        'applicable_states': ['ALL', 'Maharashtra', 'Karnataka', 'Delhi', 'Uttar Pradesh', 'Tamil Nadu', 'Gujarat'],
+        'integration_type': 'REST_API',
+        'description': 'Direct scholarship & tuition fee waiver for higher education students.'
+    },
+    {
+        'service_code': 'EDU_STUDENT_LOAN_SUBSIDY',
+        'title': 'Central Education Loan Interest Subsidy Scheme',
+        'domain': 'Education',
+        'department': 'Ministry of Education & Banking Consortium',
+        'dept_code': 'DEPT_EDUCATION',
+        'applicable_states': ['ALL', 'Maharashtra', 'Karnataka', 'Delhi', 'Uttar Pradesh', 'Gujarat'],
+        'integration_type': 'INTEROP_WORKFLOW',
+        'description': 'Interest subsidy for students pursuing professional degrees.'
+    },
+    
+    # 🏥 HEALTH & MEDICAL SECTOR
+    {
+        'service_code': 'HEALTH_AYUSHMAN_CARD',
+        'title': 'Ayushman Bharat Universal Health Protection Scheme',
+        'domain': 'Health',
+        'department': 'National Health Authority & State Health Agency',
+        'dept_code': 'DEPT_HEALTH',
+        'applicable_states': ['ALL', 'Maharashtra', 'Karnataka', 'Delhi', 'Uttar Pradesh', 'Tamil Nadu', 'Gujarat'],
+        'integration_type': 'REST_API',
+        'description': 'Cashless health insurance coverage up to ₹5 Lakh per family per year.'
+    },
+    
+    # 🏦 BANKING & FINANCIAL SERVICES SECTOR
+    {
+        'service_code': 'BANKING_MUDRA_LOAN',
+        'title': 'Pradhan Mantri MUDRA Micro-Business Loan Scheme',
+        'domain': 'Banking',
+        'department': 'Department of Financial Services & Public Banks',
+        'dept_code': 'DEPT_BANKING',
+        'applicable_states': ['ALL', 'Maharashtra', 'Karnataka', 'Delhi', 'Uttar Pradesh', 'Tamil Nadu', 'Gujarat'],
+        'integration_type': 'LEGACY_SOAP',
+        'description': 'Collateral-free micro-loans up to ₹10 Lakh for small enterprise setup.'
+    },
+    
+    # 🛡️ INSURANCE & SOCIAL WELFARE SECTOR
+    {
+        'service_code': 'INSURANCE_CROP_SAFETY',
+        'title': 'PM Fasal Bima Crop & Agricultural Risk Insurance',
+        'domain': 'Insurance',
+        'department': 'Ministry of Agriculture & Insurance Regulatory Body',
+        'dept_code': 'DEPT_INSURANCE',
+        'applicable_states': ['ALL', 'Maharashtra', 'Karnataka', 'Uttar Pradesh', 'Gujarat'],
+        'integration_type': 'DIRECT_DB',
+        'description': 'Comprehensive crop damage insurance coverage against natural calamities.'
+    },
+    
+    # 🌾 AGRICULTURE SECTOR
+    {
+        'service_code': 'AGRI_PM_KISAN_DBT',
+        'title': 'PM-KISAN Direct Benefit Income Support Scheme',
+        'domain': 'Agriculture',
+        'department': 'Department of Agriculture & Farmers Welfare',
+        'dept_code': 'DEPT_AGRICULTURE',
+        'applicable_states': ['ALL', 'Maharashtra', 'Karnataka', 'Uttar Pradesh', 'Tamil Nadu', 'Gujarat'],
+        'integration_type': 'REST_API',
+        'description': 'Annual income support of ₹6,000 transferred directly to landholding farmers.'
+    },
+    
+    # ⚙️ SKILLS & EMPLOYMENT SECTOR
+    {
+        'service_code': 'SKILL_TRAINING_SCHEME',
+        'title': 'National Skill Development & Vocational Certification Scheme',
+        'domain': 'Skills',
+        'department': 'Department of Skills Development',
+        'dept_code': 'DEPT_SKILLS',
+        'applicable_states': ['ALL', 'Maharashtra', 'Karnataka', 'Delhi', 'Uttar Pradesh', 'Tamil Nadu', 'Gujarat'],
+        'integration_type': 'REST_API',
+        'description': 'Vocational skill training, national certifications, and apprentice stipends.'
+    },
+    {
+        'service_code': 'EMPLOYMENT_SELF_EMPLOY',
+        'title': 'Prime Minister Employment Generation & Self-Employment Scheme',
+        'domain': 'Employment',
+        'department': 'Directorate of Employment & Self Employment',
+        'dept_code': 'DEPT_EMPLOYMENT',
+        'applicable_states': ['ALL', 'Maharashtra', 'Karnataka', 'Delhi', 'Uttar Pradesh', 'Tamil Nadu', 'Gujarat'],
+        'integration_type': 'LEGACY_SOAP',
+        'description': 'Credit-linked financial subsidy for setting up micro-enterprises.'
+    },
+    {
+        'service_code': 'UNIFIED_SKILL_TO_GRANT',
+        'title': 'Universal Integrated Skill-to-Entrepreneurship Pathway',
+        'domain': 'Skills',
+        'department': 'Multi-Department Integrated Pathway',
+        'dept_code': 'MULTI_DEPT',
+        'applicable_states': ['ALL', 'Maharashtra', 'Karnataka', 'Delhi', 'Uttar Pradesh', 'Tamil Nadu', 'Gujarat'],
+        'integration_type': 'INTEROP_WORKFLOW',
+        'description': 'Unified 3-stage service covering Skill Training, Employment Registry, and Startup Seed Grant.'
+    }
+]
+
 @gateway_bp.route('/services', methods=['GET'])
 def list_service_registry():
-    """Service Discovery Registry - List available universal state & central services"""
-    services = [
-        {
-            'service_code': 'SKILL_TRAINING_SCHEME',
-            'title': 'National Skill Development & Vocational Certification Scheme',
-            'department': 'Department of Skills Development',
-            'dept_code': 'DEPT_SKILLS',
-            'integration_type': 'REST_API',
-            'description': 'Vocational skill training, national certifications, and apprentice stipends.'
-        },
-        {
-            'service_code': 'EMPLOYMENT_SELF_EMPLOY',
-            'title': 'Prime Minister Employment Generation & Self-Employment Scheme',
-            'department': 'Directorate of Employment & Self Employment',
-            'dept_code': 'DEPT_EMPLOYMENT',
-            'integration_type': 'LEGACY_SOAP',
-            'description': 'Credit-linked financial subsidy for setting up micro-enterprises.'
-        },
-        {
-            'service_code': 'INNOVATION_STARTUP_GRANT',
-            'title': 'National Startup & Technology Innovation Seed Grant Fund',
-            'department': 'State & National Innovation Society',
-            'dept_code': 'DEPT_ENTREPRENEURSHIP',
-            'integration_type': 'DIRECT_DB',
-            'description': 'Early-stage equity & seed grant funding for tech startups.'
-        },
-        {
-            'service_code': 'UNIFIED_SKILL_TO_GRANT',
-            'title': 'Universal Integrated Skill-to-Entrepreneurship Pathway',
-            'department': 'Multi-Department Integrated Pathway',
-            'dept_code': 'MULTI_DEPT',
-            'integration_type': 'INTEROP_WORKFLOW',
-            'description': 'Unified 3-stage service covering Skill Training, Employment Registry, and Startup Seed Grant.'
-        }
-    ]
+    """Service Discovery Registry with State-wise and Sector Domain Filtering"""
+    state_filter = request.args.get('state', 'ALL').strip()
+    domain_filter = request.args.get('domain', 'ALL').strip()
+    
+    filtered_schemes = UNIVERSAL_SCHEMES
+    
+    if state_filter and state_filter.upper() != 'ALL':
+        filtered_schemes = [
+            s for s in filtered_schemes 
+            if 'ALL' in s['applicable_states'] or state_filter.lower() in [st.lower() for st in s['applicable_states']]
+        ]
+        
+    if domain_filter and domain_filter.upper() != 'ALL':
+        filtered_schemes = [
+            s for s in filtered_schemes 
+            if s['domain'].lower() == domain_filter.lower()
+        ]
+        
     return jsonify({
-        'count': len(services),
-        'services': services
+        'count': len(filtered_schemes),
+        'selected_state': state_filter,
+        'selected_domain': domain_filter,
+        'services': filtered_schemes
     }), 200
 
 @gateway_bp.route('/consent/grant', methods=['POST'])
 def grant_consent():
-    """Consent Manager - Record citizen consent for cross-department data sharing with IP & Audit trail"""
+    """Consent Manager - Record citizen consent for cross-department data sharing"""
     data = request.get_json() or {}
     application_id = data.get('application_id')
     user_id = data.get('user_id') or session.get('user_id', 1)

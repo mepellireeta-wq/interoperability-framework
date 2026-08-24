@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Apply - Maharashtra Unified Service Portal{% endblock %}
+{% block title %}Apply - Universal Service Application Portal{% endblock %}
 
 {% block content %}
 <div class="container py-5">
@@ -8,57 +8,86 @@
         <div class="col-lg-8">
             <div class="glass-card p-4 p-md-5">
                 <div class="text-center mb-4">
-                    <span class="badge bg-primary rounded-pill mb-2 px-3 py-2">Schema: MH-EGOV-STD-2026</span>
+                    <span class="badge bg-primary rounded-pill mb-2 px-3 py-2">Simplified Citizen Application</span>
                     <h3 class="fw-bold text-dark"><i class="fa-solid fa-file-pen text-primary me-2"></i>Unified Scheme Application Form</h3>
-                    <p class="text-muted small">Your information is automatically standardized and cross-checked against Master Data Management (MDM).</p>
+                    <p class="text-muted small">Fill your details once. Your data will automatically format and send to the required state and central government portals safely.</p>
                 </div>
 
                 <form id="unifiedApplicationForm">
-                    <!-- Applicant Master Info -->
-                    <h6 class="fw-bold text-primary mb-3"><i class="fa-solid fa-user-check me-2"></i>1. Beneficiary Master Information (MDM Verified)</h6>
+                    <!-- 1. Location & Area Selection -->
+                    <h6 class="fw-bold text-primary mb-3"><i class="fa-solid fa-map-pin me-2"></i>1. Your State & Local Area Location</h6>
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Full Name</label>
-                            <input type="text" id="appFullName" class="form-control" value="Rahul Ramesh Patil" required>
+                            <label class="form-label fw-bold">Select State <i class="fa-solid fa-circle-info text-info" title="Choose the state where you reside or hold residency"></i></label>
+                            <select id="appStateSelect" class="form-select fw-bold">
+                                <option value="Maharashtra" selected>Maharashtra</option>
+                                <option value="Karnataka">Karnataka</option>
+                                <option value="Delhi">Delhi (NCT)</option>
+                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                <option value="Gujarat">Gujarat</option>
+                            </select>
+                            <small class="text-muted fs-7">Select your home state</small>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">District / City</label>
+                            <input type="text" id="appDistrict" class="form-control" value="Pune" placeholder="Enter your district name" required>
+                            <small class="text-muted fs-7">e.g. Pune, Bangalore, Lucknow, Surat</small>
+                        </div>
+                    </div>
+
+                    <!-- 2. Applicant Master Info -->
+                    <h6 class="fw-bold text-primary mb-3"><i class="fa-solid fa-user-check me-2"></i>2. Personal Identity Information</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Full Name (As per Govt ID)</label>
+                            <input type="text" id="appFullName" class="form-control" value="Rahul Ramesh Kumar" placeholder="Enter full name" required>
+                            <small class="text-muted fs-7">Enter name as printed on official ID</small>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Email Address</label>
-                            <input type="email" id="appEmail" class="form-control" value="rahul.patil@example.com" required>
+                            <input type="email" id="appEmail" class="form-control" value="rahul.kumar@example.com" placeholder="name@example.com" required>
+                            <small class="text-muted fs-7">You will receive status updates here</small>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Phone Number</label>
-                            <input type="text" id="appPhone" class="form-control" value="9123456789" required>
+                            <label class="form-label fw-bold">10-Digit Mobile Number</label>
+                            <input type="text" id="appPhone" class="form-control" value="9123456789" placeholder="10-digit mobile number" required>
+                            <small class="text-muted fs-7">SMS alerts will be sent to this number</small>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">State Identity Number (Aadhaar/PAN/GSTIN)</label>
-                            <input type="text" id="appStateId" class="form-control" value="MH-AADHAAR-9988" required>
+                            <label class="form-label fw-bold">National / State ID Number</label>
+                            <input type="text" id="appStateId" class="form-control" value="NAT-ID-998877" placeholder="Aadhaar / PAN / Voter ID" required>
+                            <small class="text-muted fs-7">Used securely to verify you haven't claimed duplicate grants</small>
                         </div>
                     </div>
 
-                    <!-- Scheme Selection -->
-                    <h6 class="fw-bold text-primary mb-3"><i class="fa-solid fa-sitemap me-2"></i>2. Selected Interoperable Scheme</h6>
+                    <!-- 3. Scheme Selection -->
+                    <h6 class="fw-bold text-primary mb-3"><i class="fa-solid fa-sitemap me-2"></i>3. Select Desired Government Scheme</h6>
                     <div class="mb-4">
                         <select id="appServiceCode" class="form-select form-select-lg fw-bold">
-                            <option value="UNIFIED_SKILL_TO_GRANT" selected>Integrated Skill-to-Entrepreneurship Pathway (Multi-Dept Interop)</option>
-                            <option value="SKILL_TRAINING_SCHEME">Pramod Mahajan Skill Development Scheme (Skills Dept)</option>
-                            <option value="EMPLOYMENT_SELF_EMPLOY">CMEGP Micro-Enterprise Credit Subsidy (Employment Dept)</option>
-                            <option value="INNOVATION_STARTUP_GRANT">Maharashtra Startup Seed Fund (Innovation Society)</option>
+                            <option value="UNIFIED_SKILL_TO_GRANT" selected>🎓 Integrated Skill-to-Entrepreneurship Pathway (Multi-Dept Pathway)</option>
+                            <option value="EDU_SCHOLARSHIP_GRANT">🎓 National Higher Education & Merit Scholarship Scheme (Education)</option>
+                            <option value="HEALTH_AYUSHMAN_CARD">🏥 Ayushman Bharat Universal Health Protection Scheme (Health)</option>
+                            <option value="BANKING_MUDRA_LOAN">🏦 Pradhan Mantri MUDRA Micro-Business Loan (Banking)</option>
+                            <option value="AGRI_PM_KISAN_DBT">🌾 PM-KISAN Direct Benefit Income Support (Agriculture)</option>
+                            <option value="SKILL_TRAINING_SCHEME">⚙️ National Skill Development & Vocational Certification (Skills)</option>
                         </select>
+                        <small class="text-muted fs-7">Choose the scheme you wish to apply for</small>
                     </div>
 
-                    <!-- Data Sharing Consent -->
+                    <!-- 4. Data Sharing Consent -->
                     <div class="alert alert-info border-info d-flex align-items-center mb-4">
                         <input class="form-check-input me-3 fs-4" type="checkbox" id="appConsentCheck" checked required>
                         <div>
-                            <strong class="d-block text-dark">Data Sharing Consent</strong>
-                            <small class="text-muted">I explicitly authorize the Interoperability Middleware to share my standardized credentials across Department of Skills, Employment, and Innovation for service fulfillment.</small>
+                            <strong class="d-block text-dark">Data Sharing & Privacy Permission</strong>
+                            <small class="text-muted">I give permission to share my details securely with the necessary government departments for fulfilling this application.</small>
                         </div>
                     </div>
 
                     <!-- Submit Button -->
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow">
-                            <i class="fa-solid fa-paper-plane me-2"></i>Submit Unified Application
+                            <i class="fa-solid fa-paper-plane me-2"></i>Submit Application Now
                         </button>
                     </div>
                 </form>
@@ -67,10 +96,10 @@
                 <div id="submissionResult" class="mt-4 d-none">
                     <div class="alert alert-success border-success text-center p-4">
                         <i class="fa-solid fa-circle-check fs-1 text-success mb-2"></i>
-                        <h4 class="fw-bold">Application Standardized & Submitted!</h4>
-                        <p class="mb-2">Your Unified State Application Tracking ID is:</p>
-                        <h2 class="fw-bold text-primary font-monospace" id="resultTrackingId">MH-2026-X8F9</h2>
-                        <p class="small text-muted mt-2">Data Quality Checks: <span class="badge bg-success">PASSED</span> | Master Data Record: <span class="badge bg-info text-dark">LINKED</span></p>
+                        <h4 class="fw-bold">Application Successfully Submitted!</h4>
+                        <p class="mb-2">Your Tracking ID is:</p>
+                        <h2 class="fw-bold text-primary font-monospace" id="resultTrackingId">GOV-2026-X8F9</h2>
+                        <p class="small text-muted mt-2">Quality Check: <span class="badge bg-success">PASSED</span> | Master Record: <span class="badge bg-info text-dark">LINKED</span></p>
                         <a id="trackLink" href="#" class="btn btn-outline-primary rounded-pill fw-bold mt-2">
                             Track Status Timeline <i class="fa-solid fa-arrow-right ms-1"></i>
                         </a>

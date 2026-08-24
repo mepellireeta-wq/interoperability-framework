@@ -9,15 +9,18 @@
         <span class="stat-badge mb-3"><i class="fa-solid fa-bolt text-warning me-2"></i>National E-Governance Interoperability Middleware 2026</span>
         <h1 class="display-4 fw-bold mb-3">Universal India Digital Services Portal</h1>
         <p class="lead max-w-700 mx-auto mb-4 opacity-90">
-            A single national-level federated window linking Central Ministries & All State Government Portals (Skills, Employment, Innovation) without duplicate document submissions.
+            A single national-level federated window linking Central Ministries & All State Government Portals (Education, Health, Banking, Insurance, Agriculture, Skills) without duplicate document submissions.
         </p>
-        <div class="d-flex justify-content-center gap-3">
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
             <a href="#services" class="btn btn-warning btn-lg rounded-pill px-5 fw-bold text-dark shadow-lg">
                 <i class="fa-solid fa-paper-plane me-2"></i>Apply for Schemes
             </a>
             <a href="/track-page" class="btn btn-outline-light btn-lg rounded-pill px-5 fw-bold shadow">
                 <i class="fa-solid fa-magnifying-glass me-2"></i>Track Status
             </a>
+            <button class="btn btn-light btn-lg rounded-pill px-4 fw-bold text-primary shadow" data-bs-toggle="modal" data-bs-target="#aiChatModal">
+                <i class="fa-solid fa-robot text-warning me-2"></i>Ask AI Guide
+            </button>
         </div>
     </div>
 </section>
@@ -28,7 +31,7 @@
         <div class="col-md-3">
             <div class="glass-card p-4 text-center">
                 <i class="fa-solid fa-network-wired text-primary fs-1 mb-2"></i>
-                <h3 class="fw-bold mb-0 text-primary">All-India & State</h3>
+                <h3 class="fw-bold mb-0 text-primary">All States & UTs</h3>
                 <small class="text-muted fw-bold">Integrated Department Portals</small>
             </div>
         </div>
@@ -56,63 +59,49 @@
     </div>
 </div>
 
-<!-- Integrated Schemes Section -->
+<!-- Integrated Schemes & State Selector Section -->
 <section id="services" class="py-5">
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold text-dark"><i class="fa-solid fa-boxes-stacked text-primary me-2"></i>Universal Multi-Department & State Services</h2>
-            <p class="text-muted">Apply once; data automatically standardizes and routes across all necessary department workflow engines nation-wide.</p>
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-dark"><i class="fa-solid fa-boxes-stacked text-primary me-2"></i>Universal Multi-Sector & State Services</h2>
+            <p class="text-muted">Select your State and Sector to view localized government portals and schemes available in your region.</p>
         </div>
 
+        <!-- State & Sector Filter Bar -->
+        <div class="glass-card p-3 mb-5">
+            <div class="row g-3 align-items-center">
+                <!-- State Selector -->
+                <div class="col-md-5">
+                    <label class="form-label fw-bold small text-muted mb-1"><i class="fa-solid fa-map-location-dot text-primary me-1"></i> Select Your State / Area:</label>
+                    <select id="stateFilterSelect" class="form-select fw-bold border-primary">
+                        <option value="ALL" selected>🇮🇳 All States & Central Schemes</option>
+                        <option value="Maharashtra">Maharashtra</option>
+                        <option value="Karnataka">Karnataka</option>
+                        <option value="Delhi">Delhi (NCT)</option>
+                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                        <option value="Tamil Nadu">Tamil Nadu</option>
+                        <option value="Gujarat">Gujarat</option>
+                    </select>
+                </div>
+
+                <!-- Sector Domain Tabs -->
+                <div class="col-md-7">
+                    <label class="form-label fw-bold small text-muted mb-1"><i class="fa-solid fa-layer-group text-primary me-1"></i> Filter by Sector Domain:</label>
+                    <div class="d-flex gap-2 flex-wrap" id="domainFilterTabs">
+                        <button class="btn btn-primary btn-sm rounded-pill px-3 fw-bold active-tab" onclick="filterDomain('ALL')">All Sectors</button>
+                        <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Education')">🎓 Education</button>
+                        <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Health')">🏥 Health</button>
+                        <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Banking')">🏦 Banking & Finance</button>
+                        <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Agriculture')">🌾 Agriculture</button>
+                        <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Skills')">⚙️ Skills & Employability</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scheme Cards Grid -->
         <div class="row g-4" id="schemeContainer">
-            <!-- Dynamically loaded schemes -->
-            <div class="col-md-6 col-lg-4">
-                <div class="glass-card h-100 p-4 d-flex flex-column justify-content-between">
-                    <div>
-                        <div class="d-flex align-items-center mb-3">
-                            <span class="badge bg-primary rounded-pill me-2">Skills & Employability</span>
-                            <span class="badge bg-secondary rounded-pill">REST API</span>
-                        </div>
-                        <h5 class="fw-bold">National Skill Development & Vocational Certification</h5>
-                        <p class="text-muted small">Vocational skill training, national industry certifications, and stipend disbursement for Indian youth.</p>
-                    </div>
-                    <a href="/apply-page?service=SKILL_TRAINING_SCHEME" class="btn btn-outline-primary rounded-pill fw-bold w-100 mt-3">
-                        Apply Now <i class="fa-solid fa-arrow-right ms-1"></i>
-                    </a>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-                <div class="glass-card h-100 p-4 d-flex flex-column justify-content-between">
-                    <div>
-                        <div class="d-flex align-items-center mb-3">
-                            <span class="badge bg-warning text-dark rounded-pill me-2">Employment</span>
-                            <span class="badge bg-secondary rounded-pill">Legacy SOAP</span>
-                        </div>
-                        <h5 class="fw-bold">Prime Minister Employment Generation (PMEGP)</h5>
-                        <p class="text-muted small">Credit-linked financial subsidy for setting up manufacturing or service micro-enterprises across states.</p>
-                    </div>
-                    <a href="/apply-page?service=EMPLOYMENT_SELF_EMPLOY" class="btn btn-outline-warning text-dark rounded-pill fw-bold w-100 mt-3">
-                        Apply Now <i class="fa-solid fa-arrow-right ms-1"></i>
-                    </a>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-                <div class="glass-card h-100 p-4 d-flex flex-column justify-content-between border-primary border-2">
-                    <div>
-                        <div class="d-flex align-items-center mb-3">
-                            <span class="badge bg-success rounded-pill me-2">Multi-Department</span>
-                            <span class="badge bg-danger rounded-pill">RECOMMENDED</span>
-                        </div>
-                        <h5 class="fw-bold">Universal Skill-to-Entrepreneurship Pathway</h5>
-                        <p class="text-muted small">Single national application routing seamlessly through Skill Training, Employment Registry, and Startup Seed Grant!</p>
-                    </div>
-                    <a href="/apply-page?service=UNIFIED_SKILL_TO_GRANT" class="btn btn-primary rounded-pill fw-bold w-100 mt-3 shadow">
-                        Unified 3-in-1 Apply <i class="fa-solid fa-wand-magic-sparkles ms-1"></i>
-                    </a>
-                </div>
-            </div>
+            <!-- Dynamically populated via portal.js -->
         </div>
     </div>
 </section>

@@ -1,7 +1,62 @@
-// Frontend JavaScript for Maharashtra Interoperability Portal
+// Frontend JavaScript for Universal Interoperability Portal & AI Guide
+
+let currentDomain = 'ALL';
+let currentState = 'ALL';
 
 document.addEventListener('DOMContentLoaded', function() {
     
+    // Load initial scheme catalog
+    loadSchemeCatalog();
+
+    // State Selector Event Listener
+    const stateSelect = document.getElementById('stateFilterSelect');
+    if (stateSelect) {
+        stateSelect.addEventListener('change', function() {
+            currentState = this.value;
+            loadSchemeCatalog();
+        });
+    }
+
+    // AI Chatbot Assistant Submission Handler
+    const chatForm = document.getElementById('aiChatForm');
+    if (chatForm) {
+        chatForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const input = document.getElementById('chatInputText');
+            const userMsg = input.value.trim();
+            if (!userMsg) return;
+
+            const chatArea = document.getElementById('chatMessageArea');
+            // User message bubble
+            chatArea.innerHTML += `
+                <div class="bg-secondary text-white p-2 px-3 rounded-3 mb-2 ms-auto max-w-80 text-end">
+                    <strong>You:</strong> ${userMsg}
+                </div>
+            `;
+            input.value = '';
+            chatArea.scrollTop = chatArea.scrollHeight;
+
+            try {
+                const res = await fetch('/api/v1/ai/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: userMsg })
+                });
+                const data = await res.json();
+
+                // AI Response bubble
+                chatArea.innerHTML += `
+                    <div class="bg-primary text-white p-3 rounded-3 mb-2 max-w-80">
+                        <strong><i class="fa-solid fa-robot me-1 text-warning"></i> AI Guide:</strong> ${data.reply.replace(/\n/g, '<br>')}
+                    </div>
+                `;
+                chatArea.scrollTop = chatArea.scrollHeight;
+            } catch (err) {
+                console.error(err);
+            }
+        });
+    }
+
     // SSO Login Handler
     const ssoForm = document.getElementById('ssoLoginForm');
     if (ssoForm) {
@@ -47,6 +102,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     full_name: document.getElementById('appFullName').value,
                     email: document.getElementById('appEmail').value,
                     phone: document.getElementById('appPhone').value,
+                    state: document.getElementById('appStateSelect') ? document.getElementById('appStateSelect').value : 'Maharashtra',
+                    district: document.getElementById('appDistrict') ? document.getElementById('appDistrict').value : 'Pune',
                     state_id_number: document.getElementById('appStateId').value
                 },
                 scheme_data: {
@@ -83,7 +140,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (btnTrack) {
         btnTrack.addEventListener('click', performTrackSearch);
         
-        // Auto-search if URL query parameter 'id' exists
         const urlParams = new URLSearchParams(window.location.search);
         const searchId = urlParams.get('id');
         if (searchId) {
@@ -92,6 +148,62 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+function filterDomain(domain) {
+    currentDomain = domain;
+    // Highlight selected tab
+    const tabs = document.querySelectorAll('#domainFilterTabs button');
+    tabs.forEach(tab => {
+        if (tab.innerText.includes(domain) || (domain === 'ALL' && tab.innerText.includes('All'))) {
+            tab.classList.add('btn-primary', 'text-white');
+            tab.classList.remove('btn-outline-primary');
+        } else {
+            tab.classList.remove('btn-primary', 'text-white');
+            tab.classList.add('btn-outline-primary');
+        }
+    });
+    loadSchemeCatalog();
+}
+
+async function loadSchemeCatalog() {
+    const container = document.getElementById('schemeContainer');
+    if (!container) return;
+    
+    try {
+        const res = await fetch(`/api/v1/gateway/services?state=${currentState}&domain=${currentDomain}`);
+        const data = await res.json();
+        
+        if (res.ok && data.services.length > 0) {
+            container.innerHTML = '';
+            data.services.forEach(scheme => {
+                const domainBadgeClass = scheme.domain === 'Education' ? 'bg-primary' : (scheme.domain === 'Health' ? 'bg-danger' : (scheme.domain === 'Banking' ? 'bg-success' : 'bg-warning text-dark'));
+                
+                container.innerHTML += `
+                    <div class="col-md-6 col-lg-4">
+                        <div class="glass-card h-100 p-4 d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="d-flex align-items-center mb-3">
+                                    <span class="badge ${domainBadgeClass} rounded-pill me-2">${scheme.domain || 'Multi-Sector'}</span>
+                                    <span class="badge bg-secondary rounded-pill">${scheme.integration_type}</span>
+                                </div>
+                                <h5 class="fw-bold text-dark">${scheme.title}</h5>
+                                <p class="text-muted small">${scheme.description}</p>
+                                <small class="text-primary font-monospace d-block mb-2"><i class="fa-solid fa-building me-1"></i>${scheme.department}</small>
+                            </div>
+                            <a href="/apply-page?service=${scheme.service_code}" class="btn btn-outline-primary rounded-pill fw-bold w-100 mt-3">
+                                Apply Now <i class="fa-solid fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                `;
+            });
+        } else {
+            container.innerHTML = `<div class="col-12 text-center text-muted py-4"><h5>No schemes found for selected state/sector criteria</h5></div>`;
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
 
 async function performTrackSearch() {
     const trackId = document.getElementById('trackInputId').value.trim();
@@ -110,7 +222,6 @@ async function performTrackSearch() {
             document.getElementById('displayStatus').innerText = data.status;
             document.getElementById('displayDate').innerText = `Submitted: ${data.created_at.split('T')[0]}`;
             
-            // Build timeline
             const container = document.getElementById('timelineContainer');
             container.innerHTML = '';
             
@@ -133,7 +244,6 @@ async function performTrackSearch() {
                 `;
             });
             
-            // Build audit logs
             const auditContainer = document.getElementById('auditLogContainer');
             auditContainer.innerHTML = '';
             data.audit_logs.forEach(log => {
