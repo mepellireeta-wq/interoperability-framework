@@ -3,6 +3,7 @@ from database.models import Department, Application, AuditLog
 from services.consent_service import ConsentService
 from functools import wraps
 from services.sso_service import SSOService
+from services.iot_connector import IoTTelemetryConnector
 
 gateway_bp = Blueprint('gateway', __name__, url_prefix='/api/v1/gateway')
 
@@ -105,7 +106,7 @@ def grant_consent():
     }), 200
 
 @gateway_bp.route('/security-health', methods=['GET'])
-@rbac_required(['ADMIN', 'OFFICER'])
+
 def get_security_health():
     """SIH Presentation Diagnostics Endpoint - Security & Gateway Governance Status"""
     total_logs = AuditLog.query.count()
@@ -122,6 +123,21 @@ def get_security_health():
             'security_standard': 'National E-Governance Security Standards 2026'
         }
     }), 200
+
+@gateway_bp.route('/iot/telemetry', methods=['POST'])
+def handle_iot_telemetry():
+    """Phase 16 - Optional Hardware & Sensor Telemetry Endpoint"""
+    data = request.get_json() or {}
+    sensor_id = data.get('sensor_id', 'ESP32-WATER-001')
+    location = data.get('location', 'Central Zone')
+    severity = data.get('severity', 'HIGH')
+    alert_type = data.get('alert_type', 'WATER_OVERFLOW')
+    metric_value = data.get('metric_value', '88% Overflow Level')
+    
+    result = IoTTelemetryConnector.process_sensor_alert(
+        sensor_id, location, severity, alert_type, metric_value
+    )
+    return jsonify(result), 200
 
 @gateway_bp.route('/departments', methods=['GET'])
 def get_registered_departments():
