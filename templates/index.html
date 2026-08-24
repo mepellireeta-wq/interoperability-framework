@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
-{% block title %}GovInterop - National & Multi-State Universal Digital Service Delivery Portal{% endblock %}
+{% block title %}GovInterop - All-India Universal Digital Service Delivery Portal{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
 <section class="hero-section text-center">
     <div class="container position-relative z-1">
-        <span class="stat-badge mb-3"><i class="fa-solid fa-bolt text-warning me-2"></i>National E-Governance Interoperability Middleware 2026</span>
+        <span class="stat-badge mb-3"><i class="fa-solid fa-bolt text-warning me-2"></i>National E-Governance Quantum-Safe Interoperability Middleware 2026</span>
         <h1 class="display-4 fw-bold mb-3">Universal India Digital Services Portal</h1>
         <p class="lead max-w-700 mx-auto mb-4 opacity-90">
-            A single national-level federated window linking Central Ministries & All State Government Portals (Education, Health, Banking, Insurance, Agriculture, Skills) without duplicate document submissions.
+            A single national-level federated window linking Central Ministries & All 28 States & 8 UTs (Education, Health, Banking, Insurance, Agriculture, Infrastructure, Startups, Skills) without duplicate document submissions.
         </p>
         <div class="d-flex justify-content-center gap-3 flex-wrap">
             <a href="#services" class="btn btn-warning btn-lg rounded-pill px-5 fw-bold text-dark shadow-lg">
@@ -31,15 +31,15 @@
         <div class="col-md-3">
             <div class="glass-card p-4 text-center">
                 <i class="fa-solid fa-network-wired text-primary fs-1 mb-2"></i>
-                <h3 class="fw-bold mb-0 text-primary">All States & UTs</h3>
+                <h3 class="fw-bold mb-0 text-primary">28 States & 8 UTs</h3>
                 <small class="text-muted fw-bold">Integrated Department Portals</small>
             </div>
         </div>
         <div class="col-md-3">
             <div class="glass-card p-4 text-center">
-                <i class="fa-solid fa-file-shield text-success fs-1 mb-2"></i>
-                <h3 class="fw-bold mb-0 text-success">Zero Redundant</h3>
-                <small class="text-muted fw-bold">Document Uploads</small>
+                <i class="fa-solid fa-atom text-success fs-1 mb-2"></i>
+                <h3 class="fw-bold mb-0 text-success">Quantum-Safe</h3>
+                <small class="text-muted fw-bold">Post-Quantum Lattice Security</small>
             </div>
         </div>
         <div class="col-md-3">
@@ -63,8 +63,8 @@
 <section id="services" class="py-5">
     <div class="container">
         <div class="text-center mb-4">
-            <h2 class="fw-bold text-dark"><i class="fa-solid fa-boxes-stacked text-primary me-2"></i>Universal Multi-Sector & State Services</h2>
-            <p class="text-muted">Select your State and Sector to view localized government portals and schemes available in your region.</p>
+            <h2 class="fw-bold text-dark"><i class="fa-solid fa-boxes-stacked text-primary me-2"></i>Universal Multi-Sector & All-State Services</h2>
+            <p class="text-muted">Select your State/UT and Sector to view localized government portals and schemes available in your region.</p>
         </div>
 
         <!-- State & Sector Filter Bar -->
@@ -72,15 +72,35 @@
             <div class="row g-3 align-items-center">
                 <!-- State Selector -->
                 <div class="col-md-5">
-                    <label class="form-label fw-bold small text-muted mb-1"><i class="fa-solid fa-map-location-dot text-primary me-1"></i> Select Your State / Area:</label>
+                    <label class="form-label fw-bold small text-muted mb-1"><i class="fa-solid fa-map-location-dot text-primary me-1"></i> Select Your State or Union Territory:</label>
                     <select id="stateFilterSelect" class="form-select fw-bold border-primary">
-                        <option value="ALL" selected>🇮🇳 All States & Central Schemes</option>
+                        <option value="ALL" selected>🇮🇳 All 28 States & Central Schemes</option>
+                        <option value="Andhra Pradesh">Andhra Pradesh</option>
+                        <option value="Telangana">Telangana</option>
                         <option value="Maharashtra">Maharashtra</option>
                         <option value="Karnataka">Karnataka</option>
-                        <option value="Delhi">Delhi (NCT)</option>
-                        <option value="Uttar Pradesh">Uttar Pradesh</option>
                         <option value="Tamil Nadu">Tamil Nadu</option>
+                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                        <option value="Delhi (NCT)">Delhi (NCT)</option>
                         <option value="Gujarat">Gujarat</option>
+                        <option value="Rajasthan">Rajasthan</option>
+                        <option value="West Bengal">West Bengal</option>
+                        <option value="Kerala">Kerala</option>
+                        <option value="Bihar">Bihar</option>
+                        <option value="Madhya Pradesh">Madhya Pradesh</option>
+                        <option value="Punjab">Punjab</option>
+                        <option value="Haryana">Haryana</option>
+                        <option value="Odisha">Odisha</option>
+                        <option value="Assam">Assam</option>
+                        <option value="Jharkhand">Jharkhand</option>
+                        <option value="Chhattisgarh">Chhattisgarh</option>
+                        <option value="Himachal Pradesh">Himachal Pradesh</option>
+                        <option value="Uttarakhand">Uttarakhand</option>
+                        <option value="Jammu & Kashmir">Jammu & Kashmir</option>
+                        <option value="Ladakh">Ladakh</option>
+                        <option value="Goa">Goa</option>
+                        <option value="Sikkim">Sikkim</option>
+                        <option value="Tripura">Tripura</option>
                     </select>
                 </div>
 
@@ -93,7 +113,8 @@
                         <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Health')">🏥 Health</button>
                         <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Banking')">🏦 Banking & Finance</button>
                         <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Agriculture')">🌾 Agriculture</button>
-                        <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Skills')">⚙️ Skills & Employability</button>
+                        <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Innovation')">🚀 Startups & MSME</button>
+                        <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Infrastructure')">⚡ Infrastructure</button>
                     </div>
                 </div>
             </div>

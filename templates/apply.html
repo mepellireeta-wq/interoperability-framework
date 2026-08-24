@@ -18,21 +18,33 @@
                     <h6 class="fw-bold text-primary mb-3"><i class="fa-solid fa-map-pin me-2"></i>1. Your State & Local Area Location</h6>
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Select State <i class="fa-solid fa-circle-info text-info" title="Choose the state where you reside or hold residency"></i></label>
+                            <label class="form-label fw-bold">Select State / UT <i class="fa-solid fa-circle-info text-info" title="Choose the state where you reside or hold residency"></i></label>
                             <select id="appStateSelect" class="form-select fw-bold">
+                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                <option value="Telangana">Telangana</option>
                                 <option value="Maharashtra" selected>Maharashtra</option>
                                 <option value="Karnataka">Karnataka</option>
-                                <option value="Delhi">Delhi (NCT)</option>
-                                <option value="Uttar Pradesh">Uttar Pradesh</option>
                                 <option value="Tamil Nadu">Tamil Nadu</option>
+                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                <option value="Delhi (NCT)">Delhi (NCT)</option>
                                 <option value="Gujarat">Gujarat</option>
+                                <option value="Rajasthan">Rajasthan</option>
+                                <option value="West Bengal">West Bengal</option>
+                                <option value="Kerala">Kerala</option>
+                                <option value="Bihar">Bihar</option>
+                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                <option value="Punjab">Punjab</option>
+                                <option value="Haryana">Haryana</option>
+                                <option value="Odisha">Odisha</option>
+                                <option value="Assam">Assam</option>
+                                <option value="Goa">Goa</option>
                             </select>
-                            <small class="text-muted fs-7">Select your home state</small>
+                            <small class="text-muted fs-7">Select your home state or UT</small>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">District / City</label>
-                            <input type="text" id="appDistrict" class="form-control" value="Pune" placeholder="Enter your district name" required>
-                            <small class="text-muted fs-7">e.g. Pune, Bangalore, Lucknow, Surat</small>
+                            <input type="text" id="appDistrict" class="form-control" value="Visakhapatnam" placeholder="Enter your district name" required>
+                            <small class="text-muted fs-7">e.g. Visakhapatnam, Hyderabad, Pune, Bangalore, Vijayawada</small>
                         </div>
                     </div>
 
@@ -70,6 +82,8 @@
                             <option value="HEALTH_AYUSHMAN_CARD">🏥 Ayushman Bharat Universal Health Protection Scheme (Health)</option>
                             <option value="BANKING_MUDRA_LOAN">🏦 Pradhan Mantri MUDRA Micro-Business Loan (Banking)</option>
                             <option value="AGRI_PM_KISAN_DBT">🌾 PM-KISAN Direct Benefit Income Support (Agriculture)</option>
+                            <option value="INNOVATION_STARTUP_GRANT">🚀 National Startup & MSME Technology Seed Grant (Innovation)</option>
+                            <option value="INFRA_SOLAR_ROOFTOP_SUBSIDY">⚡ PM Surya Ghar Free Electricity Rooftop Solar Subsidy (Infrastructure)</option>
                             <option value="SKILL_TRAINING_SCHEME">⚙️ National Skill Development & Vocational Certification (Skills)</option>
                         </select>
                         <small class="text-muted fs-7">Choose the scheme you wish to apply for</small>
@@ -99,7 +113,7 @@
                         <h4 class="fw-bold">Application Successfully Submitted!</h4>
                         <p class="mb-2">Your Tracking ID is:</p>
                         <h2 class="fw-bold text-primary font-monospace" id="resultTrackingId">GOV-2026-X8F9</h2>
-                        <p class="small text-muted mt-2">Quality Check: <span class="badge bg-success">PASSED</span> | Master Record: <span class="badge bg-info text-dark">LINKED</span></p>
+                        <p class="small text-muted mt-2">Quality Check: <span class="badge bg-success">PASSED</span> | Post-Quantum Security: <span class="badge bg-primary">KYBER-1024</span></p>
                         <a id="trackLink" href="#" class="btn btn-outline-primary rounded-pill fw-bold mt-2">
                             Track Status Timeline <i class="fa-solid fa-arrow-right ms-1"></i>
                         </a>

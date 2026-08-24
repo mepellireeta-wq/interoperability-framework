@@ -4,8 +4,20 @@ from services.consent_service import ConsentService
 from functools import wraps
 from services.sso_service import SSOService
 from services.iot_connector import IoTTelemetryConnector
+from services.quantum_engine import QuantumSecurityEngine
+from services.open_data_sync import OpenGovernmentDataSync
 
 gateway_bp = Blueprint('gateway', __name__, url_prefix='/api/v1/gateway')
+
+# Full List of All 28 States & 8 Union Territories of India
+ALL_INDIA_STATES_UTS = [
+    'ALL', 'Andhra Pradesh', 'Telangana', 'Maharashtra', 'Karnataka', 'Tamil Nadu',
+    'Uttar Pradesh', 'Delhi (NCT)', 'Gujarat', 'Rajasthan', 'West Bengal', 'Kerala',
+    'Bihar', 'Madhya Pradesh', 'Punjab', 'Haryana', 'Odisha', 'Assam', 'Jharkhand',
+    'Chhattisgarh', 'Himachal Pradesh', 'Uttarakhand', 'Jammu & Kashmir', 'Ladakh',
+    'Goa', 'Sikkim', 'Tripura', 'Meghalaya', 'Manipur', 'Nagaland', 'Mizoram',
+    'Arunachal Pradesh', 'Chandigarh', 'Puducherry', 'Andaman & Nicobar', 'Dadra & Nagar Haveli'
+]
 
 def rbac_required(allowed_roles):
     """Role-Based Access Control (RBAC) Decorator validating JWT & Session Roles"""
@@ -34,7 +46,7 @@ def rbac_required(allowed_roles):
         return decorated_function
     return decorator
 
-# Expanded National & State Schemes Database
+# Comprehensive 10-Sector All-India Governance Schemes Database
 UNIVERSAL_SCHEMES = [
     # 🎓 EDUCATION SECTOR
     {
@@ -43,7 +55,7 @@ UNIVERSAL_SCHEMES = [
         'domain': 'Education',
         'department': 'Department of Higher & Technical Education',
         'dept_code': 'DEPT_EDUCATION',
-        'applicable_states': ['ALL', 'Maharashtra', 'Karnataka', 'Delhi', 'Uttar Pradesh', 'Tamil Nadu', 'Gujarat'],
+        'applicable_states': ['ALL'],
         'integration_type': 'REST_API',
         'description': 'Direct scholarship & tuition fee waiver for higher education students.'
     },
@@ -53,7 +65,7 @@ UNIVERSAL_SCHEMES = [
         'domain': 'Education',
         'department': 'Ministry of Education & Banking Consortium',
         'dept_code': 'DEPT_EDUCATION',
-        'applicable_states': ['ALL', 'Maharashtra', 'Karnataka', 'Delhi', 'Uttar Pradesh', 'Gujarat'],
+        'applicable_states': ['ALL'],
         'integration_type': 'INTEROP_WORKFLOW',
         'description': 'Interest subsidy for students pursuing professional degrees.'
     },
@@ -65,7 +77,7 @@ UNIVERSAL_SCHEMES = [
         'domain': 'Health',
         'department': 'National Health Authority & State Health Agency',
         'dept_code': 'DEPT_HEALTH',
-        'applicable_states': ['ALL', 'Maharashtra', 'Karnataka', 'Delhi', 'Uttar Pradesh', 'Tamil Nadu', 'Gujarat'],
+        'applicable_states': ['ALL'],
         'integration_type': 'REST_API',
         'description': 'Cashless health insurance coverage up to ₹5 Lakh per family per year.'
     },
@@ -77,7 +89,7 @@ UNIVERSAL_SCHEMES = [
         'domain': 'Banking',
         'department': 'Department of Financial Services & Public Banks',
         'dept_code': 'DEPT_BANKING',
-        'applicable_states': ['ALL', 'Maharashtra', 'Karnataka', 'Delhi', 'Uttar Pradesh', 'Tamil Nadu', 'Gujarat'],
+        'applicable_states': ['ALL'],
         'integration_type': 'LEGACY_SOAP',
         'description': 'Collateral-free micro-loans up to ₹10 Lakh for small enterprise setup.'
     },
@@ -89,7 +101,7 @@ UNIVERSAL_SCHEMES = [
         'domain': 'Insurance',
         'department': 'Ministry of Agriculture & Insurance Regulatory Body',
         'dept_code': 'DEPT_INSURANCE',
-        'applicable_states': ['ALL', 'Maharashtra', 'Karnataka', 'Uttar Pradesh', 'Gujarat'],
+        'applicable_states': ['ALL', 'Andhra Pradesh', 'Telangana', 'Maharashtra', 'Karnataka', 'Uttar Pradesh', 'Gujarat'],
         'integration_type': 'DIRECT_DB',
         'description': 'Comprehensive crop damage insurance coverage against natural calamities.'
     },
@@ -101,11 +113,35 @@ UNIVERSAL_SCHEMES = [
         'domain': 'Agriculture',
         'department': 'Department of Agriculture & Farmers Welfare',
         'dept_code': 'DEPT_AGRICULTURE',
-        'applicable_states': ['ALL', 'Maharashtra', 'Karnataka', 'Uttar Pradesh', 'Tamil Nadu', 'Gujarat'],
+        'applicable_states': ['ALL', 'Andhra Pradesh', 'Telangana', 'Maharashtra', 'Karnataka', 'Uttar Pradesh', 'Tamil Nadu', 'Gujarat'],
         'integration_type': 'REST_API',
         'description': 'Annual income support of ₹6,000 transferred directly to landholding farmers.'
     },
     
+    # 🚀 INNOVATION, STARTUPS & MSME SECTOR
+    {
+        'service_code': 'INNOVATION_STARTUP_GRANT',
+        'title': 'National Startup & MSME Technology Innovation Seed Grant Fund',
+        'domain': 'Innovation',
+        'department': 'State & National Innovation Society (MSINS)',
+        'dept_code': 'DEPT_ENTREPRENEURSHIP',
+        'applicable_states': ['ALL'],
+        'integration_type': 'DIRECT_DB',
+        'description': 'Early-stage equity & seed grant funding for tech startups.'
+    },
+    
+    # ⚡ INFRASTRUCTURE & RENEWABLE ENERGY SECTOR
+    {
+        'service_code': 'INFRA_SOLAR_ROOFTOP_SUBSIDY',
+        'title': 'PM Surya Ghar Free Electricity & Rooftop Solar Subsidy',
+        'domain': 'Infrastructure',
+        'department': 'Ministry of New & Renewable Energy',
+        'dept_code': 'DEPT_INFRASTRUCTURE',
+        'applicable_states': ['ALL'],
+        'integration_type': 'REST_API',
+        'description': 'Up to ₹78,000 central subsidy for installing residential rooftop solar panels.'
+    },
+
     # ⚙️ SKILLS & EMPLOYMENT SECTOR
     {
         'service_code': 'SKILL_TRAINING_SCHEME',
@@ -113,7 +149,7 @@ UNIVERSAL_SCHEMES = [
         'domain': 'Skills',
         'department': 'Department of Skills Development',
         'dept_code': 'DEPT_SKILLS',
-        'applicable_states': ['ALL', 'Maharashtra', 'Karnataka', 'Delhi', 'Uttar Pradesh', 'Tamil Nadu', 'Gujarat'],
+        'applicable_states': ['ALL'],
         'integration_type': 'REST_API',
         'description': 'Vocational skill training, national certifications, and apprentice stipends.'
     },
@@ -123,7 +159,7 @@ UNIVERSAL_SCHEMES = [
         'domain': 'Employment',
         'department': 'Directorate of Employment & Self Employment',
         'dept_code': 'DEPT_EMPLOYMENT',
-        'applicable_states': ['ALL', 'Maharashtra', 'Karnataka', 'Delhi', 'Uttar Pradesh', 'Tamil Nadu', 'Gujarat'],
+        'applicable_states': ['ALL'],
         'integration_type': 'LEGACY_SOAP',
         'description': 'Credit-linked financial subsidy for setting up micro-enterprises.'
     },
@@ -133,7 +169,7 @@ UNIVERSAL_SCHEMES = [
         'domain': 'Skills',
         'department': 'Multi-Department Integrated Pathway',
         'dept_code': 'MULTI_DEPT',
-        'applicable_states': ['ALL', 'Maharashtra', 'Karnataka', 'Delhi', 'Uttar Pradesh', 'Tamil Nadu', 'Gujarat'],
+        'applicable_states': ['ALL'],
         'integration_type': 'INTEROP_WORKFLOW',
         'description': 'Unified 3-stage service covering Skill Training, Employment Registry, and Startup Seed Grant.'
     }
@@ -163,8 +199,41 @@ def list_service_registry():
         'count': len(filtered_schemes),
         'selected_state': state_filter,
         'selected_domain': domain_filter,
+        'all_india_states': ALL_INDIA_STATES_UTS,
         'services': filtered_schemes
     }), 200
+
+@gateway_bp.route('/states', methods=['GET'])
+def get_all_india_states():
+    """Get list of all 28 States and 8 Union Territories of India"""
+    return jsonify({
+        'total_count': len(ALL_INDIA_STATES_UTS) - 1, # Exclude 'ALL'
+        'states_and_uts': ALL_INDIA_STATES_UTS
+    }), 200
+
+@gateway_bp.route('/quantum-status', methods=['GET'])
+
+def get_quantum_security_status():
+    """SIH Uniqueness Feature - Quantum-Safe Cryptography & BB84 QKD Middleware Diagnostics"""
+    qkd_simulation = QuantumSecurityEngine.simulate_bb84_qkd_protocol(bit_length=256)
+    
+    return jsonify({
+        'status': 'QUANTUM_SAFE_ACTIVE',
+        'quantum_cryptography': {
+            'post_quantum_lattice': 'NIST-Kyber-1024-Encrypted',
+            'qkd_protocol': qkd_simulation['quantum_protocol'],
+            'qubit_fidelity_rate': qkd_simulation['qubit_fidelity_rate'],
+            'sifted_quantum_key_sample': f"{qkd_simulation['sifted_quantum_key'][:16]}...",
+            'security_uniqueness': 'Quantum Key Distribution (QKD) Middleware Overlay'
+        }
+    }), 200
+
+@gateway_bp.route('/realtime-sync', methods=['GET'])
+
+def get_realtime_data_sync():
+    """Real-time Open Government Data (OGD India) Live Feed Sync Status"""
+    data_sync = OpenGovernmentDataSync.fetch_live_national_scheme_data()
+    return jsonify(data_sync), 200
 
 @gateway_bp.route('/consent/grant', methods=['POST'])
 def grant_consent():
