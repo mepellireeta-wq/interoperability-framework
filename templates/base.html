@@ -39,8 +39,8 @@
                         <a class="nav-link dropdown-toggle px-2 fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="fa-solid fa-landmark me-1"></i> Governance
                         </a>
-                        <ul class="dropdown-menu shadow border-0">
-                            <li><a class="dropdown-item fw-bold" href="/governance"><i class="fa-solid fa-sitemap me-2 text-primary"></i> IndEA 2.0 Overview</a></li>
+                        <ul class="dropdown-menu shadow">
+                            <li><a class="dropdown-item fw-bold text-primary" href="/governance"><i class="fa-solid fa-sitemap me-2"></i> IndEA 2.0 Overview</a></li>
                             <li><a class="dropdown-item" href="/governance#states"><i class="fa-solid fa-map-location-dot me-2 text-primary"></i> 28 States & UTs Directory</a></li>
                             <li><a class="dropdown-item" href="/governance#dpdp"><i class="fa-solid fa-user-shield me-2 text-primary"></i> DPDP Act 2023 Compliance</a></li>
                         </ul>
@@ -51,7 +51,7 @@
                         <a class="nav-link dropdown-toggle px-2 fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="fa-solid fa-boxes-stacked me-1"></i> Schemes & Portals
                         </a>
-                        <ul class="dropdown-menu shadow border-0">
+                        <ul class="dropdown-menu shadow">
                             <li><a class="dropdown-item fw-bold text-primary" href="/schemes"><i class="fa-solid fa-layer-group me-2"></i> All Schemes Directory</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/schemes?domain=Education"><i class="fa-solid fa-graduation-cap me-2 text-primary"></i> 🎓 Education & Scholarships</a></li>
@@ -67,14 +67,17 @@
                         <a class="nav-link dropdown-toggle px-2 fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="fa-solid fa-file-pen me-1"></i> Applications
                         </a>
-                        <ul class="dropdown-menu shadow border-0">
-                            <li><a class="dropdown-item fw-bold" href="/apply-page"><i class="fa-solid fa-paper-plane me-2 text-primary"></i> Submit Application</a></li>
+                        <ul class="dropdown-menu shadow">
+                            <li><a class="dropdown-item fw-bold text-primary" href="/apply-page"><i class="fa-solid fa-paper-plane me-2"></i> Submit Application</a></li>
                             <li><a class="dropdown-item" href="/track-page"><i class="fa-solid fa-magnifying-glass me-2 text-primary"></i> 360° Timeline Tracking</a></li>
                         </ul>
                     </li>
 
                     <!-- Blockchain Verifier link -->
                     <li class="nav-item"><a class="nav-link px-2 fw-semibold text-warning" href="/blockchain-verifier"><i class="fa-solid fa-link me-1"></i> Blockchain Verifier</a></li>
+
+                    <!-- Developer & Tech Specs link -->
+                    <li class="nav-item"><a class="nav-link px-2 fw-semibold" href="/developer-tech"><i class="fa-solid fa-code me-1"></i> Developer Tech</a></li>
 
                     <!-- Admin Portal link -->
                     <li class="nav-item"><a class="nav-link px-2 fw-semibold" href="/admin-dashboard"><i class="fa-solid fa-lock me-1"></i> Admin Portal</a></li>
@@ -127,7 +130,7 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Floating AI Chatbot Assistant Widget Button (GMRIT CHATBOT Style) -->
+    <!-- Floating AI Chatbot Assistant Widget Button (Prominently Glowing) -->
     <div class="position-fixed bottom-0 end-0 m-4 z-3">
         <button id="btnOpenAiChat" class="btn btn-primary btn-lg rounded-circle shadow-lg p-3 d-flex align-items-center justify-content-center gmrit-chatbot-btn" data-bs-toggle="modal" data-bs-target="#aiChatModal" title="Ask GovInterop AI Assistant">
             <div class="text-center">
@@ -171,7 +174,7 @@
                     <small class="text-secondary">Education, Health, Banking, Insurance, Agriculture, MSME & Skills Ecosystems</small>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <small class="text-secondary">&copy; 2026 E-Governance Interoperability Middleware Framework</small>
+                    <small class="text-secondary">&copy; 2026 E-Governance Interoperability Middleware Framework | <a href="/developer-tech" class="text-warning text-decoration-none fw-bold">Developer Tech Specs</a></small>
                 </div>
             </div>
         </div>

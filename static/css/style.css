@@ -1,32 +1,68 @@
-/* Phase 15 & GMRIT-Style Design Tokens */
+/* Executive Indian Government Design Tokens */
 :root {
-    --primary-gov: #0D47A1;
-    --saffron-accent: #E65100;
-    --emerald-success: #2E7D32;
-    --bg-dark: #0f172a;
-    --text-dark: #1e293b;
-    --glass-bg: rgba(255, 255, 255, 0.94);
-    --glass-border: rgba(255, 255, 255, 0.6);
-    --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
+    --navy-gov: #002B49;
+    --navy-light: #00406E;
+    --saffron-gov: #FF9933;
+    --emerald-gov: #138808;
+    --bg-light: #F4F6F9;
+    --text-dark: #1A252C;
+    --glass-bg: rgba(255, 255, 255, 0.96);
+    --glass-border: rgba(255, 255, 255, 0.7);
+    --card-shadow: 0 10px 30px 0 rgba(0, 43, 73, 0.08);
 }
 
 /* Accessibility Focus States */
 a:focus, button:focus, input:focus, select:focus {
-    outline: 3px solid #E65100 !important;
+    outline: 3px solid var(--saffron-gov) !important;
     outline-offset: 2px;
 }
 
 body {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+    background: var(--bg-light);
     color: var(--text-dark);
     min-height: 100vh;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .navbar-gov {
-    background: linear-gradient(90deg, #0D47A1 0%, #1565C0 100%);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+    background: linear-gradient(90deg, #002B49 0%, #00406E 100%);
+    box-shadow: 0 4px 20px rgba(0, 43, 73, 0.25);
+}
+
+/* Elegant Dropdown Menu Styling (No Boxy Appearance) */
+.navbar-gov .dropdown-menu {
+    border: none;
+    border-radius: 14px;
+    box-shadow: 0 12px 35px rgba(0, 43, 73, 0.18);
+    padding: 10px;
+    margin-top: 8px;
+    background: #ffffff;
+    animation: dropdownFadeIn 0.25s ease-in-out;
+}
+
+@keyframes dropdownFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.navbar-gov .dropdown-item {
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    color: #1A252C;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.navbar-gov .dropdown-item:hover {
+    background-color: #F0F4F8;
+    color: var(--navy-gov);
+    transform: translateX(4px);
+}
+
+.navbar-gov .dropdown-divider {
+    margin: 6px 0;
+    border-color: #E2E8F0;
 }
 
 .brand-emblem {
@@ -38,7 +74,7 @@ body {
 .gmrit-right-floating-bar {
     position: fixed;
     right: 0;
-    top: 30%;
+    top: 28%;
     z-index: 1050;
 }
 
@@ -66,9 +102,9 @@ body {
 
 /* GMRIT 3-Column Governance Header Cards */
 .gmrit-sec-card-header {
-    background: linear-gradient(90deg, #0D47A1 0%, #1565C0 100%);
+    background: linear-gradient(90deg, #002B49 0%, #00406E 100%);
     color: white;
-    padding: 12px 18px;
+    padding: 14px 20px;
     border-radius: 8px 8px 0 0;
     font-weight: 700;
     text-transform: uppercase;
@@ -87,24 +123,35 @@ body {
 
 .glass-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.20);
+    box-shadow: 0 14px 40px 0 rgba(0, 43, 73, 0.15);
 }
 
+/* Animated Digital Governance Hero Section */
 .hero-section {
-    background: linear-gradient(135deg, #0D47A1 0%, #1976D2 60%, #1565C0 100%);
+    background: linear-gradient(135deg, #002B49 0%, #00406E 60%, #001F35 100%);
     color: white;
-    padding: 70px 0 90px 0;
-    border-radius: 0 0 32px 32px;
+    padding: 80px 0 100px 0;
+    border-radius: 0 0 36px 36px;
     position: relative;
     overflow: hidden;
 }
 
+#heroCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.28;
+    pointer-events: none;
+}
+
 .hero-banner-red-pill {
-    background: linear-gradient(90deg, #C62828 0%, #B71C1C 100%);
+    background: linear-gradient(90deg, #D32F2F 0%, #B71C1C 100%);
     color: white;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-weight: 800;
-    padding: 14px 40px;
+    padding: 14px 36px;
     border-radius: 40px;
     display: inline-block;
     box-shadow: 0 8px 25px rgba(183, 28, 28, 0.4);
@@ -112,9 +159,9 @@ body {
 }
 
 .stat-badge {
-    background: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.18);
     backdrop-filter: blur(8px);
-    padding: 12px 24px;
+    padding: 10px 22px;
     border-radius: 24px;
     color: white;
     display: inline-block;
@@ -161,22 +208,24 @@ body {
 .timeline-dot.in_progress { background: #d97706; box-shadow: 0 0 10px rgba(217, 119, 6, 0.5); }
 .timeline-dot.pending { background: #cbd5e1; }
 
-.badge-status {
-    padding: 6px 14px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 0.85rem;
-}
-
 .gmrit-chatbot-btn {
     width: 70px;
     height: 70px;
     border: 3px solid white;
+    background: linear-gradient(135deg, #002B49 0%, #00406E 100%);
+    box-shadow: 0 8px 25px rgba(0, 43, 73, 0.4);
+    animation: pulseChatbot 2s infinite;
+}
+
+@keyframes pulseChatbot {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 43, 73, 0.5); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(0, 43, 73, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 43, 73, 0); }
 }
 
 .fs-8 { font-size: 0.65rem; }
 
 @media (max-width: 768px) {
-    .hero-section { padding: 40px 0 50px 0; border-radius: 0 0 20px 20px; }
+    .hero-section { padding: 50px 0 60px 0; border-radius: 0 0 20px 20px; }
     .glass-card { padding: 1.25rem !important; }
 }

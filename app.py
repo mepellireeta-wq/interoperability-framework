@@ -10,6 +10,7 @@ from routes.simulated_depts import simulated_bp
 from routes.admin import admin_bp
 from routes.ai_chat import ai_chat_bp
 from routes.blockchain import blockchain_bp
+from routes.developer import developer_bp
 
 def create_app(config_name='dev'):
     """Flask Application Factory for Universal Government Interoperability Middleware"""
@@ -35,6 +36,7 @@ def create_app(config_name='dev'):
     app.register_blueprint(admin_bp)
     app.register_blueprint(ai_chat_bp)
     app.register_blueprint(blockchain_bp)
+    app.register_blueprint(developer_bp)
     
     # Health Check API
     @app.route('/api/health', methods=['GET'])
@@ -47,7 +49,8 @@ def create_app(config_name='dev'):
                 'Consent_Manager', 'Data_Standardization', 'MDM_Deduplication',
                 'Unified_Applications', 'Workflow_Engine', 'Department_Connectors',
                 'Legacy_SOAP_Adapters', 'Event_Bus', 'Audit_Logs', 'SLA_Analytics',
-                'Blockchain_Verifier', 'AI_Chatbot_Assistant', 'State_Localization'
+                'Blockchain_Verifier', 'AI_Chatbot_Assistant', 'State_Localization',
+                'Developer_Tech_Portal'
             ],
             'version': '1.0.0-SIH'
         }), 200

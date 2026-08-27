@@ -3,8 +3,10 @@
 {% block title %}GovInterop - All-India Universal Digital Service Delivery Portal{% endblock %}
 
 {% block content %}
-<!-- Hero Section (GMRIT Reference Banner Style) -->
-<section class="hero-section text-center">
+<!-- Animated Digital Governance Hero Section -->
+<section class="hero-section text-center position-relative">
+    <canvas id="heroCanvas"></canvas>
+    
     <div class="container position-relative z-1">
         <span class="stat-badge mb-3"><i class="fa-solid fa-building-columns text-warning me-2"></i>National E-Governance Interoperability Platform</span>
         <h1 class="display-4 fw-bold mb-3">Empowering Citizens, Shaping Digital India</h1>
@@ -103,4 +105,67 @@
         </div>
     </div>
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Hero Canvas Network Animation Simulation
+document.addEventListener('DOMContentLoaded', function() {
+    const canvas = document.getElementById('heroCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    
+    function resizeCanvas() {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    const nodes = [];
+    const nodeCount = 35;
+    
+    for (let i = 0; i < nodeCount; i++) {
+        nodes.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.8,
+            vy: (Math.random() - 0.5) * 0.8,
+            radius: Math.random() * 3 + 2
+        });
+    }
+    
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#FF9933';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+        
+        for (let i = 0; i < nodeCount; i++) {
+            let n = nodes[i];
+            n.x += n.vx;
+            n.y += n.vy;
+            
+            if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
+            if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
+            
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            for (let j = i + 1; j < nodeCount; j++) {
+                let n2 = nodes[j];
+                let dist = Math.hypot(n.x - n2.x, n.y - n2.y);
+                if (dist < 120) {
+                    ctx.beginPath();
+                    ctx.moveTo(n.x, n.y);
+                    ctx.lineTo(n2.x, n2.y);
+                    ctx.stroke();
+                }
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+    animate();
+});
+</script>
 {% endblock %}

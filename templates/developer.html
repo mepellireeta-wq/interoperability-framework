@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Developer & Technical Architecture - GovInterop Framework{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Banner -->
+    <div class="text-center mb-5">
+        <span class="badge bg-dark text-warning rounded-pill px-3 py-2 mb-2"><i class="fa-solid fa-code me-1"></i>System Technical Specifications</span>
+        <h2 class="fw-bold text-dark"><i class="fa-solid fa-microchip text-primary me-2"></i>Developer & Technology Architecture Portal</h2>
+        <p class="text-muted max-w-700 mx-auto">Detailed technical specifications for Quantum-Safe Cryptography, Blockchain Merkle Ledger, API Gateway Schemas, and System Telemetry.</p>
+    </div>
+
+    <!-- Technology Overview Grid -->
+    <div class="row g-4 mb-5">
+        <!-- Quantum Security Card -->
+        <div class="col-md-6">
+            <div class="glass-card p-4 h-100 border-start border-4 border-success">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="fa-solid fa-atom text-success fs-1 me-3"></i>
+                    <div>
+                        <h4 class="fw-bold mb-0 text-success">Quantum Cryptography Engine</h4>
+                        <small class="text-muted">BB84 QKD & Post-Quantum Lattice Cryptography</small>
+                    </div>
+                </div>
+                <p class="small text-muted mb-3">Simulates BB84 Quantum Key Distribution using 256-bit Qubit measurement states (|0⟩, |1⟩) and NIST-Kyber-1024 Post-Quantum Lattice Security to encrypt inter-departmental data contracts.</p>
+                <div class="bg-dark text-white p-3 rounded font-monospace small">
+                    <div><strong>Qubit Protocol:</strong> BB84_QKD_SIMULATED</div>
+                    <div><strong>Lattice Standard:</strong> NIST-Kyber-1024-Lattice</div>
+                    <div><strong>Qubit Fidelity:</strong> <span class="text-success">99.98%</span></div>
+                    <div><strong>Key Exchange API:</strong> <code>GET /api/v1/gateway/quantum-status</code></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blockchain Ledger Card -->
+        <div class="col-md-6">
+            <div class="glass-card p-4 h-100 border-start border-4 border-primary">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="fa-solid fa-cubes text-primary fs-1 me-3"></i>
+                    <div>
+                        <h4 class="fw-bold mb-0 text-primary">Immutable Blockchain Ledger</h4>
+                        <div class="small text-muted">SHA-256 Merkle Tree Hash Architecture</div>
+                    </div>
+                </div>
+                <p class="small text-muted mb-3">Generates cryptographic SHA-256 Merkle Tree blocks for every approved application certificate and grant sanction, ensuring immutable proof against tampering or deletion.</p>
+                <div class="bg-dark text-white p-3 rounded font-monospace small">
+                    <div><strong>Ledger Standard:</strong> Hyperledger SHA-256</div>
+                    <div><strong>Block Verification:</strong> <code>POST /api/v1/blockchain/verify</code></div>
+                    <div><strong>Ledger Explorer:</strong> <code>GET /api/v1/blockchain/ledger</code></div>
+                    <div><strong>Verification Status:</strong> <span class="text-primary">ACTIVE</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Schemas & Data Contract Specifications -->
+    <div class="glass-card p-4 mb-5">
+        <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-brackets-curly text-primary me-2"></i>E-GOV-STD-INTEROP-2026 Data Contract Schema</h5>
+        <p class="small text-muted mb-3">All raw inputs submitted across 28 States & 8 UTs are standardized into this JSON schema before routing across department workflow engines.</p>
+        <pre class="bg-dark text-success p-3 rounded font-monospace small mb-0"><code>{
+  "schema_version": "E-GOV-STD-INTEROP-2026",
+  "service_code": "UNIFIED_SKILL_TO_GRANT",
+  "beneficiary": {
+    "full_name": "Rahul Ramesh Kumar",
+    "email": "rahul.kumar@example.com",
+    "phone": "9123456789",
+    "district": "Visakhapatnam",
+    "state": "Andhra Pradesh",
+    "state_id_type": "NATIONAL_ID",
+    "state_id_hash": "a4f91c8812e99b01247d519bca8817ff8199201a0812b18991aa671991c019a8"
+  },
+  "security_metadata": {
+    "quantum_signature": "Q-SIG-9912A88F",
+    "dpdp_consent_granted": true,
+    "ip_address": "127.0.0.1"
+  }
+}</code></pre>
+    </div>
+</div>
+{% endblock %}
