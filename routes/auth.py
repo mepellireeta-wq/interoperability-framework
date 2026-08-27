@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, session
-from database.models import db, User, BeneficiaryMDM
+from database.models import db, User
 from services.sso_service import SSOService
+import secrets
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/v1/auth')
 
@@ -8,15 +9,15 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/api/v1/auth')
 def login():
     """Federated SSO Login Endpoint - Generates JWT Token & establishes session"""
     data = request.get_json() or {}
-    username = data.get('username')
-    password = data.get('password')
+    username = data.get('username', '').strip()
+    password = data.get('password', '').strip()
 
     if not username or not password:
         return jsonify({'error': 'Username and password are required'}), 400
 
     user = SSOService.authenticate(username, password)
     if not user:
-        return jsonify({'error': 'Invalid credentials or inactive account'}), 401
+        return jsonify({'error': 'Invalid credentials or account does not exist'}), 401
 
     token = SSOService.generate_token(user)
     
@@ -33,8 +34,7 @@ def login():
             'username': user.username,
             'full_name': user.full_name,
             'email': user.email,
-            'role': user.role,
-            'dept_code': user.dept_code
+            'role': user.role
         }
     }), 200
 
@@ -42,31 +42,27 @@ def login():
 def register():
     """Citizen Registration API - Creates User & MDM Beneficiary Profile"""
     data = request.get_json() or {}
-    username = data.get('username')
-    password = data.get('password')
-    email = data.get('email')
-    full_name = data.get('full_name')
-    phone = data.get('phone', '')
-    state = data.get('state', 'Maharashtra')
-    role = data.get('role', 'CITIZEN')
+    username = data.get('username', '').strip()
+    password = data.get('password', '').strip()
+    email = data.get('email', '').strip()
+    full_name = data.get('full_name', '').strip()
+    phone = data.get('phone', '').strip()
+    state_id = data.get('state_id', f"STATE-ID-{secrets.token_hex(4).upper()}")
 
     if not username or not password or not email or not full_name:
         return jsonify({'error': 'Full name, username, email, and password are required'}), 400
 
-    existing_user = User.query.filter((User.username == username) | (User.email == email)).first()
-    if existing_user:
-        return jsonify({'error': 'Username or Email already registered'}), 409
-
-    user = User(
+    user, msg = SSOService.register_citizen(
         username=username,
         email=email,
+        password=password,
         full_name=full_name,
-        role=role,
-        is_active=True
+        phone=phone,
+        state_id=state_id
     )
-    user.set_password(password)
-    db.session.add(user)
-    db.session.commit()
+
+    if not user:
+        return jsonify({'error': msg}), 400
 
     return jsonify({
         'message': 'Citizen Account registered successfully',
