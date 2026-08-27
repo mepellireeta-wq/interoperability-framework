@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}GovInterop - Universal Government Interoperability Middleware{% endblock %}</title>
+    <title>{% block title %}GovInterop - National & State Digital Service Interoperability Platform{% endblock %}</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
@@ -13,28 +13,76 @@
 </head>
 <body>
 
-    <!-- Government Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-gov sticky-top">
+    <!-- GMRIT-Style Multi-Tiered Header Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-gov sticky-top py-2">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center fw-bold" href="/">
-                <i class="fa-solid fa-building-columns brand-emblem fs-3 text-warning"></i>
+            <!-- Brand Logo -->
+            <a class="navbar-brand d-flex align-items-center fw-bold me-4" href="/">
+                <i class="fa-solid fa-building-columns brand-emblem fs-2 text-warning me-2"></i>
                 <div>
-                    <div>GovInterop Portal</div>
-                    <small class="fs-7 text-light opacity-75 fw-normal">National & State Digital Service Interoperability Middleware</small>
+                    <div class="fs-5 lh-1">GOVINTEROP</div>
+                    <small class="fs-7 text-light opacity-75 fw-normal">Universal Government Interoperability Platform</small>
                 </div>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item"><a class="nav-link px-3" href="/"><i class="fa-solid fa-house me-1"></i> Home</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="/#services"><i class="fa-solid fa-layer-group me-1"></i> State Schemes</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="/track-page"><i class="fa-solid fa-magnifying-glass me-1"></i> Track Application</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="/admin-dashboard"><i class="fa-solid fa-chart-line me-1"></i> SLA Dashboard</a></li>
+
+            <!-- Navigation Links with Dropdowns -->
+            <div class="collapse navbar-collapse" id="topNav">
+                <ul class="navbar-nav ms-auto align-items-center gap-1">
+                    <li class="nav-item"><a class="nav-link px-2 fw-semibold active" href="/"><i class="fa-solid fa-house me-1"></i> Home</a></li>
+                    
+                    <!-- Governance Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle px-2 fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fa-solid fa-landmark me-1"></i> Governance
+                        </a>
+                        <ul class="dropdown-menu shadow border-0">
+                            <li><a class="dropdown-item fw-bold" href="/governance"><i class="fa-solid fa-sitemap me-2 text-primary"></i> IndEA 2.0 Overview</a></li>
+                            <li><a class="dropdown-item" href="/governance#states"><i class="fa-solid fa-map-location-dot me-2 text-primary"></i> 28 States & UTs Directory</a></li>
+                            <li><a class="dropdown-item" href="/governance#dpdp"><i class="fa-solid fa-user-shield me-2 text-primary"></i> DPDP Act 2023 Compliance</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Schemes & Portals Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle px-2 fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fa-solid fa-boxes-stacked me-1"></i> Schemes & Portals
+                        </a>
+                        <ul class="dropdown-menu shadow border-0">
+                            <li><a class="dropdown-item fw-bold text-primary" href="/schemes"><i class="fa-solid fa-layer-group me-2"></i> All Schemes Directory</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/schemes?domain=Education"><i class="fa-solid fa-graduation-cap me-2 text-primary"></i> 🎓 Education & Scholarships</a></li>
+                            <li><a class="dropdown-item" href="/schemes?domain=Health"><i class="fa-solid fa-heart-pulse me-2 text-danger"></i> 🏥 Health & Medical</a></li>
+                            <li><a class="dropdown-item" href="/schemes?domain=Banking"><i class="fa-solid fa-piggy-bank me-2 text-success"></i> 🏦 Banking & Micro-Loans</a></li>
+                            <li><a class="dropdown-item" href="/schemes?domain=Agriculture"><i class="fa-solid fa-wheat-awn me-2 text-warning"></i> 🌾 Agriculture & PM-KISAN</a></li>
+                            <li><a class="dropdown-item" href="/schemes?domain=Innovation"><i class="fa-solid fa-rocket me-2 text-info"></i> 🚀 Startups & MSME</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Applications Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle px-2 fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fa-solid fa-file-pen me-1"></i> Applications
+                        </a>
+                        <ul class="dropdown-menu shadow border-0">
+                            <li><a class="dropdown-item fw-bold" href="/apply-page"><i class="fa-solid fa-paper-plane me-2 text-primary"></i> Submit Application</a></li>
+                            <li><a class="dropdown-item" href="/track-page"><i class="fa-solid fa-magnifying-glass me-2 text-primary"></i> 360° Timeline Tracking</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Blockchain Verifier link -->
+                    <li class="nav-item"><a class="nav-link px-2 fw-semibold text-warning" href="/blockchain-verifier"><i class="fa-solid fa-link me-1"></i> Blockchain Verifier</a></li>
+
+                    <!-- Admin Portal link -->
+                    <li class="nav-item"><a class="nav-link px-2 fw-semibold" href="/admin-dashboard"><i class="fa-solid fa-lock me-1"></i> Admin Portal</a></li>
+
+                    <!-- Federated SSO Login Modal Button -->
                     <li class="nav-item ms-lg-2">
-                        <button class="btn btn-warning text-dark fw-bold px-4 rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#loginModal">
-                            <i class="fa-solid fa-shield-halved me-1"></i> Federated SSO Login
+                        <button class="btn btn-warning text-dark fw-bold px-3 py-1 rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i class="fa-solid fa-shield-halved me-1"></i> SSO Login
                         </button>
                     </li>
                 </ul>
@@ -42,15 +90,50 @@
         </div>
     </nav>
 
+    <!-- GMRIT-Style Right-Side Vertical Floating Action Pills Bar -->
+    <div class="gmrit-right-floating-bar d-none d-md-flex flex-column gap-2">
+        <a href="/apply-page" class="gmrit-pill gmrit-pill-apply shadow">
+            <i class="fa-solid fa-paper-plane me-2"></i>
+            <div>
+                <small class="d-block text-uppercase lh-1 opacity-75">Apply For</small>
+                <strong>SCHEMES 2026</strong>
+            </div>
+        </a>
+        <a href="/track-page" class="gmrit-pill gmrit-pill-track shadow">
+            <i class="fa-solid fa-magnifying-glass me-2"></i>
+            <div>
+                <small class="d-block text-uppercase lh-1 opacity-75">Citizen</small>
+                <strong>TRACKING</strong>
+            </div>
+        </a>
+        <a href="/blockchain-verifier" class="gmrit-pill gmrit-pill-blockchain shadow">
+            <i class="fa-solid fa-link me-2"></i>
+            <div>
+                <small class="d-block text-uppercase lh-1 opacity-75">Blockchain</small>
+                <strong>VERIFIER</strong>
+            </div>
+        </a>
+        <a href="/admin-dashboard" class="gmrit-pill gmrit-pill-admin shadow">
+            <i class="fa-solid fa-lock me-2"></i>
+            <div>
+                <small class="d-block text-uppercase lh-1 opacity-75">Official</small>
+                <strong>ADMIN PORTAL</strong>
+            </div>
+        </a>
+    </div>
+
     <!-- Main Body Container -->
     <main>
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Floating AI Chatbot Assistant Widget Button -->
+    <!-- Floating AI Chatbot Assistant Widget Button (GMRIT CHATBOT Style) -->
     <div class="position-fixed bottom-0 end-0 m-4 z-3">
-        <button id="btnOpenAiChat" class="btn btn-primary btn-lg rounded-circle shadow-lg p-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;" data-bs-toggle="modal" data-bs-target="#aiChatModal" title="Ask GovInterop AI Assistant">
-            <i class="fa-solid fa-robot fs-3 text-warning"></i>
+        <button id="btnOpenAiChat" class="btn btn-primary btn-lg rounded-circle shadow-lg p-3 d-flex align-items-center justify-content-center gmrit-chatbot-btn" data-bs-toggle="modal" data-bs-target="#aiChatModal" title="Ask GovInterop AI Assistant">
+            <div class="text-center">
+                <i class="fa-solid fa-robot fs-3 text-warning"></i>
+                <span class="d-block text-white fw-bold fs-8 lh-1 mt-1">AI GUIDE</span>
+            </div>
         </button>
     </div>
 
@@ -85,7 +168,7 @@
             <div class="row align-items-center">
                 <div class="col-md-6 text-md-start mb-2 mb-md-0">
                     <h6 class="fw-bold mb-1"><i class="fa-solid fa-landmark me-2 text-warning"></i>Universal Government Interoperability Platform</h6>
-                    <small class="text-secondary">Education, Health, Banking, Insurance, Agriculture & Skills Ecosystems</small>
+                    <small class="text-secondary">Education, Health, Banking, Insurance, Agriculture, MSME & Skills Ecosystems</small>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <small class="text-secondary">&copy; 2026 E-Governance Interoperability Middleware Framework</small>

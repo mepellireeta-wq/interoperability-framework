@@ -3,150 +3,98 @@
 {% block title %}GovInterop - All-India Universal Digital Service Delivery Portal{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
+<!-- Hero Section (GMRIT Reference Banner Style) -->
 <section class="hero-section text-center">
     <div class="container position-relative z-1">
-        <span class="stat-badge mb-3"><i class="fa-solid fa-bolt text-warning me-2"></i>National E-Governance Quantum-Safe Interoperability Middleware 2026</span>
-        <h1 class="display-4 fw-bold mb-3">Universal India Digital Services Portal</h1>
+        <span class="stat-badge mb-3"><i class="fa-solid fa-building-columns text-warning me-2"></i>National E-Governance Interoperability Platform</span>
+        <h1 class="display-4 fw-bold mb-3">Empowering Citizens, Shaping Digital India</h1>
         <p class="lead max-w-700 mx-auto mb-4 opacity-90">
-            A single national-level federated window linking Central Ministries & All 28 States & 8 UTs (Education, Health, Banking, Insurance, Agriculture, Infrastructure, Startups, Skills) without duplicate document submissions.
+            A single national-level federated window linking Central Ministries & All 28 States & 8 UTs (Education, Health, Banking, Insurance, Agriculture, Startups, Skills) without duplicate document submissions.
         </p>
+
+        <!-- Red Banner Pill Matching GMRIT Reference Screenshot -->
+        <div class="mb-4">
+            <div class="hero-banner-red-pill shadow-lg">
+                UNIVERSAL SCHEMES & SCHOLARSHIPS 2026
+            </div>
+        </div>
+
         <div class="d-flex justify-content-center gap-3 flex-wrap">
-            <a href="#services" class="btn btn-warning btn-lg rounded-pill px-5 fw-bold text-dark shadow-lg">
-                <i class="fa-solid fa-paper-plane me-2"></i>Apply for Schemes
+            <a href="/apply-page" class="btn btn-danger btn-lg rounded-pill px-5 fw-bold shadow-lg">
+                <i class="fa-solid fa-paper-plane me-2"></i>Apply Now
             </a>
-            <a href="/track-page" class="btn btn-outline-light btn-lg rounded-pill px-5 fw-bold shadow">
-                <i class="fa-solid fa-magnifying-glass me-2"></i>Track Status
+            <a href="/schemes" class="btn btn-outline-light btn-lg rounded-pill px-5 fw-bold shadow">
+                <i class="fa-solid fa-boxes-stacked me-2"></i>Explore Schemes
             </a>
-            <button class="btn btn-light btn-lg rounded-pill px-4 fw-bold text-primary shadow" data-bs-toggle="modal" data-bs-target="#aiChatModal">
-                <i class="fa-solid fa-robot text-warning me-2"></i>Ask AI Guide
-            </button>
+            <a href="/track-page" class="btn btn-warning text-dark btn-lg rounded-pill px-4 fw-bold shadow">
+                <i class="fa-solid fa-magnifying-glass me-2"></i>Track Application
+            </a>
         </div>
     </div>
 </section>
 
-<!-- Interactive Impact Metrics Cards (Clickable Square Boxes) -->
+<!-- GMRIT 3-Column Section Blocks (Matching Reference Screenshot) -->
 <div class="container mt-n4 position-relative z-2">
     <div class="row g-4">
-        <!-- Box 1: 28 States & 8 UTs -->
-        <div class="col-md-3">
-            <div class="glass-card p-4 text-center cursor-pointer metric-card-interactive" onclick="openMetricDetailModal('states')">
-                <i class="fa-solid fa-network-wired text-primary fs-1 mb-2"></i>
-                <h3 class="fw-bold mb-0 text-primary">28 States & 8 UTs</h3>
-                <small class="text-muted fw-bold">Integrated Department Portals</small>
-                <div class="mt-2 text-primary fs-7 fw-bold"><i class="fa-solid fa-circle-info me-1"></i>Click to view details</div>
+        <!-- Column 1: Governance -->
+        <div class="col-md-4">
+            <div class="glass-card p-0 overflow-hidden h-100">
+                <div class="gmrit-sec-card-header">
+                    <i class="fa-solid fa-landmark me-2"></i> GOVERNANCE
+                </div>
+                <div class="p-4">
+                    <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
+                        <li><a href="/governance" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> Framework Overview</a></li>
+                        <li><a href="/governance#states" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> Participating 28 States & UTs</a></li>
+                        <li><a href="/governance#dpdp" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> DPDP Act 2023 Consent Controls</a></li>
+                        <li><a href="/blockchain-verifier" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> Blockchain Public Ledger</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
 
-        <!-- Box 2: Quantum-Safe -->
-        <div class="col-md-3">
-            <div class="glass-card p-4 text-center cursor-pointer metric-card-interactive" onclick="openMetricDetailModal('quantum')">
-                <i class="fa-solid fa-atom text-success fs-1 mb-2"></i>
-                <h3 class="fw-bold mb-0 text-success">Quantum-Safe</h3>
-                <small class="text-muted fw-bold">Post-Quantum Lattice Security</small>
-                <div class="mt-2 text-success fs-7 fw-bold"><i class="fa-solid fa-circle-info me-1"></i>Click to view details</div>
+        <!-- Column 2: Governance Bodies -->
+        <div class="col-md-4">
+            <div class="glass-card p-0 overflow-hidden h-100">
+                <div class="gmrit-sec-card-header">
+                    <i class="fa-solid fa-sitemap me-2"></i> GOVERNANCE BODIES
+                </div>
+                <div class="p-4">
+                    <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
+                        <li><a href="/schemes?domain=Education" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> Department of Higher Education</a></li>
+                        <li><a href="/schemes?domain=Health" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> National Health Authority</a></li>
+                        <li><a href="/schemes?domain=Banking" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> Department of Financial Services</a></li>
+                        <li><a href="/schemes?domain=Agriculture" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> Ministry of Agriculture</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
 
-        <!-- Box 3: Single SSO & MDM -->
-        <div class="col-md-3">
-            <div class="glass-card p-4 text-center cursor-pointer metric-card-interactive" onclick="openMetricDetailModal('sso')">
-                <i class="fa-solid fa-fingerprint text-warning fs-1 mb-2"></i>
-                <h3 class="fw-bold mb-0 text-warning">Single SSO</h3>
-                <small class="text-muted fw-bold">National Master Profile (MDM)</small>
-                <div class="mt-2 text-warning fs-7 fw-bold"><i class="fa-solid fa-circle-info me-1"></i>Click to view details</div>
-            </div>
-        </div>
-
-        <!-- Box 4: < 48 Hours SLA -->
-        <div class="col-md-3">
-            <div class="glass-card p-4 text-center cursor-pointer metric-card-interactive" onclick="openMetricDetailModal('sla')">
-                <i class="fa-solid fa-chart-line text-danger fs-1 mb-2"></i>
-                <h3 class="fw-bold mb-0 text-danger">&lt; 48 Hours</h3>
-                <small class="text-muted fw-bold">Average SLA Sanction Time</small>
-                <div class="mt-2 text-danger fs-7 fw-bold"><i class="fa-solid fa-circle-info me-1"></i>Click to view details</div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Metric Detail Modal -->
-<div class="modal fade" id="metricDetailModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content glass-card border-0">
-            <div class="modal-header border-0 bg-primary text-white" id="metricModalHeader">
-                <h5 class="modal-title fw-bold" id="metricModalTitle"><i class="fa-solid fa-circle-info me-2"></i>Feature Details</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-4" id="metricModalBody">
-                <!-- Dynamically populated via JS -->
-            </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Close</button>
+        <!-- Column 3: Citizen Services -->
+        <div class="col-md-4">
+            <div class="glass-card p-0 overflow-hidden h-100">
+                <div class="gmrit-sec-card-header">
+                    <i class="fa-solid fa-hands-holding-circle me-2"></i> CITIZEN SERVICES
+                </div>
+                <div class="p-4">
+                    <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
+                        <li><a href="/apply-page" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> Submit Scheme Application</a></li>
+                        <li><a href="/track-page" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> 360° Real-Time Tracking</a></li>
+                        <li><a href="/blockchain-verifier" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> Blockchain Certificate Verification</a></li>
+                        <li><a href="/admin-dashboard" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> Official Admin Portal Login</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Integrated Schemes & State Selector Section -->
-<section id="services" class="py-5">
+<!-- Featured Schemes Section -->
+<section id="services" class="py-5 mt-4">
     <div class="container">
-        <div class="text-center mb-4">
-            <h2 class="fw-bold text-dark"><i class="fa-solid fa-boxes-stacked text-primary me-2"></i>Universal Multi-Sector & All-State Services</h2>
-            <p class="text-muted">Select your State/UT and Sector to view localized government portals and schemes available in your region.</p>
-        </div>
-
-        <!-- State & Sector Filter Bar -->
-        <div class="glass-card p-3 mb-5">
-            <div class="row g-3 align-items-center">
-                <!-- State Selector -->
-                <div class="col-md-5">
-                    <label class="form-label fw-bold small text-muted mb-1"><i class="fa-solid fa-map-location-dot text-primary me-1"></i> Select Your State or Union Territory:</label>
-                    <select id="stateFilterSelect" class="form-select fw-bold border-primary">
-                        <option value="ALL" selected>🇮🇳 All 28 States & Central Schemes</option>
-                        <option value="Andhra Pradesh">Andhra Pradesh</option>
-                        <option value="Telangana">Telangana</option>
-                        <option value="Maharashtra">Maharashtra</option>
-                        <option value="Karnataka">Karnataka</option>
-                        <option value="Tamil Nadu">Tamil Nadu</option>
-                        <option value="Uttar Pradesh">Uttar Pradesh</option>
-                        <option value="Delhi (NCT)">Delhi (NCT)</option>
-                        <option value="Gujarat">Gujarat</option>
-                        <option value="Rajasthan">Rajasthan</option>
-                        <option value="West Bengal">West Bengal</option>
-                        <option value="Kerala">Kerala</option>
-                        <option value="Bihar">Bihar</option>
-                        <option value="Madhya Pradesh">Madhya Pradesh</option>
-                        <option value="Punjab">Punjab</option>
-                        <option value="Haryana">Haryana</option>
-                        <option value="Odisha">Odisha</option>
-                        <option value="Assam">Assam</option>
-                        <option value="Jharkhand">Jharkhand</option>
-                        <option value="Chhattisgarh">Chhattisgarh</option>
-                        <option value="Himachal Pradesh">Himachal Pradesh</option>
-                        <option value="Uttarakhand">Uttarakhand</option>
-                        <option value="Jammu & Kashmir">Jammu & Kashmir</option>
-                        <option value="Ladakh">Ladakh</option>
-                        <option value="Goa">Goa</option>
-                        <option value="Sikkim">Sikkim</option>
-                        <option value="Tripura">Tripura</option>
-                    </select>
-                </div>
-
-                <!-- Sector Domain Tabs -->
-                <div class="col-md-7">
-                    <label class="form-label fw-bold small text-muted mb-1"><i class="fa-solid fa-layer-group text-primary me-1"></i> Filter by Sector Domain:</label>
-                    <div class="d-flex gap-2 flex-wrap" id="domainFilterTabs">
-                        <button class="btn btn-primary btn-sm rounded-pill px-3 fw-bold active-tab" onclick="filterDomain('ALL')">All Sectors</button>
-                        <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Education')">🎓 Education</button>
-                        <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Health')">🏥 Health</button>
-                        <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Banking')">🏦 Banking & Finance</button>
-                        <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Agriculture')">🌾 Agriculture</button>
-                        <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Innovation')">🚀 Startups & MSME</button>
-                        <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Infrastructure')">⚡ Infrastructure</button>
-                    </div>
-                </div>
-            </div>
+        <div class="text-center mb-5">
+            <h2 class="fw-bold text-dark"><i class="fa-solid fa-boxes-stacked text-primary me-2"></i>Featured Universal Schemes & Services</h2>
+            <p class="text-muted">Apply once; data automatically standardizes and routes across all necessary department workflow engines nation-wide.</p>
         </div>
 
         <!-- Scheme Cards Grid -->

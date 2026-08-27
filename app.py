@@ -9,6 +9,7 @@ from routes.workflows import workflows_bp
 from routes.simulated_depts import simulated_bp
 from routes.admin import admin_bp
 from routes.ai_chat import ai_chat_bp
+from routes.blockchain import blockchain_bp
 
 def create_app(config_name='dev'):
     """Flask Application Factory for Universal Government Interoperability Middleware"""
@@ -33,6 +34,7 @@ def create_app(config_name='dev'):
     app.register_blueprint(simulated_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(ai_chat_bp)
+    app.register_blueprint(blockchain_bp)
     
     # Health Check API
     @app.route('/api/health', methods=['GET'])
@@ -45,7 +47,7 @@ def create_app(config_name='dev'):
                 'Consent_Manager', 'Data_Standardization', 'MDM_Deduplication',
                 'Unified_Applications', 'Workflow_Engine', 'Department_Connectors',
                 'Legacy_SOAP_Adapters', 'Event_Bus', 'Audit_Logs', 'SLA_Analytics',
-                'AI_Chatbot_Assistant', 'State_Localization'
+                'Blockchain_Verifier', 'AI_Chatbot_Assistant', 'State_Localization'
             ],
             'version': '1.0.0-SIH'
         }), 200
@@ -54,6 +56,14 @@ def create_app(config_name='dev'):
     @app.route('/', methods=['GET'])
     def home():
         return render_template('index.html')
+
+    @app.route('/schemes', methods=['GET'])
+    def schemes_page():
+        return render_template('schemes.html')
+
+    @app.route('/governance', methods=['GET'])
+    def governance_page():
+        return render_template('governance.html')
 
     @app.route('/apply-page', methods=['GET'])
     def apply_page():

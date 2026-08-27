@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Governance - IndEA 2.0 Interoperability & Participating States Directory{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Banner -->
+    <div class="text-center mb-5">
+        <span class="badge bg-primary rounded-pill px-3 py-2 mb-2"><i class="fa-solid fa-landmark me-1"></i>IndEA 2.0 National Standard</span>
+        <h2 class="fw-bold text-dark"><i class="fa-solid fa-sitemap text-primary me-2"></i>Governance Framework & Participating States</h2>
+        <p class="text-muted max-w-700 mx-auto">Connecting State and Central Government Platforms into a Single Federated Window complying with India Enterprise Architecture (IndEA 2.0) guidelines.</p>
+    </div>
+
+    <!-- Governance Overview Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="glass-card p-4 text-center h-100">
+                <i class="fa-solid fa-handshake-angle text-primary fs-1 mb-3"></i>
+                <h5 class="fw-bold">Federated Identity (SSO)</h5>
+                <p class="text-muted small mb-0">Citizens use a single login credential across state and central portals, ending multi-account fragmentation.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 text-center h-100">
+                <i class="fa-solid fa-code-compare text-success fs-1 mb-3"></i>
+                <h5 class="fw-bold">Schema Standardization</h5>
+                <p class="text-muted small mb-0">Converts raw inputs into standard JSON contracts (E-GOV-STD-INTEROP-2026) for seamless inter-department data exchange.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 text-center h-100">
+                <i class="fa-solid fa-shield-halved text-warning fs-1 mb-3"></i>
+                <h5 class="fw-bold">DPDP Act 2023 Consent</h5>
+                <p class="text-muted small mb-0">Cross-department data sharing occurs strictly with explicit citizen consent, recorded in audit logs with IP & timestamp metadata.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Participating States Grid -->
+    <div class="glass-card p-4">
+        <h5 class="fw-bold text-dark mb-4"><i class="fa-solid fa-map-location-dot text-primary me-2"></i>Integrated 28 States & 8 Union Territories Directory</h5>
+        <div class="row g-3">
+            <div class="col-md-3 col-6"><div class="p-3 bg-light rounded border text-center font-monospace fw-bold">Andhra Pradesh</div></div>
+            <div class="col-md-3 col-6"><div class="p-3 bg-light rounded border text-center font-monospace fw-bold">Telangana</div></div>
+            <div class="col-md-3 col-6"><div class="p-3 bg-light rounded border text-center font-monospace fw-bold">Maharashtra</div></div>
+            <div class="col-md-3 col-6"><div class="p-3 bg-light rounded border text-center font-monospace fw-bold">Karnataka</div></div>
+            <div class="col-md-3 col-6"><div class="p-3 bg-light rounded border text-center font-monospace fw-bold">Tamil Nadu</div></div>
+            <div class="col-md-3 col-6"><div class="p-3 bg-light rounded border text-center font-monospace fw-bold">Uttar Pradesh</div></div>
+            <div class="col-md-3 col-6"><div class="p-3 bg-light rounded border text-center font-monospace fw-bold">Delhi (NCT)</div></div>
+            <div class="col-md-3 col-6"><div class="p-3 bg-light rounded border text-center font-monospace fw-bold">Gujarat</div></div>
+            <div class="col-md-3 col-6"><div class="p-3 bg-light rounded border text-center font-monospace fw-bold">Rajasthan</div></div>
+            <div class="col-md-3 col-6"><div class="p-3 bg-light rounded border text-center font-monospace fw-bold">West Bengal</div></div>
+            <div class="col-md-3 col-6"><div class="p-3 bg-light rounded border text-center font-monospace fw-bold">Kerala</div></div>
+            <div class="col-md-3 col-6"><div class="p-3 bg-light rounded border text-center font-monospace fw-bold">Bihar</div></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

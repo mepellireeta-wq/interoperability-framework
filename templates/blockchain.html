@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Blockchain Verifier - Public Government Ledger & Certificate Authentication{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Banner -->
+    <div class="text-center mb-5">
+        <span class="badge bg-success rounded-pill px-3 py-2 mb-2"><i class="fa-solid fa-link me-1"></i>Immutable Public Ledger</span>
+        <h2 class="fw-bold text-dark"><i class="fa-solid fa-cubes text-primary me-2"></i>Blockchain Certificate & Grant Verifier</h2>
+        <p class="text-muted max-w-700 mx-auto">Verify the authenticity of any sanction certificate, application status, or subsidy grant using SHA-256 Merkle Tree Blockchain hashes.</p>
+    </div>
+
+    <!-- Verification Card -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8">
+            <div class="glass-card p-4 p-md-5">
+                <h5 class="fw-bold text-primary mb-3"><i class="fa-solid fa-shield-halved me-2"></i>Verify Application Hash on Blockchain</h5>
+                <form id="blockchainVerifyForm" class="row g-3">
+                    <div class="col-md-9">
+                        <input type="text" id="verifyTrackingId" class="form-control form-control-lg" placeholder="Enter Tracking ID (e.g. GOV-2026-8A4F)..." required>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold rounded-pill shadow">
+                            <i class="fa-solid fa-magnifying-glass me-1"></i> Verify
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Verification Result Box -->
+                <div id="blockchainResult" class="mt-4 d-none">
+                    <div class="alert alert-success border-success p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fa-solid fa-square-check fs-1 text-success me-3"></i>
+                            <div>
+                                <h5 class="fw-bold mb-0 text-success">AUTHENTICATED ON BLOCKCHAIN LEDGER</h5>
+                                <small class="text-muted">SHA-256 Merkle Hash Verified</small>
+                            </div>
+                        </div>
+                        <div class="bg-white p-3 rounded border font-monospace small">
+                            <div><strong>Block Height:</strong> <span id="blockHeight">Block #4</span></div>
+                            <div><strong>Block Hash:</strong> <span id="blockHash" class="text-primary">0000a78b9c...</span></div>
+                            <div><strong>Tracking ID:</strong> <span id="blockTrackingId">GOV-2026-8A4F</span></div>
+                            <div><strong>Ledger Standard:</strong> GovInterop-Hyperledger-SHA256</div>
+                            <div><strong>Verification Status:</strong> <span class="badge bg-success">SANCTIONED & IMMUTABLE</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Public Blockchain Blocks Table -->
+    <div class="glass-card p-4">
+        <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-list-check text-primary me-2"></i>Live Public Blockchain Block Explorer</h5>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Block #</th>
+                        <th>Timestamp</th>
+                        <th>Merkle Root Hash</th>
+                        <th>Previous Block Hash</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="blockchainTableBody">
+                    <tr>
+                        <td class="fw-bold">Block #1 (Genesis)</td>
+                        <td>2026-08-27 10:00:00</td>
+                        <td><code class="text-primary">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</code></td>
+                        <td><code>0000000000000000000000000000000000000000000000000000000000000000</code></td>
+                        <td><span class="badge bg-success">GENESIS</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Block #2</td>
+                        <td>2026-08-27 11:15:20</td>
+                        <td><code class="text-primary">a4f91c8812e99b01247d519bca8817ff8199201a0812b18991aa671991c019a8</code></td>
+                        <td><code>e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</code></td>
+                        <td><span class="badge bg-primary">MINED</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Block #3</td>
+                        <td>2026-08-27 12:40:05</td>
+                        <td><code class="text-primary">991a0c8812e99b01247d519bca8817ff8199201a0812b18991aa671991c019f7</code></td>
+                        <td><code>a4f91c8812e99b01247d519bca8817ff8199201a0812b18991aa671991c019a8</code></td>
+                        <td><span class="badge bg-primary">MINED</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('blockchainVerifyForm');
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const trackingId = document.getElementById('verifyTrackingId').value.trim();
+            
+            try {
+                const res = await fetch('/api/v1/blockchain/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tracking_id: trackingId })
+                });
+                const data = await res.json();
+                
+                if (res.ok) {
+                    document.getElementById('blockHeight').innerText = `Block #${data.block_index}`;
+                    document.getElementById('blockHash').innerText = data.block_hash;
+                    document.getElementById('blockTrackingId').innerText = trackingId;
+                    document.getElementById('blockchainResult').classList.remove('d-none');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

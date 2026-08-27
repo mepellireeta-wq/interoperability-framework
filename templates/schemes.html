@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Schemes & Portals Catalog - Universal Government Interoperability Platform{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Banner -->
+    <div class="text-center mb-5">
+        <span class="badge bg-primary rounded-pill px-3 py-2 mb-2"><i class="fa-solid fa-layer-group me-1"></i>Multi-Sector Directory</span>
+        <h2 class="fw-bold text-dark"><i class="fa-solid fa-boxes-stacked text-primary me-2"></i>Universal State & Central Schemes Directory</h2>
+        <p class="text-muted max-w-700 mx-auto">Explore all government portals and schemes available across 28 States & 8 Union Territories in Education, Health, Banking, Agriculture, MSME, and Infrastructure.</p>
+    </div>
+
+    <!-- State & Sector Filter Bar -->
+    <div class="glass-card p-3 mb-5">
+        <div class="row g-3 align-items-center">
+            <!-- State Selector -->
+            <div class="col-md-5">
+                <label class="form-label fw-bold small text-muted mb-1"><i class="fa-solid fa-map-location-dot text-primary me-1"></i> Select Your State or Union Territory:</label>
+                <select id="stateFilterSelect" class="form-select fw-bold border-primary">
+                    <option value="ALL" selected>🇮🇳 All 28 States & Central Schemes</option>
+                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                    <option value="Telangana">Telangana</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Karnataka">Karnataka</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="Delhi (NCT)">Delhi (NCT)</option>
+                    <option value="Gujarat">Gujarat</option>
+                    <option value="Rajasthan">Rajasthan</option>
+                    <option value="West Bengal">West Bengal</option>
+                    <option value="Kerala">Kerala</option>
+                    <option value="Bihar">Bihar</option>
+                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                    <option value="Punjab">Punjab</option>
+                    <option value="Haryana">Haryana</option>
+                    <option value="Odisha">Odisha</option>
+                    <option value="Assam">Assam</option>
+                </select>
+            </div>
+
+            <!-- Sector Domain Tabs -->
+            <div class="col-md-7">
+                <label class="form-label fw-bold small text-muted mb-1"><i class="fa-solid fa-layer-group text-primary me-1"></i> Filter by Sector Domain:</label>
+                <div class="d-flex gap-2 flex-wrap" id="domainFilterTabs">
+                    <button class="btn btn-primary btn-sm rounded-pill px-3 fw-bold active-tab" onclick="filterDomain('ALL')">All Sectors</button>
+                    <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Education')">🎓 Education</button>
+                    <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Health')">🏥 Health</button>
+                    <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Banking')">🏦 Banking & Finance</button>
+                    <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Agriculture')">🌾 Agriculture</button>
+                    <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Innovation')">🚀 Startups & MSME</button>
+                    <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Infrastructure')">⚡ Infrastructure</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scheme Cards Grid -->
+    <div class="row g-4" id="schemeContainer">
+        <!-- Dynamically populated via portal.js -->
+    </div>
+</div>
+{% endblock %}
