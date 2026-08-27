@@ -1,142 +1,94 @@
 {% extends "base.html" %}
 
-{% block title %}Admin SLA Dashboard - Universal Interoperability Platform{% endblock %}
+{% block title %}Admin Portal - Official Governance & Review Dashboard{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <!-- Header Title -->
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
-        <div>
-            <h2 class="fw-bold text-dark mb-1"><i class="fa-solid fa-chart-line text-primary me-2"></i>Executive SLA & Interoperability Dashboard</h2>
-            <p class="text-muted small mb-0">Real-time Cross-Departmental Governance Monitoring & Immutable Audit Log Trail</p>
-        </div>
-        <div class="mt-2 mt-md-0">
-            <span class="badge bg-success p-2 fs-6 rounded-pill"><i class="fa-solid fa-signal me-1"></i> System Status: OPTIMAL</span>
-        </div>
-    </div>
-
-    <!-- Top Summary Metric Cards -->
-    <div class="row g-4 mb-4">
-        <div class="col-md-3">
-            <div class="glass-card p-3 text-center border-primary border-2">
-                <small class="text-muted fw-bold">TOTAL APPLICATIONS</small>
-                <h2 class="fw-bold text-primary mb-0" id="statTotalApps">12</h2>
-                <small class="text-primary font-monospace">Standardized Contracts</small>
+<div class="container py-5">
+    <!-- Admin Welcome Header -->
+    <div class="glass-card p-4 mb-4 border-start border-4 border-primary">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+                <span class="badge bg-primary rounded-pill px-3 py-2 mb-2"><i class="fa-solid fa-shield-halved me-1"></i>Official Admin Workspace</span>
+                <h3 class="fw-bold text-dark mb-1">Welcome to Admin Portal</h3>
+                <p class="text-muted small mb-0">Admin Name: <strong>{{ username }} (ADMIN)</strong> | System Access: <span class="badge bg-success">AUTHORIZED</span></p>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="glass-card p-3 text-center">
-                <small class="text-muted fw-bold">IN WORKFLOW</small>
-                <h2 class="fw-bold text-warning mb-0" id="statInWorkflow">5</h2>
-                <small class="text-warning text-dark font-monospace">Active Stage Routing</small>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="glass-card p-3 text-center">
-                <small class="text-muted fw-bold">FINAL SANCTIONED</small>
-                <h2 class="fw-bold text-success mb-0" id="statApproved">6</h2>
-                <small class="text-success font-monospace">Approved & Disbursed</small>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="glass-card p-3 text-center">
-                <small class="text-muted fw-bold">SLA COMPLIANCE</small>
-                <h2 class="fw-bold text-info mb-0" id="statSLACompliance">98.4%</h2>
-                <small class="text-info font-monospace">&lt; 48 Hour Target</small>
+            <div>
+                <a href="/developer-tech" class="btn btn-outline-primary rounded-pill px-4 fw-bold me-2">
+                    <i class="fa-solid fa-code me-1"></i> Developer Tech Specs
+                </a>
+                <a href="/blockchain-verifier" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">
+                    <i class="fa-solid fa-link me-1"></i> Public Blockchain Explorer
+                </a>
             </div>
         </div>
     </div>
 
-    <div class="row g-4">
-        <!-- Officer Worklist & Application Approvals -->
-        <div class="col-lg-7">
-            <div class="glass-card p-4 h-100">
-                <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-list-check text-primary me-2"></i>Pending Officer Review Queue</h5>
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle small">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Tracking ID</th>
-                                <th>Service Scheme</th>
-                                <th>Stage</th>
-                                <th>Status</th>
-                                <th>Officer Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminPendingTable">
-                            <tr>
-                                <td class="font-monospace fw-bold">GOV-2026-8A4F</td>
-                                <td>Integrated Skill-to-Grant</td>
-                                <td><span class="badge bg-primary">Stage 1</span></td>
-                                <td><span class="badge bg-warning text-dark">IN_WORKFLOW</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-success rounded-pill fw-bold" onclick="advanceApp(1, 'APPROVE')">Approve</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+    <!-- Executive Metrics & Pending Counter Cards -->
+    <div class="row g-4 mb-4" id="adminMetricsRow">
+        <div class="col-md-3">
+            <div class="glass-card p-4 text-center">
+                <i class="fa-solid fa-file-circle-check text-primary fs-1 mb-2"></i>
+                <h2 class="fw-bold mb-0 text-primary" id="metricTotal">--</h2>
+                <small class="text-muted fw-bold">Total Applications Submitted</small>
             </div>
         </div>
-
-        <!-- Department SLA Efficiency -->
-        <div class="col-lg-5">
-            <div class="glass-card p-4 h-100">
-                <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-building-flag text-primary me-2"></i>Department Efficiency SLA</h5>
-                <div id="deptSLAMetricsList">
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="fw-bold text-dark">Skills Development (REST API)</span>
-                            <span class="fw-bold text-success">100% Efficiency</span>
-                        </div>
-                        <div class="progress" style="height: 8px;">
-                            <div class="progress-bar bg-success" style="width: 100%"></div>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="fw-bold text-dark">Employment Directorate (Legacy SOAP)</span>
-                            <span class="fw-bold text-warning text-dark">85.7% Efficiency</span>
-                        </div>
-                        <div class="progress" style="height: 8px;">
-                            <div class="progress-bar bg-warning" style="width: 85%"></div>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="fw-bold text-dark">State Innovation Society (Direct DB)</span>
-                            <span class="fw-bold text-info">92.0% Efficiency</span>
-                        </div>
-                        <div class="progress" style="height: 8px;">
-                            <div class="progress-bar bg-info" style="width: 92%"></div>
-                        </div>
-                    </div>
-                </div>
+        <div class="col-md-3">
+            <div class="glass-card p-4 text-center">
+                <i class="fa-solid fa-clock-rotate-left text-warning fs-1 mb-2"></i>
+                <h2 class="fw-bold mb-0 text-warning" id="metricPending">--</h2>
+                <small class="text-muted fw-bold">Pending Officer Review Queue</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="glass-card p-4 text-center">
+                <i class="fa-solid fa-circle-check text-success fs-1 mb-2"></i>
+                <h2 class="fw-bold mb-0 text-success" id="metricApproved">--</h2>
+                <small class="text-muted fw-bold">Approved & Sanctioned</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="glass-card p-4 text-center">
+                <i class="fa-solid fa-hourglass-start text-info fs-1 mb-2"></i>
+                <h2 class="fw-bold mb-0 text-info" id="metricYetToFill">--</h2>
+                <small class="text-muted fw-bold">Yet to be Filled / Drafts</small>
             </div>
         </div>
     </div>
 
-    <!-- Live System Audit Trail -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="glass-card p-4">
-                <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-clock-rotate-left text-primary me-2"></i>Immutable System Audit Logs</h5>
-                <div class="table-responsive">
-                    <table class="table table-sm table-striped font-monospace small">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Timestamp</th>
-                                <th>Actor / Trigger</th>
-                                <th>Action Type</th>
-                                <th>Details</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminAuditTable">
-                            <!-- Dynamically loaded audit logs -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+    <!-- Citizen Submitted Pending Applications Table -->
+    <div class="glass-card p-4 mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-list-check text-primary me-2"></i>Citizen Submitted Applications - Pending Details Queue</h5>
+            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill"><i class="fa-solid fa-bell me-1"></i> SLA Target: &lt; 48 Hours</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Tracking ID</th>
+                        <th>Applicant Full Name</th>
+                        <th>Contact / State</th>
+                        <th>Selected Scheme</th>
+                        <th>Stage Progress</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="adminPendingTableBody">
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">Loading pending application records...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Governance Audit Logs -->
+    <div class="glass-card p-4">
+        <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-history text-primary me-2"></i>System Governance Audit Trail</h5>
+        <div id="adminAuditLogContainer" class="bg-dark text-success p-3 rounded font-monospace small overflow-auto" style="max-height: 250px;">
+            <div>[AUDIT LOGS] Initializing governance monitoring...</div>
         </div>
     </div>
 </div>
@@ -145,47 +97,62 @@
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    loadDashboardStats();
-    loadAuditLogs();
+    loadAdminDashboardData();
 });
 
-async function loadDashboardStats() {
+async function loadAdminDashboardData() {
     try {
-        const res = await fetch('/api/v1/admin/stats');
+        const res = await fetch('/api/v1/admin/pending-applications');
         const data = await res.json();
         
         if (res.ok) {
-            document.getElementById('statTotalApps').innerText = data.total_applications;
-            document.getElementById('statInWorkflow').innerText = data.in_workflow;
-            document.getElementById('statApproved').innerText = data.approved;
-            document.getElementById('statSLACompliance').innerText = data.sla_compliance_rate;
-        }
-    } catch (err) {
-        console.error(err);
-    }
-}
+            document.getElementById('metricTotal').innerText = data.metrics.total_submitted;
+            document.getElementById('metricPending').innerText = data.metrics.pending_review;
+            document.getElementById('metricApproved').innerText = data.metrics.approved;
+            document.getElementById('metricYetToFill').innerText = data.metrics.yet_to_fill;
 
-async function loadAuditLogs() {
-    try {
-        const res = await fetch('/api/v1/admin/audit-logs?limit=15');
-        const data = await res.json();
-        
-        if (res.ok) {
-            const tbody = document.getElementById('adminAuditTable');
+            const tbody = document.getElementById('adminPendingTableBody');
             tbody.innerHTML = '';
-            
-            data.audit_logs.forEach(log => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${log.timestamp.replace('T', ' ').split('.')[0]}</td>
-                        <td><span class="badge bg-secondary">${log.actor}</span></td>
-                        <td><span class="badge bg-primary">${log.action}</span></td>
-                        <td>${log.details}</td>
-                    </tr>
-                `;
-            });
+
+            if (data.applications.length > 0) {
+                data.applications.forEach(app => {
+                    const badgeClass = app.status === 'APPROVED' ? 'bg-success' : (app.status === 'REJECTED' ? 'bg-danger' : 'bg-warning text-dark');
+                    
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="fw-bold text-primary font-monospace">${app.tracking_id}</td>
+                            <td class="fw-bold">${app.applicant_name}</td>
+                            <td><small class="d-block">${app.applicant_email}</small><span class="badge bg-secondary fs-8">${app.state}</span></td>
+                            <td><small class="fw-semibold">${app.service_title}</small></td>
+                            <td>Stage ${app.current_stage} of ${app.total_stages}</td>
+                            <td><span class="badge ${badgeClass}">${app.status}</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-success rounded-pill fw-bold px-3 me-1" onclick="advanceApp('${app.id}', 'APPROVE')">
+                                    Approve <i class="fa-solid fa-check"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger rounded-pill fw-bold px-2" onclick="advanceApp('${app.id}', 'REJECT')">
+                                    Reject
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } else {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">No pending applications in queue</td></tr>`;
+            }
+
+            // Load audit logs
+            const auditRes = await fetch('/api/v1/admin/audit-logs');
+            const auditData = await auditRes.json();
+            if (auditRes.ok) {
+                const auditContainer = document.getElementById('adminAuditLogContainer');
+                auditContainer.innerHTML = '';
+                auditData.audit_logs.forEach(log => {
+                    auditContainer.innerHTML += `<div>[${log.timestamp.split('.')[0]}] ${log.actor} -> ${log.action}: ${log.details}</div>`;
+                });
+            }
         }
-    } catch (err) {
+    } catch(err) {
         console.error(err);
     }
 }
@@ -195,16 +162,15 @@ async function advanceApp(appId, decision) {
         const res = await fetch('/api/v1/workflows/advance', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ application_id: appId, decision: decision, remarks: 'Officer Approval Granted' })
+            body: JSON.stringify({ application_id: appId, decision: decision, remarks: `Officer Decision: ${decision}` })
         });
-        const data = await res.json();
         if (res.ok) {
-            alert(`Workflow Updated: ${data.message}`);
-            location.reload();
+            alert(`Application ${decision} successfully!`);
+            loadAdminDashboardData();
         } else {
-            alert(`Error: ${data.error}`);
+            alert("Error updating application status");
         }
-    } catch (err) {
+    } catch(err) {
         console.error(err);
     }
 }

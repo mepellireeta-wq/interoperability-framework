@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, redirect, url_for, jsonify, request
+from flask import Blueprint, render_template, session, redirect, jsonify, request
 from database.models import db, Application, AuditLog, User, Department
 
 admin_bp = Blueprint('admin', __name__)
@@ -13,8 +13,49 @@ def admin_portal_page():
     if not user_role or user_role not in ['ADMIN', 'OFFICER']:
         return redirect('/login-page')
         
-    username = session.get('username', 'System Administrator')
+    username = session.get('username', 'State System Administrator')
     return render_template('admin.html', username=username, role=user_role)
+
+@admin_bp.route('/api/v1/admin/pending-applications', methods=['GET'])
+def get_pending_applications_details():
+    """API - Retrieve detailed citizen applications queue & pending metrics for Admin Portal"""
+    user_role = session.get('role')
+    if not user_role or user_role not in ['ADMIN', 'OFFICER']:
+        return jsonify({'error': 'Unauthorized admin access'}), 403
+
+    all_apps = Application.query.order_by(Application.id.desc()).all()
+    
+    total_submitted = len(all_apps)
+    pending_review = sum(1 for a in all_apps if a.status in ['SUBMITTED', 'IN_WORKFLOW'])
+    approved = sum(1 for a in all_apps if a.status == 'APPROVED')
+    yet_to_fill = 14 # Simulated active citizen draft forms in progress
+
+    app_list = []
+    for a in all_apps:
+        applicant = User.query.get(a.applicant_id)
+        app_list.append({
+            'id': a.id,
+            'tracking_id': a.tracking_id,
+            'service_code': a.service_code,
+            'service_title': a.service_title,
+            'status': a.status,
+            'current_stage': a.current_stage,
+            'total_stages': a.total_stages,
+            'created_at': a.created_at.strftime('%Y-%m-%d %H:%M'),
+            'applicant_name': applicant.full_name if applicant else 'Citizen Applicant',
+            'applicant_email': applicant.email if applicant else 'n/a',
+            'state': applicant.phone if (applicant and applicant.phone) else 'Andhra Pradesh'
+        })
+
+    return jsonify({
+        'metrics': {
+            'total_submitted': total_submitted,
+            'pending_review': pending_review,
+            'approved': approved,
+            'yet_to_fill': yet_to_fill
+        },
+        'applications': app_list
+    }), 200
 
 @admin_bp.route('/api/v1/admin/stats', methods=['GET'])
 def get_admin_stats():
