@@ -25,35 +25,64 @@
     </div>
 </section>
 
-<!-- Impact Metrics Cards -->
+<!-- Interactive Impact Metrics Cards (Clickable Square Boxes) -->
 <div class="container mt-n4 position-relative z-2">
     <div class="row g-4">
+        <!-- Box 1: 28 States & 8 UTs -->
         <div class="col-md-3">
-            <div class="glass-card p-4 text-center">
+            <div class="glass-card p-4 text-center cursor-pointer metric-card-interactive" onclick="openMetricDetailModal('states')">
                 <i class="fa-solid fa-network-wired text-primary fs-1 mb-2"></i>
                 <h3 class="fw-bold mb-0 text-primary">28 States & 8 UTs</h3>
                 <small class="text-muted fw-bold">Integrated Department Portals</small>
+                <div class="mt-2 text-primary fs-7 fw-bold"><i class="fa-solid fa-circle-info me-1"></i>Click to view details</div>
             </div>
         </div>
+
+        <!-- Box 2: Quantum-Safe -->
         <div class="col-md-3">
-            <div class="glass-card p-4 text-center">
+            <div class="glass-card p-4 text-center cursor-pointer metric-card-interactive" onclick="openMetricDetailModal('quantum')">
                 <i class="fa-solid fa-atom text-success fs-1 mb-2"></i>
                 <h3 class="fw-bold mb-0 text-success">Quantum-Safe</h3>
                 <small class="text-muted fw-bold">Post-Quantum Lattice Security</small>
+                <div class="mt-2 text-success fs-7 fw-bold"><i class="fa-solid fa-circle-info me-1"></i>Click to view details</div>
             </div>
         </div>
+
+        <!-- Box 3: Single SSO & MDM -->
         <div class="col-md-3">
-            <div class="glass-card p-4 text-center">
+            <div class="glass-card p-4 text-center cursor-pointer metric-card-interactive" onclick="openMetricDetailModal('sso')">
                 <i class="fa-solid fa-fingerprint text-warning fs-1 mb-2"></i>
                 <h3 class="fw-bold mb-0 text-warning">Single SSO</h3>
                 <small class="text-muted fw-bold">National Master Profile (MDM)</small>
+                <div class="mt-2 text-warning fs-7 fw-bold"><i class="fa-solid fa-circle-info me-1"></i>Click to view details</div>
             </div>
         </div>
+
+        <!-- Box 4: < 48 Hours SLA -->
         <div class="col-md-3">
-            <div class="glass-card p-4 text-center">
+            <div class="glass-card p-4 text-center cursor-pointer metric-card-interactive" onclick="openMetricDetailModal('sla')">
                 <i class="fa-solid fa-chart-line text-danger fs-1 mb-2"></i>
                 <h3 class="fw-bold mb-0 text-danger">&lt; 48 Hours</h3>
                 <small class="text-muted fw-bold">Average SLA Sanction Time</small>
+                <div class="mt-2 text-danger fs-7 fw-bold"><i class="fa-solid fa-circle-info me-1"></i>Click to view details</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Metric Detail Modal -->
+<div class="modal fade" id="metricDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content glass-card border-0">
+            <div class="modal-header border-0 bg-primary text-white" id="metricModalHeader">
+                <h5 class="modal-title fw-bold" id="metricModalTitle"><i class="fa-solid fa-circle-info me-2"></i>Feature Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4" id="metricModalBody">
+                <!-- Dynamically populated via JS -->
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

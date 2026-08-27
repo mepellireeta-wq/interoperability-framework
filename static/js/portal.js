@@ -149,6 +149,110 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Interactive Metric Card Modal Handler
+function openMetricDetailModal(type) {
+    const modalHeader = document.getElementById('metricModalHeader');
+    const modalTitle = document.getElementById('metricModalTitle');
+    const modalBody = document.getElementById('metricModalBody');
+
+    if (type === 'states') {
+        modalHeader.className = 'modal-header border-0 bg-primary text-white';
+        modalTitle.innerHTML = '<i class="fa-solid fa-network-wired text-warning me-2"></i> 28 States & 8 Union Territories Integration';
+        modalBody.innerHTML = `
+            <div class="p-2">
+                <h5 class="fw-bold text-primary mb-3">Universal All-India Federated Middleware Overlay</h5>
+                <p class="text-dark">Our platform acts as a national-level federated window linking all 28 States & 8 UTs (such as <strong>Andhra Pradesh, Telangana, Maharashtra, Karnataka, Tamil Nadu, Delhi, UP, Gujarat</strong>) and Central Ministries under one unified portal.</p>
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 bg-light">
+                            <strong class="text-primary d-block mb-1"><i class="fa-solid fa-check-circle me-1"></i> Zero Duplicate Submissions</strong>
+                            <small class="text-muted">Citizens do not need to register on multiple state websites or re-upload documents 5 different times.</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 bg-light">
+                            <strong class="text-primary d-block mb-1"><i class="fa-solid fa-globe me-1"></i> Area & District Filtering</strong>
+                            <small class="text-muted">Select your home state and district to automatically view localized schemes and portals in your region.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (type === 'quantum') {
+        modalHeader.className = 'modal-header border-0 bg-success text-white';
+        modalTitle.innerHTML = '<i class="fa-solid fa-atom text-warning me-2"></i> Quantum-Safe Post-Quantum Lattice Security';
+        modalBody.innerHTML = `
+            <div class="p-2">
+                <h5 class="fw-bold text-success mb-3">NIST-Kyber-1024 & BB84 Quantum Key Distribution (QKD)</h5>
+                <p class="text-dark">To protect sensitive citizen records (Aadhaar hashes, Bank accounts, Health cards) transferred between state and central servers, our middleware uses <strong>BB84 Quantum Key Distribution and Post-Quantum Lattice Cryptography</strong>.</p>
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 bg-light">
+                            <strong class="text-success d-block mb-1"><i class="fa-solid fa-shield-halved me-1"></i> 100% Quantum-Resistant</strong>
+                            <small class="text-muted">Protects against future Quantum Supercomputer attacks ("Harvest Now, Decrypt Later" prevention).</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 bg-light">
+                            <strong class="text-success d-block mb-1"><i class="fa-solid fa-bolt me-1"></i> Qubit State Measurement</strong>
+                            <small class="text-muted">Generates 256-bit encryption keys using simulated Qubit measurement states (|0⟩, |1⟩) with 99.98% fidelity.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (type === 'sso') {
+        modalHeader.className = 'modal-header border-0 bg-warning text-dark';
+        modalTitle.innerHTML = '<i class="fa-solid fa-fingerprint me-2"></i> Single SSO & Master Data Management (MDM)';
+        modalBody.innerHTML = `
+            <div class="p-2">
+                <h5 class="fw-bold text-dark mb-3">Federated Single Sign-On & SHA-256 Deduplication</h5>
+                <p class="text-dark">Provides a single secure identity for every citizen while preventing welfare grant fraud across departments.</p>
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 bg-light">
+                            <strong class="text-dark d-block mb-1"><i class="fa-solid fa-id-card me-1"></i> Federated SSO JWT Token</strong>
+                            <small class="text-muted">Citizens log in ONCE and access Education, Health, Banking, and Skill portals seamlessly.</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 bg-light">
+                            <strong class="text-dark d-block mb-1"><i class="fa-solid fa-user-shield me-1"></i> SHA-256 MDM Profile</strong>
+                            <small class="text-muted">Hashes national ID credentials to catch duplicate applicants across departments without exposing raw PII.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (type === 'sla') {
+        modalHeader.className = 'modal-header border-0 bg-danger text-white';
+        modalTitle.innerHTML = '<i class="fa-solid fa-chart-line text-warning me-2"></i> Real-Time SLA Countdown & Accountability';
+        modalBody.innerHTML = `
+            <div class="p-2">
+                <h5 class="fw-bold text-danger mb-3">Service-Level Agreement (SLA) & Officer Review Queue</h5>
+                <p class="text-dark">Eliminates bureaucratic delays by enforcing real-time countdown timers and automated SLA warnings on officer dashboards.</p>
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 bg-light">
+                            <strong class="text-danger d-block mb-1"><i class="fa-solid fa-clock me-1"></i> &lt; 48-Hour Target</strong>
+                            <small class="text-muted">Tracks average processing times across Stage 1, Stage 2, and Stage 3 department approvals.</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 bg-light">
+                            <strong class="text-danger d-block mb-1"><i class="fa-solid fa-bell me-1"></i> Automated Warning Timers</strong>
+                            <small class="text-muted">If a file is delayed past 48 hours, the system triggers automated SLA warning alerts to department heads.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    const modal = new bootstrap.Modal(document.getElementById('metricDetailModal'));
+    modal.show();
+}
+
 function filterDomain(domain) {
     currentDomain = domain;
     // Highlight selected tab
