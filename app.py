@@ -11,6 +11,7 @@ from routes.admin import admin_bp
 from routes.ai_chat import ai_chat_bp
 from routes.blockchain import blockchain_bp
 from routes.developer import developer_bp
+from routes.citizen import citizen_bp
 
 def create_app(config_name='dev'):
     """Flask Application Factory for Universal Government Interoperability Middleware"""
@@ -37,6 +38,7 @@ def create_app(config_name='dev'):
     app.register_blueprint(ai_chat_bp)
     app.register_blueprint(blockchain_bp)
     app.register_blueprint(developer_bp)
+    app.register_blueprint(citizen_bp)
     
     # Health Check API
     @app.route('/api/health', methods=['GET'])
@@ -50,7 +52,7 @@ def create_app(config_name='dev'):
                 'Unified_Applications', 'Workflow_Engine', 'Department_Connectors',
                 'Legacy_SOAP_Adapters', 'Event_Bus', 'Audit_Logs', 'SLA_Analytics',
                 'Blockchain_Verifier', 'AI_Chatbot_Assistant', 'State_Localization',
-                'Developer_Tech_Portal'
+                'Developer_Tech_Portal', 'Citizen_Portal', 'Role_Separation'
             ],
             'version': '1.0.0-SIH'
         }), 200
@@ -59,6 +61,14 @@ def create_app(config_name='dev'):
     @app.route('/', methods=['GET'])
     def home():
         return render_template('index.html')
+
+    @app.route('/login-page', methods=['GET'])
+    def login_page():
+        return render_template('login.html')
+
+    @app.route('/register-page', methods=['GET'])
+    def register_page():
+        return render_template('register.html')
 
     @app.route('/schemes', methods=['GET'])
     def schemes_page():
@@ -77,10 +87,6 @@ def create_app(config_name='dev'):
         tracking_id = request.args.get('id', '')
         return render_template('track.html', tracking_id=tracking_id)
 
-    @app.route('/admin-dashboard', methods=['GET'])
-    def admin_dashboard():
-        return render_template('admin.html')
-        
     return app
 
 app = create_app(os.getenv('FLASK_ENV', 'dev'))

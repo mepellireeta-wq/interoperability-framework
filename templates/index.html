@@ -3,12 +3,10 @@
 {% block title %}GovInterop - All-India Universal Digital Service Delivery Portal{% endblock %}
 
 {% block content %}
-<!-- Animated Digital Governance Hero Section -->
+<!-- Sky Blue Hero Section (Clean & Professional, No Canvas Animation) -->
 <section class="hero-section text-center position-relative">
-    <canvas id="heroCanvas"></canvas>
-    
     <div class="container position-relative z-1">
-        <span class="stat-badge mb-3"><i class="fa-solid fa-building-columns text-warning me-2"></i>National E-Governance Interoperability Platform</span>
+        <span class="stat-badge mb-3"><i class="fa-solid fa-building-columns me-2"></i>National E-Governance Interoperability Platform</span>
         <h1 class="display-4 fw-bold mb-3">Empowering Citizens, Shaping Digital India</h1>
         <p class="lead max-w-700 mx-auto mb-4 opacity-90">
             A single national-level federated window linking Central Ministries & All 28 States & 8 UTs (Education, Health, Banking, Insurance, Agriculture, Startups, Skills) without duplicate document submissions.
@@ -22,14 +20,14 @@
         </div>
 
         <div class="d-flex justify-content-center gap-3 flex-wrap">
-            <a href="/apply-page" class="btn btn-danger btn-lg rounded-pill px-5 fw-bold shadow-lg">
-                <i class="fa-solid fa-paper-plane me-2"></i>Apply Now
+            <a href="/citizen-portal" class="btn btn-light text-primary btn-lg rounded-pill px-5 fw-bold shadow-lg">
+                <i class="fa-solid fa-user me-2"></i>Citizen Portal
             </a>
-            <a href="/schemes" class="btn btn-outline-light btn-lg rounded-pill px-5 fw-bold shadow">
-                <i class="fa-solid fa-boxes-stacked me-2"></i>Explore Schemes
+            <a href="/login-page" class="btn btn-outline-light btn-lg rounded-pill px-5 fw-bold shadow">
+                <i class="fa-solid fa-right-to-bracket me-2"></i>Sign In (Log In)
             </a>
-            <a href="/track-page" class="btn btn-warning text-dark btn-lg rounded-pill px-4 fw-bold shadow">
-                <i class="fa-solid fa-magnifying-glass me-2"></i>Track Application
+            <a href="/admin-portal" class="btn btn-warning text-dark btn-lg rounded-pill px-4 fw-bold shadow">
+                <i class="fa-solid fa-lock me-2"></i>Official Admin Portal
             </a>
         </div>
     </div>
@@ -46,10 +44,10 @@
                 </div>
                 <div class="p-4">
                     <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
-                        <li><a href="/governance" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> Framework Overview</a></li>
-                        <li><a href="/governance#states" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> Participating 28 States & UTs</a></li>
-                        <li><a href="/governance#dpdp" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> DPDP Act 2023 Consent Controls</a></li>
-                        <li><a href="/blockchain-verifier" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> Blockchain Public Ledger</a></li>
+                        <li><a href="/governance" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-primary me-2"></i> Framework Overview</a></li>
+                        <li><a href="/governance#states" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-primary me-2"></i> Participating 28 States & UTs</a></li>
+                        <li><a href="/governance#dpdp" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-primary me-2"></i> DPDP Act 2023 Consent Controls</a></li>
+                        <li><a href="/blockchain-verifier" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-primary me-2"></i> Blockchain Public Ledger</a></li>
                     </ul>
                 </div>
             </div>
@@ -63,10 +61,10 @@
                 </div>
                 <div class="p-4">
                     <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
-                        <li><a href="/schemes?domain=Education" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> Department of Higher Education</a></li>
-                        <li><a href="/schemes?domain=Health" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> National Health Authority</a></li>
-                        <li><a href="/schemes?domain=Banking" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> Department of Financial Services</a></li>
-                        <li><a href="/schemes?domain=Agriculture" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> Ministry of Agriculture</a></li>
+                        <li><a href="/schemes?domain=Education" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-primary me-2"></i> Department of Higher Education</a></li>
+                        <li><a href="/schemes?domain=Health" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-primary me-2"></i> National Health Authority</a></li>
+                        <li><a href="/schemes?domain=Banking" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-primary me-2"></i> Department of Financial Services</a></li>
+                        <li><a href="/schemes?domain=Agriculture" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-primary me-2"></i> Ministry of Agriculture</a></li>
                     </ul>
                 </div>
             </div>
@@ -80,10 +78,10 @@
                 </div>
                 <div class="p-4">
                     <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
-                        <li><a href="/apply-page" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> Submit Scheme Application</a></li>
-                        <li><a href="/track-page" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> 360° Real-Time Tracking</a></li>
-                        <li><a href="/blockchain-verifier" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> Blockchain Certificate Verification</a></li>
-                        <li><a href="/admin-dashboard" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-warning me-2"></i> Official Admin Portal Login</a></li>
+                        <li><a href="/apply-page" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-primary me-2"></i> Submit Scheme Application</a></li>
+                        <li><a href="/track-page" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-primary me-2"></i> 360° Real-Time Tracking</a></li>
+                        <li><a href="/blockchain-verifier" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-primary me-2"></i> Blockchain Certificate Verification</a></li>
+                        <li><a href="/admin-portal" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-primary me-2"></i> Official Admin Portal Login</a></li>
                     </ul>
                 </div>
             </div>
@@ -105,67 +103,4 @@
         </div>
     </div>
 </section>
-{% endblock %}
-
-{% block scripts %}
-<script>
-// Hero Canvas Network Animation Simulation
-document.addEventListener('DOMContentLoaded', function() {
-    const canvas = document.getElementById('heroCanvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    
-    function resizeCanvas() {
-        canvas.width = canvas.parentElement.clientWidth;
-        canvas.height = canvas.parentElement.clientHeight;
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-    
-    const nodes = [];
-    const nodeCount = 35;
-    
-    for (let i = 0; i < nodeCount; i++) {
-        nodes.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            vx: (Math.random() - 0.5) * 0.8,
-            vy: (Math.random() - 0.5) * 0.8,
-            radius: Math.random() * 3 + 2
-        });
-    }
-    
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#FF9933';
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-        
-        for (let i = 0; i < nodeCount; i++) {
-            let n = nodes[i];
-            n.x += n.vx;
-            n.y += n.vy;
-            
-            if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
-            if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
-            
-            ctx.beginPath();
-            ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
-            ctx.fill();
-            
-            for (let j = i + 1; j < nodeCount; j++) {
-                let n2 = nodes[j];
-                let dist = Math.hypot(n.x - n2.x, n.y - n2.y);
-                if (dist < 120) {
-                    ctx.beginPath();
-                    ctx.moveTo(n.x, n.y);
-                    ctx.lineTo(n2.x, n2.y);
-                    ctx.stroke();
-                }
-            }
-        }
-        requestAnimationFrame(animate);
-    }
-    animate();
-});
-</script>
 {% endblock %}

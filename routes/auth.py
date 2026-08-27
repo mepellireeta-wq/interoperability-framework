@@ -1,102 +1,86 @@
 from flask import Blueprint, request, jsonify, session
+from database.models import db, User, BeneficiaryMDM
 from services.sso_service import SSOService
-from database.models import User, BeneficiaryMDM
-import json
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/v1/auth')
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
-    """Federated SSO Authentication Endpoint"""
+    """Federated SSO Login Endpoint - Generates JWT Token & establishes session"""
     data = request.get_json() or {}
     username = data.get('username')
     password = data.get('password')
-    
+
     if not username or not password:
         return jsonify({'error': 'Username and password are required'}), 400
-        
+
     user = SSOService.authenticate(username, password)
     if not user:
-        return jsonify({'error': 'Invalid credentials'}), 401
-        
+        return jsonify({'error': 'Invalid credentials or inactive account'}), 401
+
     token = SSOService.generate_token(user)
-    session['user_id'] = user.id
-    session['sso_id'] = user.sso_id
-    session['role'] = user.role
     
+    # Store session role
+    session['user_id'] = user.id
+    session['username'] = user.username
+    session['role'] = user.role
+
     return jsonify({
-        'message': 'SSO Authentication Successful',
+        'message': 'Authentication successful',
         'token': token,
         'user': {
             'id': user.id,
-            'sso_id': user.sso_id,
             'username': user.username,
+            'full_name': user.full_name,
             'email': user.email,
             'role': user.role,
-            'full_name': user.full_name
+            'dept_code': user.dept_code
         }
     }), 200
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
-    """Citizen Registration & MDM Profile Initialization Endpoint"""
+    """Citizen Registration API - Creates User & MDM Beneficiary Profile"""
     data = request.get_json() or {}
     username = data.get('username')
-    email = data.get('email')
     password = data.get('password')
+    email = data.get('email')
     full_name = data.get('full_name')
     phone = data.get('phone', '')
-    state_id = data.get('state_id', f"NAT-CITIZEN-{username}")
-    
-    if not username or not email or not password or not full_name:
-        return jsonify({'error': 'Missing required fields'}), 400
-        
-    user, msg = SSOService.register_citizen(username, email, password, full_name, phone, state_id)
-    if not user:
-        return jsonify({'error': msg}), 400
-        
-    token = SSOService.generate_token(user)
-    return jsonify({
-        'message': 'Citizen Account & Master Data Profile Created',
-        'token': token,
-        'user': {
-            'sso_id': user.sso_id,
-            'username': user.username,
-            'email': user.email,
-            'role': user.role
-        }
-    }), 201
+    state = data.get('state', 'Maharashtra')
+    role = data.get('role', 'CITIZEN')
 
-@auth_bp.route('/verify', methods=['POST'])
-def verify_token():
-    """Verify JWT SSO Token for Inter-Departmental Services"""
-    data = request.get_json() or {}
-    token = data.get('token')
-    
-    if not token:
-        auth_header = request.headers.get('Authorization')
-        if auth_header and auth_header.startswith('Bearer '):
-            token = auth_header.split(' ')[1]
-            
-    if not token:
-        return jsonify({'valid': False, 'error': 'No token provided'}), 400
-        
-    payload = SSOService.decode_token(token)
-    if not payload:
-        return jsonify({'valid': False, 'error': 'Invalid or expired SSO token'}), 401
-        
+    if not username or not password or not email or not full_name:
+        return jsonify({'error': 'Full name, username, email, and password are required'}), 400
+
+    existing_user = User.query.filter((User.username == username) | (User.email == email)).first()
+    if existing_user:
+        return jsonify({'error': 'Username or Email already registered'}), 409
+
+    user = User(
+        username=username,
+        email=email,
+        full_name=full_name,
+        role=role,
+        is_active=True
+    )
+    user.set_password(password)
+    db.session.add(user)
+    db.session.commit()
+
     return jsonify({
-        'valid': True,
-        'user': payload
-    }), 200
+        'message': 'Citizen Account registered successfully',
+        'user_id': user.id,
+        'username': user.username
+    }), 201
 
 @auth_bp.route('/logout', methods=['POST'])
 def logout():
-    """Revoke JWT token & clear SSO session"""
-    token = request.headers.get('Authorization')
-    if token and token.startswith('Bearer '):
-        raw_token = token.split(' ')[1]
-        SSOService.revoke_token(raw_token)
-        
+    """SSO Logout Endpoint - Revokes JWT token & clears session"""
+    auth_header = request.headers.get('Authorization')
+    if auth_header and auth_header.startswith('Bearer '):
+        token = auth_header.split(' ')[1]
+        SSOService.revoke_token(token)
+
     session.clear()
-    return jsonify({'message': 'Logged out successfully, SSO Token Revoked'}), 200
+    return jsonify({'message': 'Session ended & JWT token revoked'}), 200
