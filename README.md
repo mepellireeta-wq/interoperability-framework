@@ -5,13 +5,105 @@
 
 ---
 
-## 🏛️ System Vision & Problem Statement
+## 🏛️ Project Overview
 
-Government departments (such as Skills Development, Employment Directorate, and State Innovation Societies) operate independent portals, registries, and databases developed in isolation. Incompatible data formats, custom authentication schemes, and fragmented ownership prevent seamless information exchange. 
+Government departments across states and central ministries operate independent portals, registries, and databases developed in isolation. Incompatible data formats, custom authentication schemes, and fragmented ownership prevent seamless information exchange.
 
-Citizens face redundant document submissions, multi-portal tracking confusion, and physical office visits. Government officials lack a 360-degree view of beneficiaries, approvals, and SLA compliance.
+**Our Proposed Solution**: A lightweight, secure, standards-based **Universal Interoperability Middleware Layer** connecting legacy and modern government systems without requiring complete system replacement.
 
-**Our Proposed Solution**: A lightweight, secure, standards-based **Interoperability Middleware Layer** connecting legacy and modern government systems without requiring complete system replacement.
+---
+
+## ⚡ Quickstart Setup Guide (Run on Your Laptop)
+
+Follow these simple step-by-step commands to clone and run the complete system on your laptop:
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/mepellireeta-wq/interoperability-framework.git
+cd interoperability-framework
+
+# 2. Create and activate Python Virtual Environment
+python -m venv venv
+
+# On Windows (PowerShell):
+.\venv\Scripts\activate
+
+# On Linux / Mac:
+source venv/bin/activate
+
+# 3. Install all required dependencies
+pip install -r requirements.txt
+
+# 4. Initialize Database with Seed Data
+python database/db_init.py
+
+# 5. Launch the application server
+python app.py
+```
+
+Once running, your local server will be active at: **`http://127.0.0.1:5000`**
+
+---
+
+## 🔗 Direct Localhost Links
+
+When the server is running (`python app.py`), click any link below to test the portal live in your browser:
+
+| Portal Section | Direct Localhost Link | Description |
+|---|---|---|
+| 🏠 **Home Page** | [http://127.0.0.1:5000/](http://127.0.0.1:5000/) | Universal Landing Page & Scheme Highlights |
+| 🔑 **Sign In** | [http://127.0.0.1:5000/login-page](http://127.0.0.1:5000/login-page) | Federated SSO Sign In (Role-based Navigation) |
+| ✍️ **Sign Up** | [http://127.0.0.1:5000/register-page](http://127.0.0.1:5000/register-page) | New Citizen Account Registration |
+| 👤 **Citizen Portal** | [http://127.0.0.1:5000/citizen-portal](http://127.0.0.1:5000/citizen-portal) | Scoped Citizen Workspace & Submitted Applications |
+| 📝 **Apply for Schemes** | [http://127.0.0.1:5000/apply-page](http://127.0.0.1:5000/apply-page) | Unified Application Form across all 28 States & UTs |
+| 🔍 **Track Application** | [http://127.0.0.1:5000/track-page](http://127.0.0.1:5000/track-page) | 360° Real-Time Timeline Progress Tracking |
+| 🎓 **Schemes Catalog** | [http://127.0.0.1:5000/schemes](http://127.0.0.1:5000/schemes) | Multi-Sector Scheme Directory (Education, Health, Banking, etc.) |
+| 🏛️ **Governance Overview** | [http://127.0.0.1:5000/governance](http://127.0.0.1:5000/governance) | IndEA 2.0 Governance & 28 States Directory |
+| ⛓️ **Blockchain Verifier** | [http://127.0.0.1:5000/blockchain-verifier](http://127.0.0.1:5000/blockchain-verifier) | Public SHA-256 Blockchain Ledger & Certificate Authenticator |
+| 🔒 **Official Admin Portal** | [http://127.0.0.1:5000/admin-portal](http://127.0.0.1:5000/admin-portal) | Protected Governance SLA Dashboard & Pending Queue |
+| 💻 **Developer Tech Portal** | [http://127.0.0.1:5000/developer-tech](http://127.0.0.1:5000/developer-tech) | Quantum Cryptography Specs, QKD Telemetry & API Schemas |
+
+---
+
+## 🔑 Demo Login Credentials
+
+| Role | Username | Password | Default Redirect Portal |
+|---|---|---|---|
+| 👨‍💼 **System Administrator** | `admin` | `Admin@123` | Official Admin Portal (`/admin-portal`) |
+| 👤 **Citizen User** | `citizen_demo` | `Citizen@123` | Citizen Workspace (`/citizen-portal`) |
+
+---
+
+## 🔄 Step-by-Step System Workflow
+
+```
+[ Step 1: Citizen SSO Sign Up / Login ]
+                   │
+                   ▼
+[ Step 2: Unified Scheme Application Submission ]
+                   │
+                   ▼
+[ Step 3: Data Standardization (E-GOV-STD-INTEROP-2026) & SHA-256 MDM Deduplication ]
+                   │
+                   ▼
+[ Step 4: Multi-Department Workflow Engine Routing ]
+  ├── Stage 1: Skills Dept (Modern REST API Connector)
+  ├── Stage 2: Employment Dept (Legacy SOAP/XML Adapter)
+  └── Stage 3: Innovation Society (Direct Database Sync)
+                   │
+                   ▼
+[ Step 5: Real-Time 360° Timeline Tracking & Public Blockchain Block Creation ]
+                   │
+                   ▼
+[ Step 6: Executive Admin SLA Analytics & Approval Queue ]
+```
+
+1. **SSO Authentication**: Citizen registers or logs in via Federated SSO issuing a secure JWT token.
+2. **Unified Submission**: Citizen selects a scheme (e.g. *Integrated Skill-to-Entrepreneurship Pathway*) and submits ONE form with data consent.
+3. **Standardization & MDM**: Data is transformed into standard schema `E-GOV-STD-INTEROP-2026`. Master Data Management (MDM) hashes national IDs (SHA-256) to block duplicate subsidy claims.
+4. **Multi-Department Routing**: Application progresses through automated stage connectors (REST, Legacy SOAP/XML, and Direct DB).
+5. **Blockchain Block Mining**: Upon stage approval, an immutable cryptographic SHA-256 block is recorded on the public ledger.
+6. **SLA Monitoring**: Officials process pending queues while SLA warning timers (<48h) ensure fast sanction delivery.
 
 ---
 
@@ -49,78 +141,24 @@ Citizens face redundant document submissions, multi-portal tracking confusion, a
 [ 360° Unified Tracking ] [ Admin Dashboard & SLA Compliance Analytics ]
 ```
 
-### Key Technical Pillars:
-1. **Federated SSO & JWT Security**: Single sign-on with JWT claim validation and instant token revocation on logout (`services/sso_service.py`).
-2. **API Gateway & DPDP Consent Manager**: Service Discovery Registry, RBAC protection, and citizen data sharing consent controls (`routes/gateway.py`).
-3. **Data Standardization & MDM**: Normalizes raw inputs into `E-GOV-STD-INTEROP-2026` schema and hashes national IDs (SHA-256) to prevent duplicate grant disbursements (`services/mdm_service.py`).
-4. **Configurable Workflow Engine & Legacy SOAP Adapters**: Transforms JSON contracts into XML/SOAP envelopes for older government servers (`services/connectors.py`).
-5. **Event-Driven Message Bus**: Asynchronous governance event publishing (`services/event_bus.py`) with SMS and Email alert dispatching (`services/notification_service.py`).
-6. **Executive Admin SLA Dashboard**: Real-time compliance countdown timers (<48h warnings), officer approval queues, and immutable audit trails (`routes/admin.py` & `templates/admin.html`).
-7. **Hardware IoT Telemetry Connector**: Accepts automated ESP32 sensor telemetry alerts for infrastructure/overflow monitoring (`services/iot_connector.py`).
-
 ---
 
-## 📡 REST API Endpoint Documentation
+## 📡 REST API Endpoint Reference
 
-| Method | Endpoint | Description | Auth Required |
+| Method | Endpoint | Description | Access Role |
 |---|---|---|---|
-| `GET` | `/api/health` | Middleware System Health Check | No |
-| `POST` | `/api/v1/auth/login` | Federated SSO Authentication | No |
-| `POST` | `/api/v1/auth/register` | Citizen Registration & MDM Profile Creator | No |
-| `POST` | `/api/v1/auth/verify` | SSO Token Introspection | No |
-| `POST` | `/api/v1/auth/logout` | Token Revocation & Logout | Yes |
-| `GET` | `/api/v1/gateway/services` | Service Discovery Registry | No |
-| `POST` | `/api/v1/gateway/consent/grant` | Record Citizen Data Sharing Consent | No |
-| `GET` | `/api/v1/gateway/security-health` | SIH Governance Security Diagnostics | Yes (Admin/Officer) |
-| `POST` | `/api/v1/applications/submit` | Unified Application Submission & Standardization | No |
-| `GET` | `/api/v1/applications/track/<id>` | 360° Multi-Stage Application Timeline Tracking | No |
-| `POST` | `/api/v1/workflows/advance` | Officer Workflow Stage Approval | Yes (Officer) |
-| `GET` | `/api/v1/admin/stats` | Executive Governance Metrics & SLA Analytics | Yes (Admin) |
-| `GET` | `/api/v1/admin/audit-logs` | Immutable Governance Audit Trail | Yes (Admin) |
-| `POST` | `/api/v1/gateway/iot/telemetry` | Hardware / ESP32 Sensor Telemetry Alert | No |
-
----
-
-## 👥 6-Member Team Work Allocation
-
-| Member & Role | Core Module & Responsibilities | Assigned Files |
-|---|---|---|
-| **Member 1: Team Lead & Security Architect** | API Gateway, SSO / Federated Identity, Consent Manager, RBAC, Core Flask Server | `routes/auth.py`, `routes/gateway.py`, `services/sso_service.py`, `services/consent_service.py` |
-| **Member 2: Frontend & Portal Specialist** | Unified Citizen/Business Portal UI, Application Form, Animated 360° Tracking Timeline UI | `templates/base.html`, `templates/index.html`, `templates/apply.html`, `templates/track.html`, `static/css/style.css`, `static/js/portal.js` |
-| **Member 3: Interoperability & MDM Lead** | Database Schemas (`models.py`), E-Governance Data Standardization Schema Mapper, MDM Deduplication | `services/interop_service.py`, `services/mdm_service.py`, `database/models.py`, `database/db_init.py` |
-| **Member 4: Workflow Engine & Connectors Dev** | Configurable Workflow Orchestration Engine, Modern REST Connectors & Legacy SOAP/XML Adapters | `services/workflow_engine.py`, `services/connectors.py`, `routes/workflows.py`, `routes/simulated_depts.py` |
-| **Member 5: Event Bus & Admin Analytics Lead** | Event-Driven Message Bus Pipeline, SMS/Email Notification Simulator, Admin Dashboard & SLA Analytics | `services/event_bus.py`, `services/notification_service.py`, `routes/admin.py`, `templates/admin.html` |
-| **Member 6: Testing & Hardware/IoT Specialist** | Automated API Test Suites, Edge-case Exception Handlers, ESP32 Hardware IoT Telemetry Connector | `tests/test_api.py`, `tests/test_workflows.py`, `services/iot_connector.py` |
-
----
-
-## ⚡ Quickstart Setup Guide
-
-```bash
-# 1. Clone project repository
-git clone https://github.com/mepellireeta-wq/interoperability-framework.git
-cd interoperability-framework
-
-# 2. Create & activate Python virtual environment
-python -m venv venv
-.\venv\Scripts\activate      # On Windows (or source venv/bin/activate on Linux/Mac)
-
-# 3. Install dependencies
-pip install -r requirements.txt
-
-# 4. Initialize Database with Seed Data
-python database/db_init.py
-
-# 5. Launch application server
-python app.py
-```
-
-Open **`http://127.0.0.1:5000`** in your web browser to access the portal!
-
-### Demo Login Credentials:
-- **Admin**: Username `admin` | Password `Admin@123`
-- **Officer**: Username `officer_skills` | Password `Officer@123`
-- **Citizen**: Username `citizen_demo` | Password `Citizen@123`
+| `GET` | `/api/health` | Middleware System Health Check | Public |
+| `POST` | `/api/v1/auth/login` | Federated SSO Authentication | Public |
+| `POST` | `/api/v1/auth/register` | Citizen Registration & MDM Profile Creator | Public |
+| `POST` | `/api/v1/auth/logout` | Token Revocation & Logout | Authenticated |
+| `GET` | `/api/v1/gateway/services` | Service Discovery Registry | Public |
+| `POST` | `/api/v1/applications/submit` | Unified Application Submission | Public |
+| `GET` | `/api/v1/applications/track/<id>` | 360° Application Timeline Tracking | Public |
+| `GET` | `/api/v1/admin/pending-applications` | Admin Queue & Pending Metrics | Admin / Officer |
+| `POST` | `/api/v1/workflows/advance` | Officer Stage Approval / Sanction | Admin / Officer |
+| `GET` | `/api/v1/blockchain/ledger` | Retrieve Public Blockchain Ledger | Public |
+| `POST` | `/api/v1/blockchain/verify` | Verify Application Certificate Hash | Public |
+| `POST` | `/api/v1/ai/chat` | AI Chatbot Assistant & Status Guide | Public |
 
 ---
 &copy; 2026 Universal Government Interoperability Framework | Smart India Hackathon 2026
