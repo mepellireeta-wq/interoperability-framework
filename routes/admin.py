@@ -16,6 +16,28 @@ def admin_portal_page():
     username = session.get('username', 'State System Administrator')
     return render_template('admin.html', username=username, role=user_role)
 
+@admin_bp.route('/api/v1/admin/registered-citizens', methods=['GET'])
+def get_registered_citizens():
+    """API - Retrieve list of all registered citizens stored in the database for Admin Portal"""
+    user_role = session.get('role')
+    if not user_role or user_role not in ['ADMIN', 'OFFICER']:
+        return jsonify({'error': 'Unauthorized admin access'}), 403
+
+    citizens = User.query.filter_by(role='CITIZEN').order_by(User.id.desc()).all()
+    
+    return jsonify({
+        'count': len(citizens),
+        'citizens': [{
+            'id': c.id,
+            'sso_id': c.sso_id,
+            'username': c.username,
+            'full_name': c.full_name,
+            'email': c.email,
+            'phone': c.phone if c.phone else 'N/A',
+            'created_at': c.created_at.strftime('%Y-%m-%d %H:%M') if c.created_at else 'N/A'
+        } for c in citizens]
+    }), 200
+
 @admin_bp.route('/api/v1/admin/pending-applications', methods=['GET'])
 def get_pending_applications_details():
     """API - Retrieve detailed citizen applications queue & dynamic real-time metrics for Admin Portal"""
@@ -66,7 +88,7 @@ def get_pending_applications_details():
             'rejected': rejected,
             'completed': completed
         },
-        'applications': pending_list, # default pending queue
+        'applications': pending_list,
         'pending_applications': pending_list,
         'approved_applications': approved_list,
         'rejected_applications': rejected_list

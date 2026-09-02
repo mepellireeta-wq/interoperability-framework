@@ -48,23 +48,11 @@
         </div>
         <div class="col-md-3">
             <div class="glass-card p-4 text-center h-100">
-                <i class="fa-solid fa-circle-xmark text-danger fs-1 mb-2"></i>
-                <h2 class="fw-bold mb-0 text-danger" id="metricRejected">0</h2>
-                <small class="text-muted fw-bold">Rejected Applications</small>
+                <i class="fa-solid fa-users text-info fs-1 mb-2"></i>
+                <h2 class="fw-bold mb-0 text-info" id="metricRegisteredCitizens">0</h2>
+                <small class="text-muted fw-bold">Registered Citizens in DB</small>
             </div>
         </div>
-    </div>
-
-    <!-- Completed Applications Overview Summary Badge -->
-    <div class="alert alert-info border-info d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
-        <div class="d-flex align-items-center">
-            <i class="fa-solid fa-clipboard-check fs-2 text-primary me-3"></i>
-            <div>
-                <strong class="d-block text-dark fs-5">Completed Applications Overview</strong>
-                <small class="text-muted">Total Closed Files (Approved + Rejected): <strong id="metricCompleted" class="text-dark">0</strong></small>
-            </div>
-        </div>
-        <span class="badge bg-primary px-3 py-2 rounded-pill fs-7"><i class="fa-solid fa-rotate me-1"></i> REAL-TIME DATABASE SYNC</span>
     </div>
 
     <!-- Application Queue Tabbed Section -->
@@ -86,13 +74,18 @@
                         <i class="fa-solid fa-circle-xmark me-1"></i> Rejected List (<span id="tabCountRejected">0</span>)
                     </button>
                 </li>
+                <li class="nav-item">
+                    <button class="nav-link fw-bold rounded-pill px-4 text-info" id="tabCitizens" onclick="switchQueueTab('citizens')">
+                        <i class="fa-solid fa-users me-1"></i> Registered Citizens DB (<span id="tabCountCitizens">0</span>)
+                    </button>
+                </li>
             </ul>
-            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill"><i class="fa-solid fa-bell me-1"></i> SLA Target: &lt; 48 Hours</span>
+            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill"><i class="fa-solid fa-bell me-1"></i> Real-time DB Sync</span>
         </div>
 
         <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead class="table-light">
+            <table class="table table-hover align-middle" id="adminTable">
+                <thead class="table-light" id="adminTableHeader">
                     <tr>
                         <th>Tracking ID</th>
                         <th>Applicant Full Name</th>
@@ -105,7 +98,7 @@
                 </thead>
                 <tbody id="adminQueueTableBody">
                     <tr>
-                        <td colspan="7" class="text-center py-4 text-muted">Loading application records from database...</td>
+                        <td colspan="7" class="text-center py-4 text-muted">Loading records from database...</td>
                     </tr>
                 </tbody>
             </table>
@@ -124,7 +117,7 @@
 
 {% block scripts %}
 <script>
-let globalAdminData = { pending: [], approved: [], rejected: [] };
+let globalAdminData = { pending: [], approved: [], rejected: [], citizens: [] };
 let currentTab = 'pending';
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -136,13 +129,20 @@ async function loadAdminDashboardData() {
         const res = await fetch('/api/v1/admin/pending-applications');
         const data = await res.json();
         
+        const citizensRes = await fetch('/api/v1/admin/registered-citizens');
+        const citizensData = await citizensRes.json();
+
         if (res.ok) {
-            // Update Metric Counters in Real-Time
+            // Update Metric Counters
             document.getElementById('metricTotal').innerText = data.metrics.total_submitted;
             document.getElementById('metricPending').innerText = data.metrics.pending_review;
             document.getElementById('metricApproved').innerText = data.metrics.approved;
-            document.getElementById('metricRejected').innerText = data.metrics.rejected;
-            document.getElementById('metricCompleted').innerText = data.metrics.completed;
+            
+            if (citizensRes.ok) {
+                document.getElementById('metricRegisteredCitizens').innerText = citizensData.count;
+                document.getElementById('tabCountCitizens').innerText = citizensData.count;
+                globalAdminData.citizens = citizensData.citizens || [];
+            }
 
             document.getElementById('tabCountPending').innerText = data.metrics.pending_review;
             document.getElementById('tabCountApproved').innerText = data.metrics.approved;
@@ -177,13 +177,60 @@ function switchQueueTab(tabName) {
     if (tabName === 'pending') document.getElementById('tabPending').classList.add('active');
     if (tabName === 'approved') document.getElementById('tabApproved').classList.add('active');
     if (tabName === 'rejected') document.getElementById('tabRejected').classList.add('active');
+    if (tabName === 'citizens') document.getElementById('tabCitizens').classList.add('active');
 
     renderTableData(tabName);
 }
 
 function renderTableData(tabName) {
     const tbody = document.getElementById('adminQueueTableBody');
+    const thead = document.getElementById('adminTableHeader');
     tbody.innerHTML = '';
+
+    if (tabName === 'citizens') {
+        thead.innerHTML = `
+            <tr>
+                <th>User ID</th>
+                <th>SSO Identifier</th>
+                <th>Citizen Full Name</th>
+                <th>Username</th>
+                <th>Email Address</th>
+                <th>Phone Number</th>
+                <th>Registered Date</th>
+            </tr>
+        `;
+        const list = globalAdminData.citizens || [];
+        if (list.length > 0) {
+            list.forEach(c => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="fw-bold text-primary font-monospace">#${c.id}</td>
+                        <td class="font-monospace small">${c.sso_id}</td>
+                        <td class="fw-bold text-dark">${c.full_name}</td>
+                        <td><code>${c.username}</code></td>
+                        <td>${c.email}</td>
+                        <td>${c.phone}</td>
+                        <td>${c.created_at}</td>
+                    </tr>
+                `;
+            });
+        } else {
+            tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">No registered citizens in database</td></tr>`;
+        }
+        return;
+    }
+
+    thead.innerHTML = `
+        <tr>
+            <th>Tracking ID</th>
+            <th>Applicant Full Name</th>
+            <th>Contact / Email</th>
+            <th>Selected Scheme</th>
+            <th>Stage Progress</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    `;
 
     const list = globalAdminData[tabName] || [];
 
