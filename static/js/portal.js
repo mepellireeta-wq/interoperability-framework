@@ -283,18 +283,18 @@ async function loadSchemeCatalog() {
                 const domainBadgeClass = scheme.domain === 'Education' ? 'bg-primary' : (scheme.domain === 'Health' ? 'bg-danger' : (scheme.domain === 'Banking' ? 'bg-success' : 'bg-warning text-dark'));
                 
                 container.innerHTML += `
-                    <div class="col-md-6 col-lg-4">
-                        <div class="glass-card h-100 p-4 d-flex flex-column justify-content-between">
-                            <div>
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="glass-card h-100 p-4 d-flex flex-column justify-content-between shadow-sm border">
+                            <div class="d-flex flex-column h-100">
                                 <div class="d-flex align-items-center mb-3">
-                                    <span class="badge ${domainBadgeClass} rounded-pill me-2">${scheme.domain || 'Multi-Sector'}</span>
-                                    <span class="badge bg-secondary rounded-pill">${scheme.integration_type}</span>
+                                    <span class="badge ${domainBadgeClass} rounded-pill me-2 px-3 py-1">${scheme.domain || 'Multi-Sector'}</span>
+                                    <span class="badge bg-secondary rounded-pill px-2 py-1 font-monospace">${scheme.integration_type}</span>
                                 </div>
-                                <h5 class="fw-bold text-dark">${scheme.title}</h5>
-                                <p class="text-muted small">${scheme.description}</p>
-                                <small class="text-primary font-monospace d-block mb-2"><i class="fa-solid fa-building me-1"></i>${scheme.department}</small>
+                                <h5 class="fw-bold text-dark mb-2 d-flex align-items-center" style="min-height: 56px;">${scheme.title}</h5>
+                                <p class="text-muted small mb-3" style="min-height: 64px;">${scheme.description}</p>
+                                <small class="text-primary font-monospace d-block mb-3" style="min-height: 24px;"><i class="fa-solid fa-building me-1"></i>${scheme.department}</small>
                             </div>
-                            <a href="/apply-page?service=${scheme.service_code}" class="btn btn-outline-primary rounded-pill fw-bold w-100 mt-3">
+                            <a href="/apply-page?service=${scheme.service_code}" class="btn btn-outline-primary rounded-pill fw-bold w-100 mt-auto">
                                 Apply Now <i class="fa-solid fa-arrow-right ms-1"></i>
                             </a>
                         </div>
