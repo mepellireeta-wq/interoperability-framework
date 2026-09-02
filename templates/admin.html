@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Admin Portal - Official Governance & Review Dashboard{% endblock %}
+{% block title %}Admin Portal - Real-Time Application Review & SLA Analytics{% endblock %}
 
 {% block content %}
 <div class="container py-5">
@@ -10,7 +10,7 @@
             <div>
                 <span class="badge bg-primary rounded-pill px-3 py-2 mb-2"><i class="fa-solid fa-shield-halved me-1"></i>Official Admin Workspace</span>
                 <h3 class="fw-bold text-dark mb-1">Welcome to Admin Portal</h3>
-                <p class="text-muted small mb-0">Admin Name: <strong>{{ username }} (ADMIN)</strong> | System Access: <span class="badge bg-success">AUTHORIZED</span></p>
+                <p class="text-muted small mb-0">Logged in as: <strong>{{ username }} (ADMIN)</strong> | System Access: <span class="badge bg-success">AUTHORIZED</span></p>
             </div>
             <div>
                 <a href="/developer-tech" class="btn btn-outline-primary rounded-pill px-4 fw-bold me-2">
@@ -23,42 +23,70 @@
         </div>
     </div>
 
-    <!-- Executive Metrics & Pending Counter Cards -->
-    <div class="row g-4 mb-4" id="adminMetricsRow">
+    <!-- Real-Time Metrics Row (Dynamic Counts) -->
+    <div class="row g-3 mb-4" id="adminMetricsRow">
         <div class="col-md-3">
-            <div class="glass-card p-4 text-center">
-                <i class="fa-solid fa-file-circle-check text-primary fs-1 mb-2"></i>
-                <h2 class="fw-bold mb-0 text-primary" id="metricTotal">--</h2>
+            <div class="glass-card p-4 text-center h-100">
+                <i class="fa-solid fa-folder text-primary fs-1 mb-2"></i>
+                <h2 class="fw-bold mb-0 text-primary" id="metricTotal">0</h2>
                 <small class="text-muted fw-bold">Total Applications Submitted</small>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="glass-card p-4 text-center">
+            <div class="glass-card p-4 text-center h-100">
                 <i class="fa-solid fa-clock-rotate-left text-warning fs-1 mb-2"></i>
-                <h2 class="fw-bold mb-0 text-warning" id="metricPending">--</h2>
-                <small class="text-muted fw-bold">Pending Officer Review Queue</small>
+                <h2 class="fw-bold mb-0 text-warning" id="metricPending">0</h2>
+                <small class="text-muted fw-bold">Pending Review Queue</small>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="glass-card p-4 text-center">
+            <div class="glass-card p-4 text-center h-100">
                 <i class="fa-solid fa-circle-check text-success fs-1 mb-2"></i>
-                <h2 class="fw-bold mb-0 text-success" id="metricApproved">--</h2>
+                <h2 class="fw-bold mb-0 text-success" id="metricApproved">0</h2>
                 <small class="text-muted fw-bold">Approved & Sanctioned</small>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="glass-card p-4 text-center">
-                <i class="fa-solid fa-hourglass-start text-info fs-1 mb-2"></i>
-                <h2 class="fw-bold mb-0 text-info" id="metricYetToFill">--</h2>
-                <small class="text-muted fw-bold">Yet to be Filled / Drafts</small>
+            <div class="glass-card p-4 text-center h-100">
+                <i class="fa-solid fa-circle-xmark text-danger fs-1 mb-2"></i>
+                <h2 class="fw-bold mb-0 text-danger" id="metricRejected">0</h2>
+                <small class="text-muted fw-bold">Rejected Applications</small>
             </div>
         </div>
     </div>
 
-    <!-- Citizen Submitted Pending Applications Table -->
+    <!-- Completed Applications Overview Summary Badge -->
+    <div class="alert alert-info border-info d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+        <div class="d-flex align-items-center">
+            <i class="fa-solid fa-clipboard-check fs-2 text-primary me-3"></i>
+            <div>
+                <strong class="d-block text-dark fs-5">Completed Applications Overview</strong>
+                <small class="text-muted">Total Closed Files (Approved + Rejected): <strong id="metricCompleted" class="text-dark">0</strong></small>
+            </div>
+        </div>
+        <span class="badge bg-primary px-3 py-2 rounded-pill fs-7"><i class="fa-solid fa-rotate me-1"></i> REAL-TIME DATABASE SYNC</span>
+    </div>
+
+    <!-- Application Queue Tabbed Section -->
     <div class="glass-card p-4 mb-5">
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-            <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-list-check text-primary me-2"></i>Citizen Submitted Applications - Pending Details Queue</h5>
+            <ul class="nav nav-pills gap-2" id="queueTabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active fw-bold rounded-pill px-4" id="tabPending" onclick="switchQueueTab('pending')">
+                        <i class="fa-solid fa-hourglass-half me-1"></i> Pending Queue (<span id="tabCountPending">0</span>)
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link fw-bold rounded-pill px-4 text-success" id="tabApproved" onclick="switchQueueTab('approved')">
+                        <i class="fa-solid fa-circle-check me-1"></i> Approved List (<span id="tabCountApproved">0</span>)
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link fw-bold rounded-pill px-4 text-danger" id="tabRejected" onclick="switchQueueTab('rejected')">
+                        <i class="fa-solid fa-circle-xmark me-1"></i> Rejected List (<span id="tabCountRejected">0</span>)
+                    </button>
+                </li>
+            </ul>
             <span class="badge bg-warning text-dark px-3 py-2 rounded-pill"><i class="fa-solid fa-bell me-1"></i> SLA Target: &lt; 48 Hours</span>
         </div>
 
@@ -68,23 +96,23 @@
                     <tr>
                         <th>Tracking ID</th>
                         <th>Applicant Full Name</th>
-                        <th>Contact / State</th>
+                        <th>Contact / Email</th>
                         <th>Selected Scheme</th>
                         <th>Stage Progress</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody id="adminPendingTableBody">
+                <tbody id="adminQueueTableBody">
                     <tr>
-                        <td colspan="7" class="text-center py-4 text-muted">Loading pending application records...</td>
+                        <td colspan="7" class="text-center py-4 text-muted">Loading application records from database...</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- Governance Audit Logs -->
+    <!-- Governance Audit Trail -->
     <div class="glass-card p-4">
         <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-history text-primary me-2"></i>System Governance Audit Trail</h5>
         <div id="adminAuditLogContainer" class="bg-dark text-success p-3 rounded font-monospace small overflow-auto" style="max-height: 250px;">
@@ -96,6 +124,9 @@
 
 {% block scripts %}
 <script>
+let globalAdminData = { pending: [], approved: [], rejected: [] };
+let currentTab = 'pending';
+
 document.addEventListener('DOMContentLoaded', function() {
     loadAdminDashboardData();
 });
@@ -106,40 +137,22 @@ async function loadAdminDashboardData() {
         const data = await res.json();
         
         if (res.ok) {
+            // Update Metric Counters in Real-Time
             document.getElementById('metricTotal').innerText = data.metrics.total_submitted;
             document.getElementById('metricPending').innerText = data.metrics.pending_review;
             document.getElementById('metricApproved').innerText = data.metrics.approved;
-            document.getElementById('metricYetToFill').innerText = data.metrics.yet_to_fill;
+            document.getElementById('metricRejected').innerText = data.metrics.rejected;
+            document.getElementById('metricCompleted').innerText = data.metrics.completed;
 
-            const tbody = document.getElementById('adminPendingTableBody');
-            tbody.innerHTML = '';
+            document.getElementById('tabCountPending').innerText = data.metrics.pending_review;
+            document.getElementById('tabCountApproved').innerText = data.metrics.approved;
+            document.getElementById('tabCountRejected').innerText = data.metrics.rejected;
 
-            if (data.applications.length > 0) {
-                data.applications.forEach(app => {
-                    const badgeClass = app.status === 'APPROVED' ? 'bg-success' : (app.status === 'REJECTED' ? 'bg-danger' : 'bg-warning text-dark');
-                    
-                    tbody.innerHTML += `
-                        <tr>
-                            <td class="fw-bold text-primary font-monospace">${app.tracking_id}</td>
-                            <td class="fw-bold">${app.applicant_name}</td>
-                            <td><small class="d-block">${app.applicant_email}</small><span class="badge bg-secondary fs-8">${app.state}</span></td>
-                            <td><small class="fw-semibold">${app.service_title}</small></td>
-                            <td>Stage ${app.current_stage} of ${app.total_stages}</td>
-                            <td><span class="badge ${badgeClass}">${app.status}</span></td>
-                            <td>
-                                <button class="btn btn-sm btn-success rounded-pill fw-bold px-3 me-1" onclick="advanceApp('${app.id}', 'APPROVE')">
-                                    Approve <i class="fa-solid fa-check"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger rounded-pill fw-bold px-2" onclick="advanceApp('${app.id}', 'REJECT')">
-                                    Reject
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                });
-            } else {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">No pending applications in queue</td></tr>`;
-            }
+            globalAdminData.pending = data.pending_applications || [];
+            globalAdminData.approved = data.approved_applications || [];
+            globalAdminData.rejected = data.rejected_applications || [];
+
+            renderTableData(currentTab);
 
             // Load audit logs
             const auditRes = await fetch('/api/v1/admin/audit-logs');
@@ -157,6 +170,58 @@ async function loadAdminDashboardData() {
     }
 }
 
+function switchQueueTab(tabName) {
+    currentTab = tabName;
+    document.querySelectorAll('#queueTabs .nav-link').forEach(el => el.classList.remove('active'));
+    
+    if (tabName === 'pending') document.getElementById('tabPending').classList.add('active');
+    if (tabName === 'approved') document.getElementById('tabApproved').classList.add('active');
+    if (tabName === 'rejected') document.getElementById('tabRejected').classList.add('active');
+
+    renderTableData(tabName);
+}
+
+function renderTableData(tabName) {
+    const tbody = document.getElementById('adminQueueTableBody');
+    tbody.innerHTML = '';
+
+    const list = globalAdminData[tabName] || [];
+
+    if (list.length > 0) {
+        list.forEach(app => {
+            const badgeClass = app.status === 'APPROVED' ? 'bg-success' : (app.status === 'REJECTED' ? 'bg-danger' : 'bg-warning text-dark');
+            
+            let actionButtons = '';
+            if (app.status !== 'APPROVED' && app.status !== 'REJECTED') {
+                actionButtons = `
+                    <button class="btn btn-sm btn-success rounded-pill fw-bold px-3 me-1" onclick="advanceApp('${app.id}', 'APPROVE')">
+                        Approve <i class="fa-solid fa-check"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger rounded-pill fw-bold px-2" onclick="advanceApp('${app.id}', 'REJECT')">
+                        Reject
+                    </button>
+                `;
+            } else {
+                actionButtons = `<span class="badge bg-secondary">CLOSED FILE</span>`;
+            }
+
+            tbody.innerHTML += `
+                <tr>
+                    <td class="fw-bold text-primary font-monospace">${app.tracking_id}</td>
+                    <td class="fw-bold">${app.applicant_name}</td>
+                    <td><small class="d-block">${app.applicant_email}</small></td>
+                    <td><small class="fw-semibold">${app.service_title}</small></td>
+                    <td>Stage ${app.current_stage} of ${app.total_stages}</td>
+                    <td><span class="badge ${badgeClass}">${app.status}</span></td>
+                    <td>${actionButtons}</td>
+                </tr>
+            `;
+        });
+    } else {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">No applications found in ${tabName} queue</td></tr>`;
+    }
+}
+
 async function advanceApp(appId, decision) {
     try {
         const res = await fetch('/api/v1/workflows/advance', {
@@ -165,7 +230,7 @@ async function advanceApp(appId, decision) {
             body: JSON.stringify({ application_id: appId, decision: decision, remarks: `Officer Decision: ${decision}` })
         });
         if (res.ok) {
-            alert(`Application ${decision} successfully!`);
+            alert(`Application ${decision} recorded successfully! Counts updated in real time.`);
             loadAdminDashboardData();
         } else {
             alert("Error updating application status");

@@ -11,6 +11,20 @@
         <p class="text-muted max-w-700 mx-auto">Detailed technical specifications for Quantum-Safe Cryptography, Blockchain Merkle Ledger, API Gateway Schemas, and System Telemetry.</p>
     </div>
 
+    <!-- What is the Data Contract Schema Explanation Box -->
+    <div class="alert alert-primary border-primary p-4 mb-5 rounded-4 shadow-sm">
+        <div class="d-flex align-items-start">
+            <i class="fa-solid fa-circle-info fs-2 me-3 text-primary mt-1"></i>
+            <div>
+                <h5 class="fw-bold text-dark mb-1">What is the E-GOV-STD-INTEROP-2026 Data Contract Schema?</h5>
+                <p class="mb-0 text-muted small">
+                    In India, different government departments (Skills, Revenue, Education, Health) use different database column names (e.g. <code>name</code>, <code>fname</code>, <code>applicant_name</code>).
+                    The <strong>E-GOV-STD-INTEROP-2026 Schema</strong> is a central API middleware specification that automatically standardizes raw inputs from any of the 28 States &amp; 8 UTs into a unified JSON format before transmitting them across state workflow engines safely.
+                </p>
+            </div>
+        </div>
+    </div>
+
     <!-- Technology Overview Grid -->
     <div class="row g-4 mb-5">
         <!-- Quantum Security Card -->
@@ -20,7 +34,7 @@
                     <i class="fa-solid fa-atom text-success fs-1 me-3"></i>
                     <div>
                         <h4 class="fw-bold mb-0 text-success">Quantum Cryptography Engine</h4>
-                        <small class="text-muted">BB84 QKD & Post-Quantum Lattice Cryptography</small>
+                        <small class="text-muted">BB84 QKD &amp; Post-Quantum Lattice Cryptography</small>
                     </div>
                 </div>
                 <p class="small text-muted mb-3">Simulates BB84 Quantum Key Distribution using 256-bit Qubit measurement states (|0⟩, |1⟩) and NIST-Kyber-1024 Post-Quantum Lattice Security to encrypt inter-departmental data contracts.</p>
@@ -56,19 +70,19 @@
 
     <!-- API Schemas & Data Contract Specifications -->
     <div class="glass-card p-4 mb-5">
-        <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-brackets-curly text-primary me-2"></i>E-GOV-STD-INTEROP-2026 Data Contract Schema</h5>
-        <p class="small text-muted mb-3">All raw inputs submitted across 28 States & 8 UTs are standardized into this JSON schema before routing across department workflow engines.</p>
+        <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-brackets-curly text-primary me-2"></i>E-GOV-STD-INTEROP-2026 Data Contract Schema Specification</h5>
+        <p class="small text-muted mb-3">Example API payload structure generated when a citizen submits an application:</p>
         <pre class="bg-dark text-success p-3 rounded font-monospace small mb-0"><code>{
   "schema_version": "E-GOV-STD-INTEROP-2026",
   "service_code": "UNIFIED_SKILL_TO_GRANT",
   "beneficiary": {
-    "full_name": "Rahul Ramesh Kumar",
-    "email": "rahul.kumar@example.com",
-    "phone": "9123456789",
-    "district": "Visakhapatnam",
-    "state": "Andhra Pradesh",
+    "full_name": "&lt;LOGGED_IN_CITIZEN_FULL_NAME&gt;",
+    "email": "&lt;LOGGED_IN_CITIZEN_EMAIL&gt;",
+    "phone": "&lt;LOGGED_IN_CITIZEN_PHONE&gt;",
+    "district": "&lt;CITIZEN_DISTRICT&gt;",
+    "state": "&lt;CITIZEN_STATE&gt;",
     "state_id_type": "NATIONAL_ID",
-    "state_id_hash": "a4f91c8812e99b01247d519bca8817ff8199201a0812b18991aa671991c019a8"
+    "state_id_hash": "&lt;SHA256_HASHED_NATIONAL_ID&gt;"
   },
   "security_metadata": {
     "quantum_signature": "Q-SIG-9912A88F",

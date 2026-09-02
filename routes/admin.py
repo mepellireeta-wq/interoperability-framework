@@ -18,7 +18,7 @@ def admin_portal_page():
 
 @admin_bp.route('/api/v1/admin/pending-applications', methods=['GET'])
 def get_pending_applications_details():
-    """API - Retrieve detailed citizen applications queue & pending metrics for Admin Portal"""
+    """API - Retrieve detailed citizen applications queue & dynamic real-time metrics for Admin Portal"""
     user_role = session.get('role')
     if not user_role or user_role not in ['ADMIN', 'OFFICER']:
         return jsonify({'error': 'Unauthorized admin access'}), 403
@@ -28,12 +28,16 @@ def get_pending_applications_details():
     total_submitted = len(all_apps)
     pending_review = sum(1 for a in all_apps if a.status in ['SUBMITTED', 'IN_WORKFLOW'])
     approved = sum(1 for a in all_apps if a.status == 'APPROVED')
-    yet_to_fill = 14 # Simulated active citizen draft forms in progress
+    rejected = sum(1 for a in all_apps if a.status == 'REJECTED')
+    completed = approved + rejected
 
-    app_list = []
+    pending_list = []
+    approved_list = []
+    rejected_list = []
+
     for a in all_apps:
         applicant = User.query.get(a.applicant_id)
-        app_list.append({
+        app_data = {
             'id': a.id,
             'tracking_id': a.tracking_id,
             'service_code': a.service_code,
@@ -45,16 +49,27 @@ def get_pending_applications_details():
             'applicant_name': applicant.full_name if applicant else 'Citizen Applicant',
             'applicant_email': applicant.email if applicant else 'n/a',
             'state': applicant.phone if (applicant and applicant.phone) else 'Andhra Pradesh'
-        })
+        }
+
+        if a.status in ['SUBMITTED', 'IN_WORKFLOW']:
+            pending_list.append(app_data)
+        elif a.status == 'APPROVED':
+            approved_list.append(app_data)
+        elif a.status == 'REJECTED':
+            rejected_list.append(app_data)
 
     return jsonify({
         'metrics': {
             'total_submitted': total_submitted,
             'pending_review': pending_review,
             'approved': approved,
-            'yet_to_fill': yet_to_fill
+            'rejected': rejected,
+            'completed': completed
         },
-        'applications': app_list
+        'applications': pending_list, # default pending queue
+        'pending_applications': pending_list,
+        'approved_applications': approved_list,
+        'rejected_applications': rejected_list
     }), 200
 
 @admin_bp.route('/api/v1/admin/stats', methods=['GET'])
@@ -64,6 +79,7 @@ def get_admin_stats():
     approved = Application.query.filter_by(status='APPROVED').count()
     in_workflow = Application.query.filter(Application.status.in_(['SUBMITTED', 'IN_WORKFLOW'])).count()
     rejected = Application.query.filter_by(status='REJECTED').count()
+    completed = approved + rejected
     
     sla_rate = 94.8 if total_apps > 0 else 100.0
     
@@ -72,6 +88,7 @@ def get_admin_stats():
         'approved_sanctioned': approved,
         'in_workflow_pending': in_workflow,
         'rejected': rejected,
+        'completed': completed,
         'sla_compliance_rate': f"{sla_rate}%",
         'average_processing_hours': '18.4 Hours'
     }), 200

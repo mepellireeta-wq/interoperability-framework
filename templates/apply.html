@@ -43,7 +43,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">District / City</label>
-                            <input type="text" id="appDistrict" class="form-control" value="Visakhapatnam" placeholder="Enter your district name" required>
+                            <input type="text" id="appDistrict" class="form-control" placeholder="Enter your district name" required>
                             <small class="text-muted fs-7">e.g. Visakhapatnam, Hyderabad, Pune, Bangalore, Vijayawada</small>
                         </div>
                     </div>
@@ -53,22 +53,22 @@
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Full Name (As per Govt ID)</label>
-                            <input type="text" id="appFullName" class="form-control" value="Rahul Ramesh Kumar" placeholder="Enter full name" required>
+                            <input type="text" id="appFullName" class="form-control" value="{{ session.get('full_name', '') }}" placeholder="Enter full name" required>
                             <small class="text-muted fs-7">Enter name as printed on official ID</small>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Email Address</label>
-                            <input type="email" id="appEmail" class="form-control" value="rahul.kumar@example.com" placeholder="name@example.com" required>
+                            <input type="email" id="appEmail" class="form-control" value="{{ session.get('email', '') }}" placeholder="name@example.com" required>
                             <small class="text-muted fs-7">You will receive status updates here</small>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">10-Digit Mobile Number</label>
-                            <input type="text" id="appPhone" class="form-control" value="9123456789" placeholder="10-digit mobile number" required>
+                            <input type="text" id="appPhone" class="form-control" value="{{ session.get('phone', '') }}" placeholder="10-digit mobile number" required>
                             <small class="text-muted fs-7">SMS alerts will be sent to this number</small>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">National / State ID Number</label>
-                            <input type="text" id="appStateId" class="form-control" value="NAT-ID-998877" placeholder="Aadhaar / PAN / Voter ID" required>
+                            <input type="text" id="appStateId" class="form-control" placeholder="Aadhaar / PAN / Voter ID" required>
                             <small class="text-muted fs-7">Used securely to verify you haven't claimed duplicate grants</small>
                         </div>
                     </div>

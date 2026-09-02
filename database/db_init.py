@@ -45,20 +45,20 @@ def init_db():
                 email='citizen@example.com',
                 password_hash=generate_password_hash('Citizen@123'),
                 role='CITIZEN',
-                full_name='Rahul Kumar',
+                full_name='Citizen Demo User',
                 phone='9123456789'
             )
             
             db.session.add_all([admin_user, officer_user, citizen_user])
             db.session.commit()
             
-            # Create Beneficiary Master Data (MDM) profile for Rahul
+            # Create Beneficiary Master Data (MDM) profile
             state_hash = hashlib.sha256('NAT-ID-9988'.encode()).hexdigest()
             mdm_profile = BeneficiaryMDM(
                 user_id=citizen_user.id,
                 state_id_hash=state_hash,
                 master_profile_json=json.dumps({
-                    'full_name': 'Rahul Kumar',
+                    'full_name': 'Citizen Demo User',
                     'dob': '1998-05-14',
                     'district': 'Central Zone',
                     'state': 'National Jurisdiction',
