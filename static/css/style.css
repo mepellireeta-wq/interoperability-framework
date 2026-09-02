@@ -21,6 +21,25 @@ body {
     background: var(--bg-sky);
     color: var(--text-dark);
     min-height: 100vh;
+    position: relative;
+}
+
+/* Official State Emblem of India Background Watermark Overlay */
+body::before {
+    content: '';
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90vw;
+    height: 90vh;
+    background-image: url('../images/emblem_bg.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+    opacity: 0.09;
+    pointer-events: none;
+    z-index: -1;
 }
 
 .navbar-gov {
@@ -98,11 +117,12 @@ body {
 }
 
 .glass-card {
-    background: #FFFFFF;
+    background: rgba(255, 255, 255, 0.95);
     border: 1px solid var(--glass-border);
     border-radius: 16px;
     box-shadow: var(--card-shadow);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
+    backdrop-filter: blur(8px);
 }
 
 .glass-card:hover {
@@ -110,7 +130,7 @@ body {
     box-shadow: 0 14px 35px 0 rgba(2, 136, 209, 0.14);
 }
 
-/* Simple Sky Blue Hero Section (No Canvas Animations) */
+/* Simple Sky Blue Hero Section */
 .hero-section {
     background: linear-gradient(135deg, #0288D1 0%, #01579B 100%);
     color: white;
