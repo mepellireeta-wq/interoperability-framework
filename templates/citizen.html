@@ -18,7 +18,7 @@
                     <p class="text-muted small mb-0">
                         <i class="fa-solid fa-envelope me-1 text-primary"></i><code>{{ user.email }}</code> | 
                         <i class="fa-solid fa-phone me-1 text-primary"></i><code>{{ user.phone if user.phone else '9123456789' }}</code> | 
-                        <i class="fa-solid fa-map-location-dot me-1 text-primary"></i><strong>State of Residence:</strong> {{ session.get('state', 'Andhra Pradesh') }}
+                        <i class="fa-solid fa-map-location-dot me-1 text-primary"></i><strong>State:</strong> {{ session.get('state', 'Andhra Pradesh') }}
                     </p>
                 </div>
             </div>
@@ -33,7 +33,59 @@
         </div>
     </div>
 
-    <!-- 2. My Application Tracking Progress Timeline -->
+    <!-- 2. Personalized Scheme Recommendation Engine according to Qualification -->
+    <div class="glass-card p-4 mb-5 bg-gradient-sky border-start border-4 border-success">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <div>
+                <span class="badge bg-success rounded-pill px-3 py-1 mb-1"><i class="fa-solid fa-wand-magic-sparkles me-1"></i>PERSONALIZED RECOMMENDATIONS</span>
+                <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-graduation-cap text-success me-2"></i>Recommended Schemes For Your Profile</h5>
+            </div>
+            <small class="text-muted">Matched based on your state residency &amp; education profile</small>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="p-3 border rounded-3 bg-white h-100 shadow-sm d-flex flex-column justify-content-between">
+                    <div>
+                        <span class="badge bg-primary mb-2">Education &amp; Merit</span>
+                        <h6 class="fw-bold text-dark">Higher Education Merit Scholarship</h6>
+                        <p class="text-muted small mb-2">100% Tuition Fee Reimbursement for Graduates &amp; College Students.</p>
+                    </div>
+                    <a href="/apply-page?service=EDU_SCHOLARSHIP_GRANT" class="btn btn-sm btn-outline-primary rounded-pill fw-bold mt-2">
+                        Apply Recommended Scheme <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="p-3 border rounded-3 bg-white h-100 shadow-sm d-flex flex-column justify-content-between">
+                    <div>
+                        <span class="badge bg-success mb-2">Business &amp; MSME</span>
+                        <h6 class="fw-bold text-dark">Startup Technology Seed Grant</h6>
+                        <p class="text-muted small mb-2">Early-stage seed capital for innovative projects &amp; entrepreneurs.</p>
+                    </div>
+                    <a href="/apply-page?service=INNOVATION_STARTUP_GRANT" class="btn btn-sm btn-outline-success rounded-pill fw-bold mt-2">
+                        Apply Recommended Scheme <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="p-3 border rounded-3 bg-white h-100 shadow-sm d-flex flex-column justify-content-between">
+                    <div>
+                        <span class="badge bg-info text-dark mb-2">Infrastructure</span>
+                        <h6 class="fw-bold text-dark">PM Surya Ghar Free Rooftop Solar</h6>
+                        <p class="text-muted small mb-2">Up to ₹78,000 subsidy for residential rooftop solar installation.</p>
+                    </div>
+                    <a href="/apply-page?service=INFRA_SOLAR_ROOFTOP_SUBSIDY" class="btn btn-sm btn-outline-info text-dark rounded-pill fw-bold mt-2">
+                        Apply Recommended Scheme <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. My Application Tracking Progress Timeline -->
     <div class="glass-card p-4 mb-5">
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
             <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-crosshairs text-primary me-2"></i>My Application Tracking Progress</h5>
@@ -60,7 +112,7 @@
                         <td class="fw-semibold">{{ app.service_title }}</td>
                         <td>
                             {% if app.status == 'APPROVED' %}
-                            <span class="badge bg-success px-3 py-2 rounded-pill"><i class="fa-solid fa-circle-check me-1"></i> SANCTIONED & APPROVED</span>
+                            <span class="badge bg-success px-3 py-2 rounded-pill"><i class="fa-solid fa-circle-check me-1"></i> SANCTIONED &amp; APPROVED</span>
                             {% elif app.status == 'REJECTED' %}
                             <span class="badge bg-danger px-3 py-2 rounded-pill"><i class="fa-solid fa-circle-xmark me-1"></i> REJECTED</span>
                             {% else %}
@@ -88,7 +140,7 @@
         {% endif %}
     </div>
 
-    <!-- 3. Citizen Digital Document Wallet (My Documents) -->
+    <!-- 4. Citizen Digital Document Wallet (My Documents) -->
     <div class="glass-card p-4 mb-5">
         <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-wallet text-success me-2"></i>My Digital Document Wallet</h5>
         <p class="text-muted small mb-4">Your verified government documents and issued certificates stored safely in your personal digital locker.</p>
@@ -130,43 +182,6 @@
                         </div>
                     </div>
                     <span class="badge bg-success"><i class="fa-solid fa-check"></i></span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 4. Apply for State & Central Schemes -->
-    <div class="glass-card p-4">
-        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-            <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-layer-group text-primary me-2"></i>Schemes Available for Your State</h5>
-            <a href="/schemes" class="btn btn-sm btn-outline-primary rounded-pill fw-bold">View Full Catalog</a>
-        </div>
-
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="p-3 border rounded-3 h-100 bg-white shadow-sm">
-                    <span class="badge bg-primary mb-2">Education</span>
-                    <h6 class="fw-bold text-dark">Higher Education & Merit Scholarship</h6>
-                    <p class="text-muted small mb-3">Tuition fee reimbursement and monthly stipend for eligible college students.</p>
-                    <a href="/apply-page?service=EDU_SCHOLARSHIP_GRANT" class="btn btn-sm btn-primary rounded-pill fw-bold w-100">Apply Now</a>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="p-3 border rounded-3 h-100 bg-white shadow-sm">
-                    <span class="badge bg-danger mb-2">Health</span>
-                    <h6 class="fw-bold text-dark">Ayushman Universal Health Coverage</h6>
-                    <p class="text-muted small mb-3">Cashless health insurance coverage up to ₹5 Lakhs per family per year.</p>
-                    <a href="/apply-page?service=HEALTH_AYUSHMAN_CARD" class="btn btn-sm btn-primary rounded-pill fw-bold w-100">Apply Now</a>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="p-3 border rounded-3 h-100 bg-white shadow-sm">
-                    <span class="badge bg-success mb-2">Banking</span>
-                    <h6 class="fw-bold text-dark">MUDRA Micro-Business Seed Loan</h6>
-                    <p class="text-muted small mb-3">Collateral-free business development loans for self-employed entrepreneurs.</p>
-                    <a href="/apply-page?service=BANKING_MUDRA_LOAN" class="btn btn-sm btn-primary rounded-pill fw-bold w-100">Apply Now</a>
                 </div>
             </div>
         </div>

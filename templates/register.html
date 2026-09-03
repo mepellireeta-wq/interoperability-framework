@@ -5,12 +5,12 @@
 {% block content %}
 <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-md-7 col-lg-6">
+        <div class="col-md-8 col-lg-7">
             <div class="glass-card p-4 p-md-5">
                 <div class="text-center mb-4">
                     <span class="badge bg-success rounded-pill px-3 py-2 mb-2">New Citizen Registration</span>
                     <h3 class="fw-bold text-dark"><i class="fa-solid fa-user-plus text-primary me-2"></i>Create Citizen Account</h3>
-                    <p class="text-muted small">Register your Single Sign-On (SSO) Master Profile to access all state and central government portals.</p>
+                    <p class="text-muted small">Register your Single Sign-On (SSO) Master Profile to access all 28 state and central government portals.</p>
                 </div>
 
                 <form id="pageRegisterForm">
@@ -19,40 +19,97 @@
                             <label class="form-label fw-bold">Full Name (As per Govt ID)</label>
                             <input type="text" id="regFullName" class="form-control" placeholder="Enter full name" required>
                         </div>
+
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Choose Username</label>
                             <input type="text" id="regUsername" class="form-control" placeholder="e.g. rahul2026" required>
                         </div>
+
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Email Address</label>
                             <input type="email" id="regEmail" class="form-control" placeholder="name@example.com" required>
                         </div>
+
                         <div class="col-md-6">
                             <label class="form-label fw-bold">10-Digit Mobile Phone</label>
-                            <input type="text" id="regPhone" class="form-control" placeholder="10-digit mobile number" required>
+                            <input type="text" id="regPhone" class="form-control" placeholder="10-digit mobile number" pattern="[0-9]{10}" title="Must be a 10-digit mobile number" required>
                         </div>
+
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">State of Residence</label>
-                            <select id="regState" class="form-select fw-bold">
+                            <label class="form-label fw-bold">National Citizen ID (Aadhaar / PAN)</label>
+                            <input type="text" id="regCitizenId" class="form-control" placeholder="12-Digit Aadhaar or 10-Char PAN" required>
+                            <small class="text-muted fs-8">e.g. 998877665544 (Aadhaar) or ABCDE1234F (PAN)</small>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">State / UT of Residence</label>
+                            <select id="regState" class="form-select fw-bold" required>
+                                <option value="" disabled selected>-- Select State / UT --</option>
                                 <option value="Andhra Pradesh">Andhra Pradesh</option>
-                                <option value="Telangana">Telangana</option>
-                                <option value="Maharashtra" selected>Maharashtra</option>
-                                <option value="Karnataka">Karnataka</option>
-                                <option value="Tamil Nadu">Tamil Nadu</option>
-                                <option value="Uttar Pradesh">Uttar Pradesh</option>
-                                <option value="Delhi (NCT)">Delhi (NCT)</option>
+                                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                <option value="Assam">Assam</option>
+                                <option value="Bihar">Bihar</option>
+                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                <option value="Goa">Goa</option>
                                 <option value="Gujarat">Gujarat</option>
+                                <option value="Haryana">Haryana</option>
+                                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                <option value="Jharkhand">Jharkhand</option>
+                                <option value="Karnataka">Karnataka</option>
+                                <option value="Kerala">Kerala</option>
+                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                <option value="Maharashtra">Maharashtra</option>
+                                <option value="Manipur">Manipur</option>
+                                <option value="Meghalaya">Meghalaya</option>
+                                <option value="Mizoram">Mizoram</option>
+                                <option value="Nagaland">Nagaland</option>
+                                <option value="Odisha">Odisha</option>
+                                <option value="Punjab">Punjab</option>
+                                <option value="Rajasthan">Rajasthan</option>
+                                <option value="Sikkim">Sikkim</option>
+                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                <option value="Telangana">Telangana</option>
+                                <option value="Tripura">Tripura</option>
+                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                <option value="Uttarakhand">Uttarakhand</option>
+                                <option value="West Bengal">West Bengal</option>
+                                <option value="Andaman & Nicobar">Andaman &amp; Nicobar</option>
+                                <option value="Chandigarh">Chandigarh</option>
+                                <option value="Dadra & Nagar Haveli">Dadra &amp; Nagar Haveli</option>
+                                <option value="Daman & Diu">Daman &amp; Diu</option>
+                                <option value="Delhi (NCT)">Delhi (NCT)</option>
+                                <option value="Jammu & Kashmir">Jammu &amp; Kashmir</option>
+                                <option value="Ladakh">Ladakh</option>
+                                <option value="Lakshadweep">Lakshadweep</option>
+                                <option value="Puducherry">Puducherry</option>
                             </select>
                         </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Highest Educational Qualification / Category</label>
+                            <select id="regQualification" class="form-select fw-bold" required>
+                                <option value="Graduate / B.Tech" selected>Graduate / B.Tech / Bachelor Degree</option>
+                                <option value="10th Pass">10th Class SSC Pass</option>
+                                <option value="12th / Intermediate">12th / Intermediate HSC Pass</option>
+                                <option value="Diploma / Vocational">Diploma / ITI / Vocational Certification</option>
+                                <option value="Post Graduate / Master">Post Graduate / Master / Doctorate</option>
+                                <option value="Farmer / Agriculture">Farmer / Agricultural Landholder</option>
+                                <option value="Self-Employed / MSME">Self-Employed / Small Business / MSME</option>
+                            </select>
+                        </div>
+
                         <div class="col-md-12">
                             <label class="form-label fw-bold">Password</label>
-                            <input type="password" id="regPassword" class="form-control" placeholder="Create strong password" required>
+                            <input type="password" id="regPassword" class="form-control" placeholder="Min 8 chars, 1 uppercase, 1 digit, 1 special char" required>
+                            <div id="passwordHelp" class="form-text fs-8 text-muted">
+                                Password must be at least 8 characters with at least 1 uppercase letter, 1 number, and 1 special character (@#$%^&*).
+                            </div>
                         </div>
                     </div>
 
                     <div class="d-grid mt-4">
                         <button type="submit" class="btn btn-success btn-lg rounded-pill fw-bold shadow">
-                            <i class="fa-solid fa-check-circle me-2"></i> Complete Sign Up & Create Account
+                            <i class="fa-solid fa-check-circle me-2"></i> Complete Sign Up &amp; Create Account
                         </button>
                     </div>
                 </form>
@@ -77,13 +134,33 @@ document.addEventListener('DOMContentLoaded', function() {
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            const citizenId = document.getElementById('regCitizenId').value.trim();
+            const password = document.getElementById('regPassword').value;
+            
+            // Validate Citizen ID (12-digit Aadhaar or 10-char PAN)
+            const isAadhaar = /^\d{12}$/.test(citizenId);
+            const isPAN = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/i.test(citizenId);
+            if (!isAadhaar && !isPAN && citizenId.length < 8) {
+                alert("Validation Error: Citizen ID must be a valid 12-digit Aadhaar Number or 10-character PAN Card (e.g. ABCDE1234F).");
+                return;
+            }
+
+            // Validate Password Strength
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            if (!passwordRegex.test(password)) {
+                alert("Validation Error: Password must be at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character (@$!%*?&).");
+                return;
+            }
+
             const payload = {
                 full_name: document.getElementById('regFullName').value,
                 username: document.getElementById('regUsername').value,
                 email: document.getElementById('regEmail').value,
                 phone: document.getElementById('regPhone').value,
                 state: document.getElementById('regState').value,
-                password: document.getElementById('regPassword').value,
+                qualification: document.getElementById('regQualification').value,
+                citizen_id: citizenId,
+                password: password,
                 role: 'CITIZEN'
             };
             
@@ -96,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const data = await res.json();
                 
                 if (res.ok) {
-                    alert("Account Created Successfully! Please Sign In.");
+                    alert("Account Created Successfully! Please Sign In with your username and password.");
                     window.location.href = '/login-page';
                 } else {
                     alert(`Registration Failed: ${data.error}`);

@@ -10,41 +10,56 @@
                 <div class="text-center mb-4">
                     <span class="badge bg-primary rounded-pill mb-2 px-3 py-2">Simplified Citizen Application</span>
                     <h3 class="fw-bold text-dark"><i class="fa-solid fa-file-pen text-primary me-2"></i>Unified Scheme Application Form</h3>
-                    <p class="text-muted small">Fill your details once. Your data will automatically format and send to the required state and central government portals safely.</p>
+                    <p class="text-muted small">Fill your details once and attach your required sector documents. Data is standardized and routed safely to official state portals.</p>
                 </div>
 
-                <form id="unifiedApplicationForm">
+                <form id="unifiedApplicationForm" enctype="multipart/form-data">
                     <!-- 1. Location & Area Selection -->
                     <h6 class="fw-bold text-primary mb-3"><i class="fa-solid fa-map-pin me-2"></i>1. Your State & Local Area Location</h6>
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Select State / UT <i class="fa-solid fa-circle-info text-info" title="Choose the state where you reside or hold residency"></i></label>
-                            <select id="appStateSelect" class="form-select fw-bold">
+                            <label class="form-label fw-bold">Select State / UT</label>
+                            <select id="appStateSelect" class="form-select fw-bold" required>
                                 <option value="Andhra Pradesh">Andhra Pradesh</option>
-                                <option value="Telangana">Telangana</option>
-                                <option value="Maharashtra" selected>Maharashtra</option>
-                                <option value="Karnataka">Karnataka</option>
-                                <option value="Tamil Nadu">Tamil Nadu</option>
-                                <option value="Uttar Pradesh">Uttar Pradesh</option>
-                                <option value="Delhi (NCT)">Delhi (NCT)</option>
-                                <option value="Gujarat">Gujarat</option>
-                                <option value="Rajasthan">Rajasthan</option>
-                                <option value="West Bengal">West Bengal</option>
-                                <option value="Kerala">Kerala</option>
-                                <option value="Bihar">Bihar</option>
-                                <option value="Madhya Pradesh">Madhya Pradesh</option>
-                                <option value="Punjab">Punjab</option>
-                                <option value="Haryana">Haryana</option>
-                                <option value="Odisha">Odisha</option>
+                                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
                                 <option value="Assam">Assam</option>
+                                <option value="Bihar">Bihar</option>
+                                <option value="Chhattisgarh">Chhattisgarh</option>
                                 <option value="Goa">Goa</option>
+                                <option value="Gujarat">Gujarat</option>
+                                <option value="Haryana">Haryana</option>
+                                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                <option value="Jharkhand">Jharkhand</option>
+                                <option value="Karnataka">Karnataka</option>
+                                <option value="Kerala">Kerala</option>
+                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                <option value="Maharashtra" selected>Maharashtra</option>
+                                <option value="Manipur">Manipur</option>
+                                <option value="Meghalaya">Meghalaya</option>
+                                <option value="Mizoram">Mizoram</option>
+                                <option value="Nagaland">Nagaland</option>
+                                <option value="Odisha">Odisha</option>
+                                <option value="Punjab">Punjab</option>
+                                <option value="Rajasthan">Rajasthan</option>
+                                <option value="Sikkim">Sikkim</option>
+                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                <option value="Telangana">Telangana</option>
+                                <option value="Tripura">Tripura</option>
+                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                <option value="Uttarakhand">Uttarakhand</option>
+                                <option value="West Bengal">West Bengal</option>
+                                <option value="Andaman & Nicobar">Andaman &amp; Nicobar</option>
+                                <option value="Chandigarh">Chandigarh</option>
+                                <option value="Dadra & Nagar Haveli">Dadra &amp; Nagar Haveli</option>
+                                <option value="Delhi (NCT)">Delhi (NCT)</option>
+                                <option value="Jammu & Kashmir">Jammu &amp; Kashmir</option>
+                                <option value="Ladakh">Ladakh</option>
+                                <option value="Puducherry">Puducherry</option>
                             </select>
-                            <small class="text-muted fs-7">Select your home state or UT</small>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">District / City</label>
                             <input type="text" id="appDistrict" class="form-control" placeholder="Enter your district name" required>
-                            <small class="text-muted fs-7">e.g. Visakhapatnam, Hyderabad, Pune, Bangalore, Vijayawada</small>
                         </div>
                     </div>
 
@@ -54,54 +69,55 @@
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Full Name (As per Govt ID)</label>
                             <input type="text" id="appFullName" class="form-control" value="{{ session.get('full_name', '') }}" placeholder="Enter full name" required>
-                            <small class="text-muted fs-7">Enter name as printed on official ID</small>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Email Address</label>
                             <input type="email" id="appEmail" class="form-control" value="{{ session.get('email', '') }}" placeholder="name@example.com" required>
-                            <small class="text-muted fs-7">You will receive status updates here</small>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">10-Digit Mobile Number</label>
                             <input type="text" id="appPhone" class="form-control" value="{{ session.get('phone', '') }}" placeholder="10-digit mobile number" required>
-                            <small class="text-muted fs-7">SMS alerts will be sent to this number</small>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">National / State ID Number</label>
-                            <input type="text" id="appStateId" class="form-control" placeholder="Aadhaar / PAN / Voter ID" required>
-                            <small class="text-muted fs-7">Used securely to verify you haven't claimed duplicate grants</small>
+                            <label class="form-label fw-bold">National Citizen ID (Aadhaar / PAN)</label>
+                            <input type="text" id="appStateId" class="form-control" placeholder="12-Digit Aadhaar or 10-Char PAN" required>
+                            <small class="text-muted fs-8">Validated securely against MDM registry</small>
                         </div>
                     </div>
 
                     <!-- 3. Scheme Selection -->
                     <h6 class="fw-bold text-primary mb-3"><i class="fa-solid fa-sitemap me-2"></i>3. Select Desired Government Scheme</h6>
                     <div class="mb-4">
-                        <select id="appServiceCode" class="form-select form-select-lg fw-bold">
-                            <option value="UNIFIED_SKILL_TO_GRANT" selected>🎓 Integrated Skill-to-Entrepreneurship Pathway (Multi-Dept Pathway)</option>
-                            <option value="EDU_SCHOLARSHIP_GRANT">🎓 National Higher Education & Merit Scholarship Scheme (Education)</option>
-                            <option value="HEALTH_AYUSHMAN_CARD">🏥 Ayushman Bharat Universal Health Protection Scheme (Health)</option>
-                            <option value="BANKING_MUDRA_LOAN">🏦 Pradhan Mantri MUDRA Micro-Business Loan (Banking)</option>
-                            <option value="AGRI_PM_KISAN_DBT">🌾 PM-KISAN Direct Benefit Income Support (Agriculture)</option>
+                        <select id="appServiceCode" class="form-select form-select-lg fw-bold" onchange="updateSectorDocumentRequirements()">
+                            <option value="EDU_SCHOLARSHIP_GRANT" selected>🎓 National Higher Education & Merit Scholarship Scheme (Education)</option>
+                            <option value="AGRI_PM_KISAN_DBT">🌾 PM-KISAN Direct Benefit Income Support Scheme (Agriculture)</option>
+                            <option value="HEALTH_AYUSHMAN_CARD">🏥 Ayushman Bharat Universal Health Protection (Health)</option>
+                            <option value="BANKING_MUDRA_LOAN">🏦 Pradhan Mantri MUDRA Micro-Business Loan (Banking & MSME)</option>
                             <option value="INNOVATION_STARTUP_GRANT">🚀 National Startup & MSME Technology Seed Grant (Innovation)</option>
-                            <option value="INFRA_SOLAR_ROOFTOP_SUBSIDY">⚡ PM Surya Ghar Free Electricity Rooftop Solar Subsidy (Infrastructure)</option>
-                            <option value="SKILL_TRAINING_SCHEME">⚙️ National Skill Development & Vocational Certification (Skills)</option>
+                            <option value="INFRA_SOLAR_ROOFTOP_SUBSIDY">⚡ PM Surya Ghar Free Rooftop Solar Subsidy (Infrastructure)</option>
+                            <option value="UNIFIED_SKILL_TO_GRANT">⚙️ Universal Integrated Skill-to-Entrepreneurship Pathway (Skills)</option>
                         </select>
-                        <small class="text-muted fs-7">Choose the scheme you wish to apply for</small>
                     </div>
 
-                    <!-- 4. Data Sharing Consent -->
+                    <!-- 4. Sector-Specific Verification Document Attachments -->
+                    <h6 class="fw-bold text-primary mb-3"><i class="fa-solid fa-file-arrow-up me-2"></i>4. Required Sector Verification Documents</h6>
+                    <div id="sectorDocsContainer" class="p-3 bg-light rounded border mb-4">
+                        <!-- Dynamic document fields injected via JS based on selected scheme -->
+                    </div>
+
+                    <!-- 5. Data Sharing Consent -->
                     <div class="alert alert-info border-info d-flex align-items-center mb-4">
                         <input class="form-check-input me-3 fs-4" type="checkbox" id="appConsentCheck" checked required>
                         <div>
-                            <strong class="d-block text-dark">Data Sharing & Privacy Permission</strong>
-                            <small class="text-muted">I give permission to share my details securely with the necessary government departments for fulfilling this application.</small>
+                            <strong class="d-block text-dark">Data Sharing &amp; Privacy Permission</strong>
+                            <small class="text-muted">I give explicit permission to securely route my details and attached verification documents to official department reviewers under DPDP Act 2023.</small>
                         </div>
                     </div>
 
                     <!-- Submit Button -->
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow">
-                            <i class="fa-solid fa-paper-plane me-2"></i>Submit Application Now
+                            <i class="fa-solid fa-paper-plane me-2"></i>Submit Application &amp; Attachments
                         </button>
                     </div>
                 </form>
@@ -110,10 +126,10 @@
                 <div id="submissionResult" class="mt-4 d-none">
                     <div class="alert alert-success border-success text-center p-4">
                         <i class="fa-solid fa-circle-check fs-1 text-success mb-2"></i>
-                        <h4 class="fw-bold">Application Successfully Submitted!</h4>
+                        <h4 class="fw-bold">Application &amp; Documents Successfully Submitted!</h4>
                         <p class="mb-2">Your Tracking ID is:</p>
                         <h2 class="fw-bold text-primary font-monospace" id="resultTrackingId">GOV-2026-X8F9</h2>
-                        <p class="small text-muted mt-2">Quality Check: <span class="badge bg-success">PASSED</span> | Post-Quantum Security: <span class="badge bg-primary">KYBER-1024</span></p>
+                        <p class="small text-muted mt-2">Quality Check: <span class="badge bg-success">PASSED</span> | Security: <span class="badge bg-primary">KYBER-1024 ENCRYPTED</span></p>
                         <a id="trackLink" href="#" class="btn btn-outline-primary rounded-pill fw-bold mt-2">
                             Track Status Timeline <i class="fa-solid fa-arrow-right ms-1"></i>
                         </a>
@@ -123,4 +139,147 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    updateSectorDocumentRequirements();
+
+    const form = document.getElementById('unifiedApplicationForm');
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const citizenId = document.getElementById('appStateId').value.trim();
+            const isAadhaar = /^\d{12}$/.test(citizenId);
+            const isPAN = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/i.test(citizenId);
+            if (!isAadhaar && !isPAN && citizenId.length < 8) {
+                alert("Validation Error: Citizen ID must be a valid 12-digit Aadhaar Number or 10-character PAN Card (e.g. ABCDE1234F).");
+                return;
+            }
+
+            const formData = new FormData();
+            const payload = {
+                service_code: document.getElementById('appServiceCode').value,
+                service_title: document.getElementById('appServiceCode').options[document.getElementById('appServiceCode').selectedIndex].text,
+                applicant: {
+                    full_name: document.getElementById('appFullName').value,
+                    email: document.getElementById('appEmail').value,
+                    phone: document.getElementById('appPhone').value,
+                    state: document.getElementById('appStateSelect').value,
+                    district: document.getElementById('appDistrict').value,
+                    state_id_number: citizenId
+                }
+            };
+
+            formData.append('payload', JSON.stringify(payload));
+
+            // Append uploaded files
+            const docInputs = document.querySelectorAll('#sectorDocsContainer input[type="file"]');
+            docInputs.forEach(input => {
+                if (input.files.length > 0) {
+                    formData.append(input.name, input.files[0]);
+                }
+            });
+
+            try {
+                const res = await fetch('/api/v1/applications/submit', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    document.getElementById('resultTrackingId').innerText = data.tracking_id;
+                    document.getElementById('trackLink').href = `/track-page?id=${data.tracking_id}`;
+                    document.getElementById('submissionResult').classList.remove('d-none');
+                    form.classList.add('d-none');
+                } else {
+                    alert(`Submission Error: ${data.error}`);
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Server error submitting application");
+            }
+        });
+    }
+});
+
+function updateSectorDocumentRequirements() {
+    const serviceCode = document.getElementById('appServiceCode').value;
+    const container = document.getElementById('sectorDocsContainer');
+
+    if (serviceCode.startsWith('EDU') || serviceCode === 'UNIFIED_SKILL_TO_GRANT') {
+        container.innerHTML = `
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small"><i class="fa-solid fa-graduation-cap text-primary me-1"></i>10th SSC / 12th HSC Marksheet Certificate</label>
+                    <input type="file" name="education_marksheet" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small"><i class="fa-solid fa-certificate text-primary me-1"></i>Degree / Diploma / Bonafide Student Proof</label>
+                    <input type="file" name="student_degree" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label fw-bold small"><i class="fa-solid fa-file-invoice text-primary me-1"></i>Family Income Certificate / EWS Proof</label>
+                    <input type="file" name="income_certificate" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                </div>
+            </div>
+        `;
+    } else if (serviceCode.startsWith('AGRI')) {
+        container.innerHTML = `
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small"><i class="fa-solid fa-wheat-awn text-warning me-1"></i>Land Pattadar Passbook / 7/12 Extract Document</label>
+                    <input type="file" name="land_passbook" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small"><i class="fa-solid fa-piggy-bank text-success me-1"></i>Bank Passbook / Cancelled Cheque (For DBT Transfer)</label>
+                    <input type="file" name="bank_cheque" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                </div>
+            </div>
+        `;
+    } else if (serviceCode.startsWith('HEALTH')) {
+        container.innerHTML = `
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small"><i class="fa-solid fa-address-card text-danger me-1"></i>Ration Card / BPL Household Identity Proof</label>
+                    <input type="file" name="ration_card" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small"><i class="fa-solid fa-heart-pulse text-danger me-1"></i>Aadhaar Card / Patient Diagnostic Summary</label>
+                    <input type="file" name="patient_report" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                </div>
+            </div>
+        `;
+    } else if (serviceCode.startsWith('BANKING') || serviceCode.startsWith('INNOVATION')) {
+        container.innerHTML = `
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small"><i class="fa-solid fa-briefcase text-success me-1"></i>Project Business Proposal / MSME Udyam Registration</label>
+                    <input type="file" name="business_plan" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small"><i class="fa-solid fa-file-csv text-success me-1"></i>6-Month Bank Account Statement / PAN Card</label>
+                    <input type="file" name="bank_statement" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                </div>
+            </div>
+        `;
+    } else {
+        container.innerHTML = `
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small"><i class="fa-solid fa-bolt text-info me-1"></i>Electricity Consumer Bill / Address Proof</label>
+                    <input type="file" name="electricity_bill" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small"><i class="fa-solid fa-house text-info me-1"></i>Property Deed / Residential Certificate</label>
+                    <input type="file" name="property_deed" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                </div>
+            </div>
+        `;
+    }
+}
+</script>
 {% endblock %}

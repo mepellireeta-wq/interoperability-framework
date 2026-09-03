@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Admin Portal - Real-Time Application Review & SLA Analytics{% endblock %}
+{% block title %}Admin Portal - Secure Application & Document Inspection{% endblock %}
 
 {% block content %}
 <div class="container py-5">
@@ -43,7 +43,7 @@
             <div class="glass-card p-4 text-center h-100">
                 <i class="fa-solid fa-circle-check text-success fs-1 mb-2"></i>
                 <h2 class="fw-bold mb-0 text-success" id="metricApproved">0</h2>
-                <small class="text-muted fw-bold">Approved & Sanctioned</small>
+                <small class="text-muted fw-bold">Approved &amp; Sanctioned</small>
             </div>
         </div>
         <div class="col-md-3">
@@ -80,7 +80,7 @@
                     </button>
                 </li>
             </ul>
-            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill"><i class="fa-solid fa-bell me-1"></i> Real-time DB Sync</span>
+            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill"><i class="fa-solid fa-lock me-1"></i> Secure Admin Document Inspector</span>
         </div>
 
         <div class="table-responsive">
@@ -91,7 +91,7 @@
                         <th>Applicant Full Name</th>
                         <th>Contact / Email</th>
                         <th>Selected Scheme</th>
-                        <th>Stage Progress</th>
+                        <th>Uploaded Documents</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -102,6 +102,21 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <!-- Secure Document Inspector Modal -->
+    <div class="modal fade" id="documentInspectorModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content glass-card border-0">
+                <div class="modal-header border-0 bg-primary text-white">
+                    <h5 class="modal-title fw-bold"><i class="fa-solid fa-folder-open me-2 text-warning"></i>Secure Admin Document Verification Inspector</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4" id="inspectorModalBody">
+                    <!-- Dynamic Document Preview Content -->
+                </div>
+            </div>
         </div>
     </div>
 
@@ -226,7 +241,7 @@ function renderTableData(tabName) {
             <th>Applicant Full Name</th>
             <th>Contact / Email</th>
             <th>Selected Scheme</th>
-            <th>Stage Progress</th>
+            <th>Uploaded Documents</th>
             <th>Status</th>
             <th>Action</th>
         </tr>
@@ -235,9 +250,14 @@ function renderTableData(tabName) {
     const list = globalAdminData[tabName] || [];
 
     if (list.length > 0) {
-        list.forEach(app => {
+        list.forEach((app, idx) => {
             const badgeClass = app.status === 'APPROVED' ? 'bg-success' : (app.status === 'REJECTED' ? 'bg-danger' : 'bg-warning text-dark');
             
+            const docsCount = app.attached_documents ? app.attached_documents.length : 0;
+            const docBadge = docsCount > 0 
+                ? `<button class="btn btn-sm btn-outline-primary rounded-pill font-monospace" onclick="inspectDocs('${tabName}', ${idx})"><i class="fa-solid fa-paperclip me-1"></i>${docsCount} Attached File(s)</button>`
+                : `<span class="badge bg-secondary font-monospace">Standard Form</span>`;
+
             let actionButtons = '';
             if (app.status !== 'APPROVED' && app.status !== 'REJECTED') {
                 actionButtons = `
@@ -258,7 +278,7 @@ function renderTableData(tabName) {
                     <td class="fw-bold">${app.applicant_name}</td>
                     <td><small class="d-block">${app.applicant_email}</small></td>
                     <td><small class="fw-semibold">${app.service_title}</small></td>
-                    <td>Stage ${app.current_stage} of ${app.total_stages}</td>
+                    <td>${docBadge}</td>
                     <td><span class="badge ${badgeClass}">${app.status}</span></td>
                     <td>${actionButtons}</td>
                 </tr>
@@ -267,6 +287,49 @@ function renderTableData(tabName) {
     } else {
         tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">No applications found in ${tabName} queue</td></tr>`;
     }
+}
+
+function inspectDocs(tabName, idx) {
+    const app = globalAdminData[tabName][idx];
+    const modalBody = document.getElementById('inspectorModalBody');
+    
+    let docsHtml = '';
+    if (app.attached_documents && app.attached_documents.length > 0) {
+        docsHtml = `<div class="row g-3">`;
+        app.attached_documents.forEach(doc => {
+            docsHtml += `
+                <div class="col-md-6">
+                    <div class="p-3 border rounded-3 bg-light">
+                        <strong class="d-block text-dark font-monospace mb-1"><i class="fa-solid fa-file-pdf text-danger me-2"></i>${doc.doc_type.toUpperCase().replace('_', ' ')}</strong>
+                        <small class="text-muted d-block mb-2">${doc.filename}</small>
+                        <a href="${doc.url}" target="_blank" class="btn btn-sm btn-primary rounded-pill px-3 fw-bold">
+                            <i class="fa-solid fa-eye me-1"></i> Open & Verify Document
+                        </a>
+                    </div>
+                </div>
+            `;
+        });
+        docsHtml += `</div>`;
+    } else {
+        docsHtml = `<div class="alert alert-secondary text-center">No digital document attachments uploaded for this application. Profile data verified via MDM SSO registry.</div>`;
+    }
+
+    modalBody.innerHTML = `
+        <div class="mb-3">
+            <h6 class="fw-bold text-dark">Application Tracking ID: <span class="text-primary font-monospace">${app.tracking_id}</span></h6>
+            <p class="text-muted small mb-1">Applicant: <strong>${app.applicant_name}</strong> (${app.applicant_email})</p>
+            <p class="text-muted small">Applied Scheme: <strong>${app.service_title}</strong></p>
+        </div>
+        <hr>
+        <h6 class="fw-bold text-primary mb-3"><i class="fa-solid fa-shield-check me-2"></i>Uploaded Verification Certificates & Documents:</h6>
+        ${docsHtml}
+        <div class="mt-4 text-end">
+            <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Close Inspector</button>
+        </div>
+    `;
+
+    const modal = new bootstrap.Modal(document.getElementById('documentInspectorModal'));
+    modal.show();
 }
 
 async function advanceApp(appId, decision) {

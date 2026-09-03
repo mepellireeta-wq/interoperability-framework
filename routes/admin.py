@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, session, redirect, jsonify, request
 from database.models import db, Application, AuditLog, User, Department
+import json
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -59,6 +60,9 @@ def get_pending_applications_details():
 
     for a in all_apps:
         applicant = User.query.get(a.applicant_id)
+        payload = json.loads(a.payload_json) if a.payload_json else {}
+        attached_docs = payload.get('attached_documents', [])
+
         app_data = {
             'id': a.id,
             'tracking_id': a.tracking_id,
@@ -70,7 +74,10 @@ def get_pending_applications_details():
             'created_at': a.created_at.strftime('%Y-%m-%d %H:%M'),
             'applicant_name': applicant.full_name if applicant else 'Citizen Applicant',
             'applicant_email': applicant.email if applicant else 'n/a',
-            'state': applicant.phone if (applicant and applicant.phone) else 'Andhra Pradesh'
+            'applicant_phone': applicant.phone if applicant else 'n/a',
+            'state': applicant.phone if (applicant and applicant.phone) else 'Andhra Pradesh',
+            'attached_documents': attached_docs,
+            'payload_json': payload
         }
 
         if a.status in ['SUBMITTED', 'IN_WORKFLOW']:
