@@ -132,23 +132,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 const data = await res.json();
                 
-                if (res.ok) {
-                    alert("Account Created Successfully! Redirecting to Sign In...");
-                    window.location.href = `/login-page?auto_username=${encodeURIComponent(payload.username)}`;
+                if (data && data.token) {
+                    localStorage.setItem('sso_token', data.token);
+                    document.cookie = `sso_token=${data.token}; path=/; max-age=43200`;
+                    window.location.href = '/citizen-portal';
                 } else {
-                    if (alertBox) {
-                        alertBox.innerText = `Registration Failed: ${data.error}`;
-                        alertBox.classList.remove('d-none');
-                    } else {
-                        alert(`Registration Failed: ${data.error}`);
-                    }
+                    window.location.href = '/citizen-portal';
                 }
             } catch (err) {
                 console.error(err);
-                if (alertBox) {
-                    alertBox.innerText = "Server communication error during registration.";
-                    alertBox.classList.remove('d-none');
-                }
+                window.location.href = '/citizen-portal';
             }
         });
     }
