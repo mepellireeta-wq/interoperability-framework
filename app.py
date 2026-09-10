@@ -163,6 +163,13 @@ def create_app(config_name='dev'):
         tracking_id = request.args.get('id', '')
         return render_template('track.html', tracking_id=tracking_id)
 
+    @app.after_request
+    def add_header(response):
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+        return response
+
     return app
 
 app = create_app(os.getenv('FLASK_ENV', 'dev'))
