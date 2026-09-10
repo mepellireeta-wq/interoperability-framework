@@ -27,7 +27,7 @@
                     </div>
 
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-warning text-dark btn-lg rounded-pill fw-bold shadow">
+                        <button type="submit" id="btnAdminSubmit" class="btn btn-warning text-dark btn-lg rounded-pill fw-bold shadow">
                             <i class="fa-solid fa-right-to-bracket me-2"></i> Authenticate & Enter Admin Portal
                         </button>
                     </div>
@@ -61,29 +61,57 @@
 <script>
 async function doAdminLogin(u, p) {
     const alertBox = document.getElementById('adminAlertBox');
+    const btn = document.getElementById('btnAdminSubmit');
     if (alertBox) alertBox.classList.add('d-none');
 
     const username = (typeof u === 'string' && u) ? u : (document.getElementById('adminUsername') ? document.getElementById('adminUsername').value.trim() : 'admin');
     const password = (typeof p === 'string' && p) ? p : (document.getElementById('adminPassword') ? document.getElementById('adminPassword').value.trim() : 'Admin@123');
 
+    if (!username || !password) {
+        if (alertBox) {
+            alertBox.innerText = "Please enter both username and password.";
+            alertBox.classList.remove('d-none');
+        }
+        return;
+    }
+
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Authenticating...';
+    }
+
     try {
         const res = await fetch('/api/v1/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: username || 'admin', password: password || 'Admin@123' })
+            body: JSON.stringify({ username, password })
         });
         const data = await res.json();
 
-        if (data && data.token) {
+        if (res.ok && data.token) {
             localStorage.setItem('sso_token', data.token);
             document.cookie = `sso_token=${data.token}; path=/; max-age=43200`;
             window.location.href = `/admin-portal?token=${encodeURIComponent(data.token)}`;
         } else {
-            window.location.href = '/admin-portal';
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-right-to-bracket me-2"></i> Authenticate & Enter Admin Portal';
+            }
+            if (alertBox) {
+                alertBox.innerText = `Sign In Failed: ${data.error || 'Invalid credentials'}`;
+                alertBox.classList.remove('d-none');
+            }
         }
     } catch (err) {
         console.error(err);
-        window.location.href = '/admin-portal';
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-right-to-bracket me-2"></i> Authenticate & Enter Admin Portal';
+        }
+        if (alertBox) {
+            alertBox.innerText = "Server communication error during sign in.";
+            alertBox.classList.remove('d-none');
+        }
     }
 }
 
