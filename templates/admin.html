@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Admin Portal - Secure Application & Document Inspection{% endblock %}
+{% block title %}Admin Portal - Official Governance & Review Dashboard{% endblock %}
 
 {% block content %}
 <div class="container py-5">
@@ -10,121 +10,134 @@
             <div>
                 <span class="badge bg-primary rounded-pill px-3 py-2 mb-2"><i class="fa-solid fa-shield-halved me-1"></i>Official Admin Workspace</span>
                 <h3 class="fw-bold text-dark mb-1">Welcome to Admin Portal</h3>
-                <p class="text-muted small mb-0">Logged in as: <strong>{{ username }} (ADMIN)</strong> | System Access: <span class="badge bg-success">AUTHORIZED</span></p>
+                <p class="text-muted small mb-0">Admin Name: <strong>{{ username }} (ADMIN)</strong> | System Access: <span class="badge bg-success">AUTHORIZED</span></p>
             </div>
             <div>
-                <a href="/developer-tech" class="btn btn-outline-primary rounded-pill px-4 fw-bold me-2">
-                    <i class="fa-solid fa-code me-1"></i> Developer Tech Specs
+                <a href="/interoperability-monitor" class="btn btn-outline-warning rounded-pill px-3 fw-bold me-2">
+                    <i class="fa-solid fa-diagram-project me-1"></i> Interop Monitor
                 </a>
-                <a href="/blockchain-verifier" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">
-                    <i class="fa-solid fa-link me-1"></i> Public Blockchain Explorer
+                <a href="/blockchain-verifier" class="btn btn-primary rounded-pill px-3 fw-bold shadow-sm me-2">
+                    <i class="fa-solid fa-link me-1"></i> Public Explorer
                 </a>
+                <button onclick="handleAdminLogout()" class="btn btn-danger rounded-pill px-3 fw-bold shadow-sm">
+                    <i class="fa-solid fa-right-from-bracket me-1"></i> Sign Out Admin
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Real-Time Metrics Row (Dynamic Counts) -->
-    <div class="row g-3 mb-4" id="adminMetricsRow">
+    <!-- Interoperability Health Bar -->
+    <div class="alert alert-primary border-primary d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+        <div class="d-flex align-items-center">
+            <i class="fa-solid fa-heart-pulse fs-3 me-3 text-primary"></i>
+            <div>
+                <strong class="d-block text-dark">Interoperability Middleware Health: Active</strong>
+                <small class="text-muted">REST Services: <span class="badge bg-success">UP</span> | SOAP Adapters: <span class="badge bg-success">UP</span> | Workflow Engine: <span class="badge bg-success">RUNNING</span></small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Executive Metrics Cards -->
+    <div class="row g-4 mb-4" id="adminMetricsRow">
         <div class="col-md-3">
-            <div class="glass-card p-4 text-center h-100">
-                <i class="fa-solid fa-folder text-primary fs-1 mb-2"></i>
-                <h2 class="fw-bold mb-0 text-primary" id="metricTotal">0</h2>
+            <div class="glass-card p-4 text-center">
+                <i class="fa-solid fa-file-circle-check text-primary fs-1 mb-2"></i>
+                <h2 class="fw-bold mb-0 text-primary" id="metricTotal">--</h2>
                 <small class="text-muted fw-bold">Total Applications Submitted</small>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="glass-card p-4 text-center h-100">
+            <div class="glass-card p-4 text-center">
                 <i class="fa-solid fa-clock-rotate-left text-warning fs-1 mb-2"></i>
-                <h2 class="fw-bold mb-0 text-warning" id="metricPending">0</h2>
-                <small class="text-muted fw-bold">Pending Review Queue</small>
+                <h2 class="fw-bold mb-0 text-warning" id="metricPending">--</h2>
+                <small class="text-muted fw-bold">Pending Officer Review Queue</small>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="glass-card p-4 text-center h-100">
+            <div class="glass-card p-4 text-center">
                 <i class="fa-solid fa-circle-check text-success fs-1 mb-2"></i>
-                <h2 class="fw-bold mb-0 text-success" id="metricApproved">0</h2>
-                <small class="text-muted fw-bold">Approved &amp; Sanctioned</small>
+                <h2 class="fw-bold mb-0 text-success" id="metricApproved">--</h2>
+                <small class="text-muted fw-bold">Approved & Sanctioned</small>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="glass-card p-4 text-center h-100">
-                <i class="fa-solid fa-users text-info fs-1 mb-2"></i>
-                <h2 class="fw-bold mb-0 text-info" id="metricRegisteredCitizens">0</h2>
-                <small class="text-muted fw-bold">Registered Citizens in DB</small>
+            <div class="glass-card p-4 text-center">
+                <i class="fa-solid fa-circle-xmark text-danger fs-1 mb-2"></i>
+                <h2 class="fw-bold mb-0 text-danger" id="metricRejected">--</h2>
+                <small class="text-muted fw-bold">Rejected Applications</small>
             </div>
         </div>
     </div>
 
-    <!-- Application Queue Tabbed Section -->
-    <div class="glass-card p-4 mb-5">
+    <!-- Interactive Navigation Tabs for Admin Queue -->
+    <div class="glass-card p-4 mb-5" style="max-width: 100%;">
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-            <ul class="nav nav-pills gap-2" id="queueTabs" role="tablist">
-                <li class="nav-item">
-                    <button class="nav-link active fw-bold rounded-pill px-4" id="tabPending" onclick="switchQueueTab('pending')">
-                        <i class="fa-solid fa-hourglass-half me-1"></i> Pending Queue (<span id="tabCountPending">0</span>)
-                    </button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link fw-bold rounded-pill px-4 text-success" id="tabApproved" onclick="switchQueueTab('approved')">
-                        <i class="fa-solid fa-circle-check me-1"></i> Approved List (<span id="tabCountApproved">0</span>)
-                    </button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link fw-bold rounded-pill px-4 text-danger" id="tabRejected" onclick="switchQueueTab('rejected')">
-                        <i class="fa-solid fa-circle-xmark me-1"></i> Rejected List (<span id="tabCountRejected">0</span>)
-                    </button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link fw-bold rounded-pill px-4 text-info" id="tabCitizens" onclick="switchQueueTab('citizens')">
-                        <i class="fa-solid fa-users me-1"></i> Registered Citizens DB (<span id="tabCountCitizens">0</span>)
-                    </button>
-                </li>
-            </ul>
-            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill"><i class="fa-solid fa-lock me-1"></i> Secure Admin Document Inspector</span>
+            <div class="d-flex gap-2 flex-wrap" id="adminTabFilterGroup">
+                <button class="btn btn-primary rounded-pill px-3 fw-bold active-tab" id="tabBtnPending" onclick="switchAdminTab('PENDING')">
+                    <i class="fa-solid fa-hourglass-half me-1"></i> Pending Queue (<span id="tabCountPending">0</span>)
+                </button>
+                <button class="btn btn-outline-success rounded-pill px-3 fw-bold" id="tabBtnApproved" onclick="switchAdminTab('APPROVED')">
+                    <i class="fa-solid fa-circle-check me-1"></i> Approved List (<span id="tabCountApproved">0</span>)
+                </button>
+                <button class="btn btn-outline-danger rounded-pill px-3 fw-bold" id="tabBtnRejected" onclick="switchAdminTab('REJECTED')">
+                    <i class="fa-solid fa-circle-xmark me-1"></i> Rejected List (<span id="tabCountRejected">0</span>)
+                </button>
+            </div>
+            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill"><i class="fa-solid fa-bell me-1"></i> SLA Target: &lt; 48 Hours</span>
         </div>
 
-        <div class="table-responsive">
-            <table class="table table-hover align-middle" id="adminTable">
+        <!-- Table Container -->
+        <div class="table-responsive" style="max-width: 100%; overflow-x: auto;">
+            <table class="table table-hover align-middle w-100" id="adminMainTable">
                 <thead class="table-light" id="adminTableHeader">
                     <tr>
                         <th>Tracking ID</th>
                         <th>Applicant Full Name</th>
-                        <th>Contact / Email</th>
+                        <th>Contact / State</th>
                         <th>Selected Scheme</th>
-                        <th>Uploaded Documents</th>
+                        <th>Stage Progress</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody id="adminQueueTableBody">
+                <tbody id="adminMainTableBody">
                     <tr>
-                        <td colspan="7" class="text-center py-4 text-muted">Loading records from database...</td>
+                        <td colspan="7" class="text-center py-4 text-muted">Loading application records...</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- Secure Document Inspector Modal -->
-    <div class="modal fade" id="documentInspectorModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content glass-card border-0">
-                <div class="modal-header border-0 bg-primary text-white">
-                    <h5 class="modal-title fw-bold"><i class="fa-solid fa-folder-open me-2 text-warning"></i>Secure Admin Document Verification Inspector</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4" id="inspectorModalBody">
-                    <!-- Dynamic Document Preview Content -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Governance Audit Trail -->
-    <div class="glass-card p-4">
+    <!-- Governance Audit Logs -->
+    <div class="glass-card p-4 mb-4">
         <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-history text-primary me-2"></i>System Governance Audit Trail</h5>
         <div id="adminAuditLogContainer" class="bg-dark text-success p-3 rounded font-monospace small overflow-auto" style="max-height: 250px;">
             <div>[AUDIT LOGS] Initializing governance monitoring...</div>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Document Viewer Modal (Restricted to Admin/Officer) -->
+<div class="modal fade" id="adminDocModal" tabindex="-1" aria-labelledby="adminDocModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content glass-card border-0">
+            <div class="modal-header bg-primary text-white border-0">
+                <h5 class="modal-title fw-bold" id="adminDocModalLabel"><i class="fa-solid fa-folder-open text-warning me-2"></i>Citizen Uploaded Documents (Admin Portal Only)</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div id="adminDocModalApplicantInfo" class="mb-3 p-3 bg-light rounded">
+                    <!-- Applicant Info -->
+                </div>
+                <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-paperclip text-primary me-2"></i>Attached Supporting Files</h6>
+                <div id="adminDocModalFilesList" class="list-group">
+                    <!-- File list will populate here -->
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Close Viewer</button>
+            </div>
         </div>
     </div>
 </div>
@@ -132,8 +145,8 @@
 
 {% block scripts %}
 <script>
-let globalAdminData = { pending: [], approved: [], rejected: [], citizens: [] };
-let currentTab = 'pending';
+let adminGlobalData = { applications: [], citizens: [], metrics: {} };
+let currentActiveTab = 'PENDING';
 
 document.addEventListener('DOMContentLoaded', function() {
     loadAdminDashboardData();
@@ -141,33 +154,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function loadAdminDashboardData() {
     try {
-        const res = await fetch('/api/v1/admin/pending-applications');
+        const token = localStorage.getItem('sso_token') || new URLSearchParams(window.location.search).get('token');
+        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+        const res = await fetch('/api/v1/admin/pending-applications?t=' + Date.now(), { headers });
         const data = await res.json();
         
-        const citizensRes = await fetch('/api/v1/admin/registered-citizens');
-        const citizensData = await citizensRes.json();
-
         if (res.ok) {
-            // Update Metric Counters
+            adminGlobalData = data;
+            
+            // Metrics Update
             document.getElementById('metricTotal').innerText = data.metrics.total_submitted;
             document.getElementById('metricPending').innerText = data.metrics.pending_review;
             document.getElementById('metricApproved').innerText = data.metrics.approved;
-            
-            if (citizensRes.ok) {
-                document.getElementById('metricRegisteredCitizens').innerText = citizensData.count;
-                document.getElementById('tabCountCitizens').innerText = citizensData.count;
-                globalAdminData.citizens = citizensData.citizens || [];
-            }
+            document.getElementById('metricRejected').innerText = data.metrics.rejected;
 
-            document.getElementById('tabCountPending').innerText = data.metrics.pending_review;
-            document.getElementById('tabCountApproved').innerText = data.metrics.approved;
-            document.getElementById('tabCountRejected').innerText = data.metrics.rejected;
+            // Tab Counts
+            const pendingApps = data.applications.filter(a => a.status !== 'APPROVED' && a.status !== 'REJECTED');
+            const approvedApps = data.applications.filter(a => a.status === 'APPROVED');
+            const rejectedApps = data.applications.filter(a => a.status === 'REJECTED');
 
-            globalAdminData.pending = data.pending_applications || [];
-            globalAdminData.approved = data.approved_applications || [];
-            globalAdminData.rejected = data.rejected_applications || [];
+            document.getElementById('tabCountPending').innerText = pendingApps.length;
+            document.getElementById('tabCountApproved').innerText = approvedApps.length;
+            document.getElementById('tabCountRejected').innerText = rejectedApps.length;
 
-            renderTableData(currentTab);
+            renderActiveTabTable();
 
             // Load audit logs
             const auditRes = await fetch('/api/v1/admin/audit-logs');
@@ -185,150 +195,137 @@ async function loadAdminDashboardData() {
     }
 }
 
-function switchQueueTab(tabName) {
-    currentTab = tabName;
-    document.querySelectorAll('#queueTabs .nav-link').forEach(el => el.classList.remove('active'));
+function switchAdminTab(tabName) {
+    currentActiveTab = tabName;
     
-    if (tabName === 'pending') document.getElementById('tabPending').classList.add('active');
-    if (tabName === 'approved') document.getElementById('tabApproved').classList.add('active');
-    if (tabName === 'rejected') document.getElementById('tabRejected').classList.add('active');
-    if (tabName === 'citizens') document.getElementById('tabCitizens').classList.add('active');
+    // Update button styles
+    const tabBtns = {
+        'PENDING': document.getElementById('tabBtnPending'),
+        'APPROVED': document.getElementById('tabBtnApproved'),
+        'REJECTED': document.getElementById('tabBtnRejected')
+    };
 
-    renderTableData(tabName);
+    Object.keys(tabBtns).forEach(key => {
+        const btn = tabBtns[key];
+        if (!btn) return;
+        if (key === tabName) {
+            btn.className = `btn btn-${key==='PENDING'?'primary':(key==='APPROVED'?'success':'danger')} rounded-pill px-3 fw-bold text-white shadow-sm`;
+        } else {
+            btn.className = `btn btn-outline-${key==='PENDING'?'primary':(key==='APPROVED'?'success':'danger')} rounded-pill px-3 fw-bold`;
+        }
+    });
+
+    renderActiveTabTable();
 }
 
-function renderTableData(tabName) {
-    const tbody = document.getElementById('adminQueueTableBody');
+function renderActiveTabTable() {
     const thead = document.getElementById('adminTableHeader');
-    tbody.innerHTML = '';
+    const tbody = document.getElementById('adminMainTableBody');
 
-    if (tabName === 'citizens') {
-        thead.innerHTML = `
-            <tr>
-                <th>User ID</th>
-                <th>SSO Identifier</th>
-                <th>Citizen Full Name</th>
-                <th>Username</th>
-                <th>Email Address</th>
-                <th>Phone Number</th>
-                <th>Registered Date</th>
-            </tr>
-        `;
-        const list = globalAdminData.citizens || [];
-        if (list.length > 0) {
-            list.forEach(c => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td class="fw-bold text-primary font-monospace">#${c.id}</td>
-                        <td class="font-monospace small">${c.sso_id}</td>
-                        <td class="fw-bold text-dark">${c.full_name}</td>
-                        <td><code>${c.username}</code></td>
-                        <td>${c.email}</td>
-                        <td>${c.phone}</td>
-                        <td>${c.created_at}</td>
-                    </tr>
-                `;
-            });
-        } else {
-            tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">No registered citizens in database</td></tr>`;
-        }
-        return;
-    }
-
+    // Default Application Tables Header
     thead.innerHTML = `
         <tr>
             <th>Tracking ID</th>
             <th>Applicant Full Name</th>
-            <th>Contact / Email</th>
+            <th>Contact / State</th>
             <th>Selected Scheme</th>
-            <th>Uploaded Documents</th>
+            <th>Uploaded Docs</th>
+            <th>Stage Progress</th>
             <th>Status</th>
             <th>Action</th>
         </tr>
     `;
 
-    const list = globalAdminData[tabName] || [];
-
-    if (list.length > 0) {
-        list.forEach((app, idx) => {
-            const badgeClass = app.status === 'APPROVED' ? 'bg-success' : (app.status === 'REJECTED' ? 'bg-danger' : 'bg-warning text-dark');
-            
-            const docsCount = app.attached_documents ? app.attached_documents.length : 0;
-            const docBadge = docsCount > 0 
-                ? `<button class="btn btn-sm btn-outline-primary rounded-pill font-monospace" onclick="inspectDocs('${tabName}', ${idx})"><i class="fa-solid fa-paperclip me-1"></i>${docsCount} Attached File(s)</button>`
-                : `<span class="badge bg-secondary font-monospace">Standard Form</span>`;
-
-            let actionButtons = '';
-            if (app.status !== 'APPROVED' && app.status !== 'REJECTED') {
-                actionButtons = `
-                    <button class="btn btn-sm btn-success rounded-pill fw-bold px-3 me-1" onclick="advanceApp('${app.id}', 'APPROVE')">
-                        Approve <i class="fa-solid fa-check"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger rounded-pill fw-bold px-2" onclick="advanceApp('${app.id}', 'REJECT')">
-                        Reject
-                    </button>
-                `;
-            } else {
-                actionButtons = `<span class="badge bg-secondary">CLOSED FILE</span>`;
-            }
-
-            tbody.innerHTML += `
-                <tr>
-                    <td class="fw-bold text-primary font-monospace">${app.tracking_id}</td>
-                    <td class="fw-bold">${app.applicant_name}</td>
-                    <td><small class="d-block">${app.applicant_email}</small></td>
-                    <td><small class="fw-semibold">${app.service_title}</small></td>
-                    <td>${docBadge}</td>
-                    <td><span class="badge ${badgeClass}">${app.status}</span></td>
-                    <td>${actionButtons}</td>
-                </tr>
-            `;
-        });
-    } else {
-        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">No applications found in ${tabName} queue</td></tr>`;
+    let filteredApps = [];
+    if (currentActiveTab === 'PENDING') {
+        filteredApps = adminGlobalData.applications.filter(a => a.status !== 'APPROVED' && a.status !== 'REJECTED');
+    } else if (currentActiveTab === 'APPROVED') {
+        filteredApps = adminGlobalData.applications.filter(a => a.status === 'APPROVED');
+    } else if (currentActiveTab === 'REJECTED') {
+        filteredApps = adminGlobalData.applications.filter(a => a.status === 'REJECTED');
     }
+
+    if (filteredApps.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">No applications in this category</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = filteredApps.map(app => {
+        const displayStatus = (app.status === 'QUEUED' || app.status === 'IN_PROGRESS') ? 'SUBMITTED' : app.status;
+        const badgeClass = displayStatus === 'APPROVED' ? 'bg-success' : (displayStatus === 'REJECTED' ? 'bg-danger' : 'bg-primary');
+        
+        let actionButtons = '';
+        if (displayStatus !== 'APPROVED' && displayStatus !== 'REJECTED') {
+            actionButtons = `
+                <button class="btn btn-sm btn-success rounded-pill fw-bold px-3 me-1" onclick="advanceApp('${app.id}', 'APPROVE')">
+                    Approve <i class="fa-solid fa-check"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger rounded-pill fw-bold px-2" onclick="advanceApp('${app.id}', 'REJECT')">
+                    Reject
+                </button>
+            `;
+        } else {
+            actionButtons = `<span class="text-muted small">No action needed</span>`;
+        }
+
+        const docCount = (app.documents && app.documents.length) ? app.documents.length : 0;
+        const docBtnHtml = docCount > 0 
+            ? `<button class="btn btn-sm btn-outline-primary rounded-pill fw-bold px-2 text-nowrap" onclick="openAdminDocModal(${app.id})"><i class="fa-solid fa-folder-open me-1"></i> View Docs (${docCount})</button>`
+            : `<span class="text-muted small">No files attached</span>`;
+
+        return `
+            <tr>
+                <td class="fw-bold text-primary font-monospace text-nowrap">${app.tracking_id}</td>
+                <td class="fw-bold text-nowrap">${app.applicant_name}</td>
+                <td style="max-width: 180px;" class="text-truncate" title="${app.applicant_email}"><small class="d-block text-truncate">${app.applicant_email}</small><span class="badge bg-secondary fs-8">${app.state}</span></td>
+                <td style="max-width: 220px;" class="text-truncate" title="${app.service_title}"><small class="fw-semibold text-truncate d-block">${app.service_title}</small></td>
+                <td class="text-nowrap">${docBtnHtml}</td>
+                <td class="text-nowrap"><small>Stage ${app.current_stage}/${app.total_stages}</small></td>
+                <td class="text-nowrap"><span class="badge ${badgeClass}">${displayStatus}</span></td>
+                <td class="text-nowrap">${actionButtons}</td>
+            </tr>
+        `;
+    }).join('');
 }
 
-function inspectDocs(tabName, idx) {
-    const app = globalAdminData[tabName][idx];
-    const modalBody = document.getElementById('inspectorModalBody');
-    
-    let docsHtml = '';
-    if (app.attached_documents && app.attached_documents.length > 0) {
-        docsHtml = `<div class="row g-3">`;
-        app.attached_documents.forEach(doc => {
-            docsHtml += `
-                <div class="col-md-6">
-                    <div class="p-3 border rounded-3 bg-light">
-                        <strong class="d-block text-dark font-monospace mb-1"><i class="fa-solid fa-file-pdf text-danger me-2"></i>${doc.doc_type.toUpperCase().replace('_', ' ')}</strong>
-                        <small class="text-muted d-block mb-2">${doc.filename}</small>
-                        <a href="${doc.url}" target="_blank" class="btn btn-sm btn-primary rounded-pill px-3 fw-bold">
-                            <i class="fa-solid fa-eye me-1"></i> Open & Verify Document
-                        </a>
-                    </div>
-                </div>
-            `;
-        });
-        docsHtml += `</div>`;
-    } else {
-        docsHtml = `<div class="alert alert-secondary text-center">No digital document attachments uploaded for this application. Profile data verified via MDM SSO registry.</div>`;
-    }
+function openAdminDocModal(appId) {
+    const app = adminGlobalData.applications.find(a => a.id === appId);
+    if (!app) return;
 
-    modalBody.innerHTML = `
-        <div class="mb-3">
-            <h6 class="fw-bold text-dark">Application Tracking ID: <span class="text-primary font-monospace">${app.tracking_id}</span></h6>
-            <p class="text-muted small mb-1">Applicant: <strong>${app.applicant_name}</strong> (${app.applicant_email})</p>
-            <p class="text-muted small">Applied Scheme: <strong>${app.service_title}</strong></p>
-        </div>
-        <hr>
-        <h6 class="fw-bold text-primary mb-3"><i class="fa-solid fa-shield-check me-2"></i>Uploaded Verification Certificates & Documents:</h6>
-        ${docsHtml}
-        <div class="mt-4 text-end">
-            <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Close Inspector</button>
+    const applicantInfo = document.getElementById('adminDocModalApplicantInfo');
+    applicantInfo.innerHTML = `
+        <div class="d-flex justify-content-between flex-wrap gap-2">
+            <div>
+                <strong class="d-block text-dark fs-6">${app.applicant_name}</strong>
+                <small class="text-muted">Tracking ID: <span class="font-monospace text-primary fw-bold">${app.tracking_id}</span> | Scheme: <strong>${app.service_title}</strong></small>
+            </div>
+            <div>
+                <span class="badge bg-primary px-3 py-2 rounded-pill"><i class="fa-solid fa-shield-halved me-1"></i> ADMIN-ONLY RESTRICTED VIEW</span>
+            </div>
         </div>
     `;
 
-    const modal = new bootstrap.Modal(document.getElementById('documentInspectorModal'));
+    const filesList = document.getElementById('adminDocModalFilesList');
+    if (!app.documents || app.documents.length === 0) {
+        filesList.innerHTML = `<div class="alert alert-light text-center text-muted">No documents were uploaded with this application.</div>`;
+    } else {
+        filesList.innerHTML = app.documents.map(doc => `
+            <div class="list-group-item d-flex align-items-center justify-content-between p-3 border rounded mb-2">
+                <div class="d-flex align-items-center">
+                    <i class="fa-solid fa-file-pdf text-danger fs-3 me-3"></i>
+                    <div>
+                        <strong class="d-block text-dark">${doc.title || doc.field_key}</strong>
+                        <small class="text-muted">File: <code>${doc.original_filename || doc.stored_filename}</code> | Uploaded: ${doc.uploaded_at || 'Just Now'}</small>
+                    </div>
+                </div>
+                <a href="${doc.file_url}" target="_blank" class="btn btn-primary btn-sm rounded-pill px-3 fw-bold">
+                    <i class="fa-solid fa-eye me-1"></i> Open & Review File
+                </a>
+            </div>
+        `).join('');
+    }
+
+    const modal = new bootstrap.Modal(document.getElementById('adminDocModal'));
     modal.show();
 }
 
@@ -337,17 +334,31 @@ async function advanceApp(appId, decision) {
         const res = await fetch('/api/v1/workflows/advance', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ application_id: appId, decision: decision, remarks: `Officer Decision: ${decision}` })
+            body: JSON.stringify({ application_id: appId, decision: decision, force_approve: (decision === 'APPROVE'), remarks: `Officer Decision: ${decision}` })
         });
         if (res.ok) {
-            alert(`Application ${decision} recorded successfully! Counts updated in real time.`);
-            loadAdminDashboardData();
+            alert(`Application ${decision === 'APPROVE' ? 'Approved' : 'Rejected'} successfully!`);
+            await loadAdminDashboardData();
+            if (decision === 'APPROVE') {
+                switchAdminTab('APPROVED');
+            } else if (decision === 'REJECT') {
+                switchAdminTab('REJECTED');
+            }
         } else {
             alert("Error updating application status");
         }
     } catch(err) {
         console.error(err);
     }
+}
+
+async function handleAdminLogout() {
+    try {
+        await fetch('/api/v1/auth/logout', { method: 'POST' });
+    } catch(e) {}
+    localStorage.removeItem('sso_token');
+    document.cookie = 'sso_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    window.location.href = '/admin-login';
 }
 </script>
 {% endblock %}

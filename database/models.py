@@ -56,6 +56,7 @@ class Application(db.Model):
     status = db.Column(db.String(30), default='SUBMITTED') # SUBMITTED, IN_WORKFLOW, APPROVED, REJECTED
     payload_json = db.Column(db.Text, nullable=False) # Standardized payload
     consent_given = db.Column(db.Boolean, default=True)
+    consent_id = db.Column(db.String(50), nullable=True)
     current_stage = db.Column(db.Integer, default=1)
     total_stages = db.Column(db.Integer, default=3)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -64,6 +65,34 @@ class Application(db.Model):
     # Relationships
     steps = db.relationship('WorkflowStep', backref='application', lazy=True, cascade="all, delete-orphan")
     audit_logs = db.relationship('AuditLog', backref='application', lazy=True, cascade="all, delete-orphan")
+
+class ConsentRecord(db.Model):
+    """Explicit Consent Record under DPDP Act 2023"""
+    __tablename__ = 'consent_records'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    consent_id = db.Column(db.String(50), unique=True, nullable=False)
+    citizen_id = db.Column(db.String(100), nullable=False)
+    scope = db.Column(db.String(100), nullable=False)
+    purpose = db.Column(db.String(255), nullable=False)
+    status = db.Column(db.String(20), default='ACTIVE') # ACTIVE, REVOKED, EXPIRED
+    granted_at = db.Column(db.DateTime, default=datetime.utcnow)
+    expires_at = db.Column(db.DateTime, nullable=True)
+
+class RetryQueue(db.Model):
+    """Reliable Async Message Delivery & Retry Queue for Failed Interoperability Calls"""
+    __tablename__ = 'retry_queue'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    application_id = db.Column(db.Integer, db.ForeignKey('applications.id'), nullable=False)
+    dept_code = db.Column(db.String(50), nullable=False)
+    payload_json = db.Column(db.Text, nullable=False)
+    retry_count = db.Column(db.Integer, default=0)
+    max_retries = db.Column(db.Integer, default=5)
+    status = db.Column(db.String(20), default='PENDING') # PENDING, PROCESSED, FAILED
+    last_error = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 class WorkflowStep(db.Model):
     """Workflow Engine Approval Stage Execution"""

@@ -80,8 +80,12 @@ class SSOService:
     @staticmethod
     def authenticate(username_or_email, password):
         """Authenticate user and return user instance if valid"""
+        val = (username_or_email or '').strip()
+        if not val or not password:
+            return None
+            
         user = User.query.filter(
-            (User.username == username_or_email) | (User.email == username_or_email)
+            (db.func.lower(User.username) == val.lower()) | (db.func.lower(User.email) == val.lower())
         ).first()
         
         if user and check_password_hash(user.password_hash, password):

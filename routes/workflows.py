@@ -12,11 +12,12 @@ def advance_workflow_stage():
     decision = data.get('decision', 'APPROVE') # APPROVE or REJECT
     remarks = data.get('remarks', 'Stage Verification Passed')
     officer_name = session.get('username', 'Officer Reviewer')
+    force_approve = data.get('force_approve', False)
     
     if not application_id:
         return jsonify({'error': 'Application ID is required'}), 400
         
-    success, msg = WorkflowEngine.process_next_stage(application_id, decision, remarks, officer_name)
+    success, msg = WorkflowEngine.process_next_stage(application_id, decision, remarks, officer_name, force_approve=force_approve)
     if not success:
         return jsonify({'error': msg}), 400
         

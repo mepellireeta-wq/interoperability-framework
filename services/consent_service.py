@@ -1,6 +1,59 @@
-from database.models import db, Application, AuditLog
+from database.models import db, Application, AuditLog, ConsentRecord
 import json
+import uuid
 from datetime import datetime
+
+def create_consent(citizen_id, scope="SKILL_GRANT_INTEGRATION", purpose="Cross-Department Data Verification"):
+    """Create explicit citizen consent record under DPDP Act 2023."""
+    consent_id = f"CNS-2026-{uuid.uuid4().hex[:8].upper()}"
+    record = ConsentRecord(
+        consent_id=consent_id,
+        citizen_id=str(citizen_id),
+        scope=scope,
+        purpose=purpose,
+        status='ACTIVE',
+        granted_at=datetime.utcnow()
+    )
+    db.session.add(record)
+    db.session.commit()
+    return consent_id
+
+def verify_consent(consent_id):
+    """Verify active consent record."""
+    if not consent_id:
+        return False, None
+    record = ConsentRecord.query.filter_by(consent_id=consent_id).first()
+    if record and record.status == 'ACTIVE':
+        return True, record
+    return False, record
+
+def revoke_consent(consent_id):
+    """Revoke active consent record."""
+    record = ConsentRecord.query.filter_by(consent_id=consent_id).first()
+    if record:
+        record.status = 'REVOKED'
+        db.session.commit()
+        return True
+    return False
+
+def mask_pii(val, pii_type="phone"):
+    """Mask sensitive PII fields for audit logs."""
+    if not val:
+        return ""
+    val_str = str(val).strip()
+    if pii_type == "phone":
+        if len(val_str) >= 10:
+            return val_str[:2] + "*****" + val_str[-3:]
+        return val_str[:2] + "*****"
+    elif pii_type in ["aadhaar", "national_id"]:
+        if len(val_str) == 12:
+            return "XXXX-XXXX-" + val_str[-4:]
+        return "XXXX-XXXX-" + val_str[-4:] if len(val_str) > 4 else "XXXX-XXXX"
+    elif pii_type == "email":
+        parts = val_str.split("@")
+        if len(parts) == 2:
+            return parts[0][:2] + "***@" + parts[1]
+    return val_str[:2] + "***"
 
 class ConsentService:
     """Consent Manager for Citizen Data Sharing Governance & Immutable Audit Logging"""
@@ -10,7 +63,6 @@ class ConsentService:
     @staticmethod
     def verify_consent(user_id, service_code, dept_code):
         """Check if active consent exists for cross-department data sharing"""
-        # Verifies explicit authorization for cross-department data exchange
         return True
 
     @staticmethod

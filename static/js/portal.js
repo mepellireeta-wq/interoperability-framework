@@ -89,34 +89,49 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Dynamic Scheme Supporting Documents Handler
+    const serviceCodeSelect = document.getElementById('appServiceCode');
+    if (serviceCodeSelect) {
+        renderDynamicUploadFields();
+        serviceCodeSelect.addEventListener('change', renderDynamicUploadFields);
+    }
+
     // Unified Application Form Submission Handler
     const appForm = document.getElementById('unifiedApplicationForm');
     if (appForm) {
         appForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const payload = {
-                service_code: document.getElementById('appServiceCode').value,
-                service_title: document.getElementById('appServiceCode').options[document.getElementById('appServiceCode').selectedIndex].text,
-                applicant: {
-                    full_name: document.getElementById('appFullName').value,
-                    email: document.getElementById('appEmail').value,
-                    phone: document.getElementById('appPhone').value,
-                    state: document.getElementById('appStateSelect') ? document.getElementById('appStateSelect').value : 'Maharashtra',
-                    district: document.getElementById('appDistrict') ? document.getElementById('appDistrict').value : 'Pune',
-                    state_id_number: document.getElementById('appStateId').value
-                },
-                scheme_data: {
-                    qualification: 'Graduate',
-                    preferred_district: 'Pune'
-                }
-            };
+            const formData = new FormData();
+            formData.append('service_code', document.getElementById('appServiceCode').value);
+            formData.append('service_title', document.getElementById('appServiceCode').options[document.getElementById('appServiceCode').selectedIndex].text);
+            formData.append('full_name', document.getElementById('appFullName').value);
+            formData.append('email', document.getElementById('appEmail').value);
+            formData.append('phone', document.getElementById('appPhone').value);
+            formData.append('state', document.getElementById('appStateSelect') ? document.getElementById('appStateSelect').value : 'Maharashtra');
+            formData.append('district', document.getElementById('appDistrict') ? document.getElementById('appDistrict').value : 'Pune');
+            formData.append('state_id_number', document.getElementById('appStateId').value);
+
+            const yearOfStudy = document.getElementById('docYearOfStudy');
+            if (yearOfStudy) {
+                formData.append('year_of_study', yearOfStudy.value);
+            }
+
+            // Append all file inputs from dynamic documents container
+            const docContainer = document.getElementById('dynamicDocumentsContainer');
+            if (docContainer) {
+                const fileInputs = docContainer.querySelectorAll('input[type="file"]');
+                fileInputs.forEach(input => {
+                    if (input.files && input.files[0]) {
+                        formData.append(input.name, input.files[0]);
+                    }
+                });
+            }
             
             try {
                 const res = await fetch('/api/v1/applications/submit', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: formData
                 });
                 const data = await res.json();
                 
@@ -125,6 +140,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('trackLink').href = `/track-page?id=${data.tracking_id}`;
                     document.getElementById('submissionResult').classList.remove('d-none');
                     appForm.classList.add('d-none');
+                } else if (res.status === 401) {
+                    alert("Authentication Required: Please Sign In or Sign Up before applying for a scheme.");
+                    window.location.href = data.redirect || '/login-page';
                 } else {
                     alert(`Submission Failed: ${data.error}`);
                 }
@@ -283,18 +301,18 @@ async function loadSchemeCatalog() {
                 const domainBadgeClass = scheme.domain === 'Education' ? 'bg-primary' : (scheme.domain === 'Health' ? 'bg-danger' : (scheme.domain === 'Banking' ? 'bg-success' : 'bg-warning text-dark'));
                 
                 container.innerHTML += `
-                    <div class="col-md-6 col-lg-4 mb-4">
-                        <div class="glass-card h-100 p-4 d-flex flex-column justify-content-between shadow-sm border">
-                            <div class="d-flex flex-column h-100">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="glass-card h-100 p-4 d-flex flex-column justify-content-between">
+                            <div>
                                 <div class="d-flex align-items-center mb-3">
-                                    <span class="badge ${domainBadgeClass} rounded-pill me-2 px-3 py-1">${scheme.domain || 'Multi-Sector'}</span>
-                                    <span class="badge bg-secondary rounded-pill px-2 py-1 font-monospace">${scheme.integration_type}</span>
+                                    <span class="badge ${domainBadgeClass} rounded-pill me-2">${scheme.domain || 'Multi-Sector'}</span>
+                                    <span class="badge bg-secondary rounded-pill">${scheme.integration_type}</span>
                                 </div>
-                                <h5 class="fw-bold text-dark mb-2 d-flex align-items-center" style="min-height: 56px;">${scheme.title}</h5>
-                                <p class="text-muted small mb-3" style="min-height: 64px;">${scheme.description}</p>
-                                <small class="text-primary font-monospace d-block mb-3" style="min-height: 24px;"><i class="fa-solid fa-building me-1"></i>${scheme.department}</small>
+                                <h5 class="fw-bold text-dark">${scheme.title}</h5>
+                                <p class="text-muted small">${scheme.description}</p>
+                                <small class="text-primary font-monospace d-block mb-2"><i class="fa-solid fa-building me-1"></i>${scheme.department}</small>
                             </div>
-                            <a href="/apply-page?service=${scheme.service_code}" class="btn btn-outline-primary rounded-pill fw-bold w-100 mt-auto">
+                            <a href="/apply-page?service=${scheme.service_code}" class="btn btn-outline-primary rounded-pill fw-bold w-100 mt-3">
                                 Apply Now <i class="fa-solid fa-arrow-right ms-1"></i>
                             </a>
                         </div>
@@ -361,4 +379,101 @@ async function performTrackSearch() {
         console.error(err);
         alert("Error fetching tracking status");
     }
+}
+
+function renderDynamicUploadFields() {
+    const container = document.getElementById('dynamicDocumentsContainer');
+    const serviceSelect = document.getElementById('appServiceCode');
+    if (!container || !serviceSelect) return;
+
+    const val = serviceSelect.value;
+    let html = '';
+
+    if (val === 'EDU_SCHOLARSHIP_GRANT' || val === 'UNIFIED_SKILL_TO_GRANT' || val === 'SKILL_TRAINING_SCHEME') {
+        html = `
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold"><i class="fa-solid fa-graduation-cap text-primary me-1"></i> Student Year / Qualification Level</label>
+                    <select id="docYearOfStudy" name="year_of_study" class="form-select fw-bold">
+                        <option value="10th Class / Secondary (10th Marks Memo)">10th Class / SSC (10th Marks Memo Required)</option>
+                        <option value="12th / Intermediate (Inter Marks Memo)">12th Class / Intermediate (Inter Marks Memo Required)</option>
+                        <option value="Undergraduate Degree / B.Tech (Degree Marks Memo)" selected>Undergraduate Degree / B.Tech (Degree Marks Memo Required)</option>
+                        <option value="Post-Graduate / Master's Degree">Post-Graduate / Master's (Degree Marks Memo Required)</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold"><i class="fa-solid fa-file-pdf text-danger me-1"></i> Marks Memo Document (10th / Inter / Degree)</label>
+                    <input type="file" id="docMarksMemo" name="doc_marks_memo" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                    <small class="text-muted fs-8">Upload scanned 10th, Inter, or Degree marks memo (PDF/JPG)</small>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label fw-bold"><i class="fa-solid fa-id-card text-info me-1"></i> Student ID Card / Institution Bonafide</label>
+                    <input type="file" id="docStudentId" name="doc_student_id" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                    <small class="text-muted fs-8">Upload College Student ID Card or Institution Certificate</small>
+                </div>
+            </div>
+        `;
+    } else if (val === 'INNOVATION_STARTUP_GRANT' || val === 'BANKING_MUDRA_LOAN') {
+        html = `
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold"><i class="fa-solid fa-file-word text-primary me-1"></i> Applicant Resume / Candidate CV</label>
+                    <input type="file" id="docResume" name="doc_resume" class="form-control" accept=".pdf,.doc,.docx">
+                    <small class="text-muted fs-8">Upload your updated resume or candidate CV (PDF/DOCX)</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold"><i class="fa-solid fa-lightbulb text-warning me-1"></i> Startup Pitch Deck / Business Proposal</label>
+                    <input type="file" id="docPitchDeck" name="doc_pitch_deck" class="form-control" accept=".pdf,.pptx,.doc,.docx">
+                    <small class="text-muted fs-8">Upload startup pitch deck, business proposal, or Mudra project report</small>
+                </div>
+            </div>
+        `;
+    } else if (val === 'AGRI_PM_KISAN_DBT') {
+        html = `
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold"><i class="fa-solid fa-wheat-awn text-success me-1"></i> Farmer Land Ownership Passbook / Patta</label>
+                    <input type="file" id="docLandPassbook" name="doc_land_passbook" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                    <small class="text-muted fs-8">Upload land ownership passbook or official Patta certificate</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold"><i class="fa-solid fa-address-card text-primary me-1"></i> Farmer Ration Card / Agricultural ID</label>
+                    <input type="file" id="docRationCard" name="doc_ration_card" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                    <small class="text-muted fs-8">Upload family ration card or state farmer registration card</small>
+                </div>
+            </div>
+        `;
+    } else if (val === 'HEALTH_AYUSHMAN_CARD') {
+        html = `
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold"><i class="fa-solid fa-file-invoice text-primary me-1"></i> Income Certificate / BPL Ration Card</label>
+                    <input type="file" id="docIncomeCert" name="doc_income_cert" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                    <small class="text-muted fs-8">Upload annual income certificate or BPL ration card copy</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold"><i class="fa-solid fa-id-badge text-danger me-1"></i> Government Identity Card</label>
+                    <input type="file" id="docGovtId" name="doc_govt_id" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                    <small class="text-muted fs-8">Aadhaar, Voter ID, or Health Beneficiary card</small>
+                </div>
+            </div>
+        `;
+    } else {
+        html = `
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold"><i class="fa-solid fa-bolt text-warning me-1"></i> Recent Electricity Utility Bill</label>
+                    <input type="file" id="docElectricityBill" name="doc_electricity_bill" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                    <small class="text-muted fs-8">Upload recent electricity utility bill showing consumer number</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold"><i class="fa-solid fa-house-chimney text-success me-1"></i> Rooftop Property Ownership Proof</label>
+                    <input type="file" id="docPropertyProof" name="doc_property_proof" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                    <small class="text-muted fs-8">Property tax receipt, sale deed, or ownership document</small>
+                </div>
+            </div>
+        `;
+    }
+
+    container.innerHTML = html;
 }

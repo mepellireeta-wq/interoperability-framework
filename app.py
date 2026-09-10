@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, session, redirect
 from config import config_by_name
 from database.models import db
 from routes.auth import auth_bp
@@ -12,6 +12,7 @@ from routes.ai_chat import ai_chat_bp
 from routes.blockchain import blockchain_bp
 from routes.developer import developer_bp
 from routes.citizen import citizen_bp
+from routes.interop_monitor import interop_monitor_bp
 
 def create_app(config_name='dev'):
     """Flask Application Factory for Universal Government Interoperability Middleware"""
@@ -23,6 +24,45 @@ def create_app(config_name='dev'):
     
     # Initialize Database Extension
     db.init_app(app)
+    
+    # Ensure database schema and seed users exist
+    with app.app_context():
+        try:
+            db.create_all()
+            from database.models import User
+            from werkzeug.security import generate_password_hash
+            if not User.query.filter_by(username='admin').first():
+                admin_user = User(
+                    sso_id='SSO-GOV-NAT-001',
+                    username='admin',
+                    email='admin@interop.gov.in',
+                    password_hash=generate_password_hash('Admin@123'),
+                    role='ADMIN',
+                    full_name='System Governance Administrator',
+                    phone='9876543210'
+                )
+                officer_user = User(
+                    sso_id='SSO-GOV-NAT-002',
+                    username='officer_skills',
+                    email='officer@skills.interop.gov.in',
+                    password_hash=generate_password_hash('Officer@123'),
+                    role='OFFICER',
+                    full_name='Skills Review Officer',
+                    phone='9876543211'
+                )
+                citizen_user = User(
+                    sso_id='SSO-CITIZEN-NAT-101',
+                    username='citizen_demo',
+                    email='citizen@example.com',
+                    password_hash=generate_password_hash('Citizen@123'),
+                    role='CITIZEN',
+                    full_name='Rahul Kumar',
+                    phone='9123456789'
+                )
+                db.session.add_all([admin_user, officer_user, citizen_user])
+                db.session.commit()
+        except Exception as e:
+            db.session.rollback()
     
     # Ensure necessary folders exist
     os.makedirs(os.path.join(app.root_path, 'database'), exist_ok=True)
@@ -39,6 +79,7 @@ def create_app(config_name='dev'):
     app.register_blueprint(blockchain_bp)
     app.register_blueprint(developer_bp)
     app.register_blueprint(citizen_bp)
+    app.register_blueprint(interop_monitor_bp)
     
     # Health Check API
     @app.route('/api/health', methods=['GET'])
@@ -66,13 +107,36 @@ def create_app(config_name='dev'):
     def login_page():
         return render_template('login.html')
 
+    @app.route('/admin-login', methods=['GET', 'POST'])
+    @app.route('/admin-login-page', methods=['GET', 'POST'])
+    def admin_login_page():
+        if request.method == 'POST':
+            username = request.form.get('username', '').strip()
+            password = request.form.get('password', '').strip()
+            from services.sso_service import SSOService
+            user = SSOService.authenticate(username, password)
+            if user and user.role in ['ADMIN', 'OFFICER']:
+                token = SSOService.generate_token(user)
+                session['user_id'] = user.id
+                session['username'] = user.username
+                session['role'] = user.role
+                res = redirect(f'/admin-portal?token={token}')
+                res.set_cookie('sso_token', token, max_age=43200)
+                return res
+        return render_template('admin_login.html')
+
     @app.route('/register-page', methods=['GET'])
     def register_page():
         return render_template('register.html')
 
     @app.route('/schemes', methods=['GET'])
     def schemes_page():
-        return render_template('schemes.html')
+        user = None
+        user_id = session.get('user_id')
+        if user_id:
+            from database.models import User
+            user = db.session.get(User, user_id)
+        return render_template('schemes.html', user=user)
 
     @app.route('/governance', methods=['GET'])
     def governance_page():
@@ -80,7 +144,19 @@ def create_app(config_name='dev'):
 
     @app.route('/apply-page', methods=['GET'])
     def apply_page():
-        return render_template('apply.html')
+        user_id = session.get('user_id')
+        if user_id:
+            from database.models import User
+            user = db.session.get(User, user_id)
+            if not user:
+                session.clear()
+                user_id = None
+                
+        if not user_id:
+            return redirect('/login-page?required=true')
+            
+        selected_service = request.args.get('service', 'UNIFIED_SKILL_TO_GRANT')
+        return render_template('apply.html', user=user, selected_service=selected_service)
 
     @app.route('/track-page', methods=['GET'])
     def track_page():

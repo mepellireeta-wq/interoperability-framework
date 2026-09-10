@@ -11,8 +11,38 @@
         <p class="text-muted max-w-700 mx-auto">Explore all government portals and schemes available across 28 States & 8 Union Territories in Education, Health, Banking, Agriculture, MSME, and Infrastructure.</p>
     </div>
 
+    {% if user %}
+    <!-- Personalized Logged-In Citizen Banner -->
+    <div class="glass-card p-3 mb-4 border-start border-4 border-primary bg-light">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+                <span class="badge bg-primary rounded-pill px-3 py-1 mb-1"><i class="fa-solid fa-user-check me-1"></i> Personalized Recommendations Active</span>
+                <h5 class="fw-bold text-dark mb-0">Showing welfare schemes relevant for {{ user.full_name }}</h5>
+                <small class="text-muted">Account: <code>{{ user.username }}</code> | Role: <code>{{ user.role }}</code></small>
+            </div>
+            <a href="/citizen-portal" class="btn btn-sm btn-outline-primary rounded-pill fw-bold">
+                <i class="fa-solid fa-user me-1"></i> My Workspace & History
+            </a>
+        </div>
+    </div>
+    {% else %}
+    <!-- Guest Visitor Welcome Banner -->
+    <div class="glass-card p-3 mb-4 border-start border-4 border-info bg-light">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+                <span class="badge bg-info text-dark rounded-pill px-3 py-1 mb-1"><i class="fa-solid fa-globe me-1"></i> Public Schemes Directory</span>
+                <h5 class="fw-bold text-dark mb-0">Browse All 28 States & Central Government Schemes</h5>
+                <small class="text-muted">Click 'Apply Now' on any scheme to log in or register and complete your simplified application.</small>
+            </div>
+            <a href="/login-page" class="btn btn-sm btn-primary rounded-pill fw-bold">
+                <i class="fa-solid fa-right-to-bracket me-1"></i> Sign In / Register
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Real-Time Open Data Sync Live Banner -->
-    <div class="alert alert-info border-info d-flex align-items-center justify-content-between flex-wrap gap-2 mb-5">
+    <div class="alert alert-info border-info d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
         <div class="d-flex align-items-center">
             <i class="fa-solid fa-globe fs-2 text-primary me-3"></i>
             <div>
@@ -24,7 +54,7 @@
     </div>
 
     <!-- State & Sector Filter Bar -->
-    <div class="glass-card p-3 mb-5">
+    <div class="glass-card p-3 mb-4">
         <div class="row g-3 align-items-center">
             <!-- State Selector -->
             <div class="col-md-5">

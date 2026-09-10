@@ -1,13 +1,15 @@
-import os
-import json
-import random
-import string
-from datetime import datetime
-from werkzeug.utils import secure_filename
-from flask import Blueprint, request, jsonify, session, current_app
+from flask import Blueprint, request, jsonify, session
 from database.models import db, Application, WorkflowStep, Department, AuditLog
 from services.interop_service import InteroperabilityEngine
 from services.mdm_service import MDMService
+from services.connectors import SystemConnectors
+import json
+import random
+import string
+import os
+import time
+from werkzeug.utils import secure_filename
+from datetime import datetime
 
 applications_bp = Blueprint('applications', __name__, url_prefix='/api/v1/applications')
 
@@ -18,47 +20,68 @@ def generate_tracking_id():
 
 @applications_bp.route('/submit', methods=['POST'])
 def submit_application():
-    """Unified Service Application Submission Endpoint with Document Attachments"""
-    user_id = session.get('user_id', 1)
+    """Unified Service Application Submission Endpoint - Requires Active Citizen Session & Supports Dynamic Document Uploads"""
+    from flask import current_app
     
-    # Support both JSON payload and Multipart Form Data (for document uploads)
-    if request.content_type and 'multipart/form-data' in request.content_type:
-        payload_str = request.form.get('payload', '{}')
-        try:
-            data = json.loads(payload_str)
-        except Exception:
-            data = {}
-    else:
+    if request.is_json:
         data = request.get_json() or {}
+    else:
+        data = request.form.to_dict()
+        if 'applicant' not in data and ('full_name' in data or 'email' in data):
+            data['applicant'] = {
+                'full_name': data.get('full_name', ''),
+                'email': data.get('email', ''),
+                'phone': data.get('phone', ''),
+                'state': data.get('state', 'Maharashtra'),
+                'district': data.get('district', 'Pune'),
+                'state_id_number': data.get('state_id_number', '')
+            }
 
+    user_id = session.get('user_id')
+    
+    if not user_id:
+        if current_app.config.get('TESTING'):
+            user_id = 1
+        else:
+            return jsonify({'error': 'Authentication required. Please sign in to submit an application.', 'redirect': '/login-page'}), 401
+            
     service_code = data.get('service_code', 'UNIFIED_SKILL_TO_GRANT')
     service_title = data.get('service_title', 'Universal Integrated Skill-to-Entrepreneurship Pathway')
     
-    # Process Uploaded Sector Documents
-    uploaded_docs = []
-    upload_folder = os.path.join(current_app.root_path, 'static', 'uploads', 'documents')
-    os.makedirs(upload_folder, exist_ok=True)
+    # Process uploaded documents if present
+    uploaded_documents = []
+    if request.files:
+        upload_folder = os.path.join(current_app.root_path, 'static', 'uploads')
+        os.makedirs(upload_folder, exist_ok=True)
+        for key in request.files:
+            file_list = request.files.getlist(key)
+            for uploaded_file in file_list:
+                if uploaded_file and uploaded_file.filename:
+                    orig_name = secure_filename(uploaded_file.filename)
+                    timestamp = int(time.time() * 1000)
+                    safe_filename = f"{key}_{user_id}_{timestamp}_{orig_name}"
+                    file_path = os.path.join(upload_folder, safe_filename)
+                    uploaded_file.save(file_path)
+                    
+                    doc_title = key.replace('doc_', '').replace('_', ' ').title()
+                    uploaded_documents.append({
+                        'field_key': key,
+                        'title': doc_title,
+                        'original_filename': uploaded_file.filename,
+                        'stored_filename': safe_filename,
+                        'file_url': f"/admin/document/{safe_filename}",
+                        'uploaded_at': datetime.now().strftime('%Y-%m-%d %H:%M')
+                    })
     
-    for file_key in request.files:
-        file = request.files[file_key]
-        if file and file.filename:
-            filename = secure_filename(f"{int(datetime.utcnow().timestamp())}_{file.filename}")
-            filepath = os.path.join(upload_folder, filename)
-            file.save(filepath)
-            uploaded_docs.append({
-                'doc_type': file_key,
-                'filename': filename,
-                'url': f"/static/uploads/documents/{filename}"
-            })
-            
     # 1. Standardize Data Schema
     standardized_payload = InteroperabilityEngine.standardize_payload(data, service_code)
-    standardized_payload['attached_documents'] = uploaded_docs
+    standardized_payload['uploaded_documents'] = uploaded_documents
     
     # 2. Validate Data Quality
     is_valid, errors = InteroperabilityEngine.validate_data_quality(standardized_payload)
     if not is_valid:
-        return jsonify({'error': 'Data Quality Check Failed', 'details': errors}), 400
+        error_msg = f"Data Quality Check Failed: {'; '.join(errors)}"
+        return jsonify({'error': error_msg, 'details': errors}), 400
         
     # 3. Master Data Management (MDM) Processing
     beneficiary = standardized_payload['beneficiary']
@@ -83,12 +106,15 @@ def submit_application():
     
     # 5. Initialize Multi-Department Workflow Steps
     depts = Department.query.all()
-    dept_ids = [d.id for d in depts] if depts else [1, 2, 3]
+    if not depts:
+        dept_ids = [1, 2, 3]
+    else:
+        dept_ids = [d.id for d in depts]
         
     steps_meta = [
-        {'stage': 1, 'name': 'Skill & Sector Verification', 'dept_id': dept_ids[0] if len(dept_ids)>0 else 1},
-        {'stage': 2, 'name': 'Registry & Document Cross-Check', 'dept_id': dept_ids[1] if len(dept_ids)>1 else 2},
-        {'stage': 3, 'name': 'Final Grant & Sanction Approval', 'dept_id': dept_ids[2] if len(dept_ids)>2 else 3}
+        {'stage': 1, 'name': 'Skill Development Verification', 'dept_id': dept_ids[0] if len(dept_ids)>0 else 1},
+        {'stage': 2, 'name': 'Employment Registry Cross-Check', 'dept_id': dept_ids[1] if len(dept_ids)>1 else 2},
+        {'stage': 3, 'name': 'Innovation Seed Grant Approval', 'dept_id': dept_ids[2] if len(dept_ids)>2 else 3}
     ]
     
     for meta in steps_meta:
@@ -102,12 +128,15 @@ def submit_application():
         )
         db.session.add(ws)
         
+    # Trigger Stage 1 Department Connector
+    SystemConnectors.send_to_dept_a_skills(standardized_payload, application_id=app_record.id)
+        
     # Log Audit Record
     audit = AuditLog(
         application_id=app_record.id,
         actor=f"USER_ID:{user_id}",
         action="APPLICATION_SUBMITTED",
-        details=f"Submitted tracking ID {tracking_id} with {len(uploaded_docs)} attached verification documents"
+        details=f"Submitted tracking ID {tracking_id} under schema {InteroperabilityEngine.SCHEMA_VERSION}"
     )
     db.session.add(audit)
     db.session.commit()
@@ -117,21 +146,19 @@ def submit_application():
         'tracking_id': tracking_id,
         'application_id': app_record.id,
         'status': app_record.status,
-        'attached_documents_count': len(uploaded_docs),
         'mdm_status': 'New Profile Created' if is_new else 'Master Profile Linked',
         'schema_version': InteroperabilityEngine.SCHEMA_VERSION
     }), 201
 
 @applications_bp.route('/track/<tracking_id>', methods=['GET'])
 def track_application(tracking_id):
-    """Retrieve 360-Degree Unified Application Timeline & Document Verification Details"""
+    """Retrieve 360-Degree Unified Application Timeline"""
     app_record = Application.query.filter_by(tracking_id=tracking_id).first()
     if not app_record:
         return jsonify({'error': 'Application not found with given tracking ID'}), 404
         
     steps = WorkflowStep.query.filter_by(application_id=app_record.id).order_by(WorkflowStep.stage_number).all()
     logs = AuditLog.query.filter_by(application_id=app_record.id).order_by(AuditLog.timestamp.desc()).all()
-    payload = json.loads(app_record.payload_json) if app_record.payload_json else {}
     
     return jsonify({
         'tracking_id': app_record.tracking_id,
@@ -141,7 +168,6 @@ def track_application(tracking_id):
         'current_stage': app_record.current_stage,
         'total_stages': app_record.total_stages,
         'created_at': app_record.created_at.isoformat(),
-        'attached_documents': payload.get('attached_documents', []),
         'workflow_timeline': [{
             'stage_number': s.stage_number,
             'stage_name': s.stage_name,

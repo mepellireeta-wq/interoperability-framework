@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+
+{% block title %}Interoperability Architecture Monitor | GOVINTEROP{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header Banner -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+        <div>
+            <h2 class="fw-bold text-primary mb-1">
+                <i class="bi bi-diagram-3-fill me-2"></i>Interoperability Architecture Monitor
+            </h2>
+            <p class="text-muted mb-0">Live Interoperability Pipeline, Schema Compliance (E-GOV-STD-INTEROP-2026), and SIH Demo Controller</p>
+        </div>
+        <div>
+            <span class="badge bg-success fs-6 px-3 py-2">
+                <i class="bi bi-shield-check me-1"></i>Canonical Schema: E-GOV-STD-INTEROP-2026
+            </span>
+        </div>
+    </div>
+
+    <!-- Pipeline Flowchart -->
+    <div class="card shadow-sm mb-4 border-0">
+        <div class="card-header bg-primary text-white fw-bold">
+            <i class="bi bi-arrows-collapse me-2"></i>End-to-End Interoperability Pipeline Architecture
+        </div>
+        <div class="card-body bg-light">
+            <div class="row text-center g-2 align-items-center">
+                <div class="col">
+                    <div class="p-2 bg-white rounded border shadow-sm">
+                        <i class="bi bi-person-fill text-primary fs-4"></i>
+                        <div class="fw-bold small mt-1">1. Citizen</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Single Submission</div>
+                    </div>
+                </div>
+                <div class="col-auto"><i class="bi bi-arrow-right text-primary fs-5"></i></div>
+                <div class="col">
+                    <div class="p-2 bg-white rounded border shadow-sm">
+                        <i class="bi bi-shield-lock-fill text-success fs-4"></i>
+                        <div class="fw-bold small mt-1">2. DPDP Consent</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Explicit Opt-In</div>
+                    </div>
+                </div>
+                <div class="col-auto"><i class="bi bi-arrow-right text-primary fs-5"></i></div>
+                <div class="col">
+                    <div class="p-2 bg-white rounded border shadow-sm">
+                        <i class="bi bi-code-square text-warning fs-4"></i>
+                        <div class="fw-bold small mt-1">3. Standardization</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">JSON Contract</div>
+                    </div>
+                </div>
+                <div class="col-auto"><i class="bi bi-arrow-right text-primary fs-5"></i></div>
+                <div class="col">
+                    <div class="p-2 bg-white rounded border shadow-sm">
+                        <i class="bi bi-fingerprint text-info fs-4"></i>
+                        <div class="fw-bold small mt-1">4. MDM Engine</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Golden Profile</div>
+                    </div>
+                </div>
+                <div class="col-auto"><i class="bi bi-arrow-right text-primary fs-5"></i></div>
+                <div class="col">
+                    <div class="p-2 bg-white rounded border shadow-sm">
+                        <i class="bi bi-cpu-fill text-dark fs-4"></i>
+                        <div class="fw-bold small mt-1">5. Workflow</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">REST & SOAP</div>
+                    </div>
+                </div>
+                <div class="col-auto"><i class="bi bi-arrow-right text-primary fs-5"></i></div>
+                <div class="col">
+                    <div class="p-2 bg-white rounded border shadow-sm">
+                        <i class="bi bi-shield-check text-success fs-4"></i>
+                        <div class="fw-bold small mt-1">6. Audit Trail</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Governance Log</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Interoperability Stats -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-white bg-primary">
+                <div class="card-body">
+                    <div class="text-uppercase small fw-bold">Total Applications</div>
+                    <div class="fs-2 fw-bold" id="metric-total-apps">0</div>
+                    <div class="small"><i class="bi bi-info-circle me-1"></i>Standardized Submissions</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-white bg-success">
+                <div class="card-body">
+                    <div class="text-uppercase small fw-bold">Approved Sanctions</div>
+                    <div class="fs-2 fw-bold" id="metric-approved-apps">0</div>
+                    <div class="small"><i class="bi bi-check-circle me-1"></i>Cross-Dept Approved</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-white bg-info">
+                <div class="card-body">
+                    <div class="text-uppercase small fw-bold">Active Consents</div>
+                    <div class="fs-2 fw-bold" id="metric-active-consents">0</div>
+                    <div class="small"><i class="bi bi-shield-check me-1"></i>DPDP Act Compliant</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-white bg-warning">
+                <div class="card-body">
+                    <div class="text-uppercase small fw-bold">Pending Review</div>
+                    <div class="fs-2 fw-bold" id="metric-queued-retries">0</div>
+                    <div class="small"><i class="bi bi-clock-history me-1"></i>Officer Workflow Queue</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Technical Presentation Scenarios -->
+    <div class="card shadow-sm mb-4 border-0">
+        <div class="card-header bg-dark text-white fw-bold d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-play-circle-fill me-2"></i>1-Click Technical Presentation Scenarios (SIH Demo Controller)</span>
+            <span class="badge bg-secondary">Live Interactive Scenarios</span>
+        </div>
+        <div class="card-body">
+            <div class="row g-2 mb-3">
+                <div class="col-md-4">
+                    <button class="btn btn-outline-primary w-100 text-start py-2" onclick="runScenario('A')">
+                        <div class="fw-bold"><i class="bi bi-play-fill text-primary"></i> Scenario A</div>
+                        <div class="small text-muted">Standard Citizen Journey & E2E Workflow Approval</div>
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-outline-secondary w-100 text-start py-2" onclick="runScenario('B')">
+                        <div class="fw-bold"><i class="bi bi-play-fill text-secondary"></i> Scenario B</div>
+                        <div class="small text-muted">Legacy System Integration (SOAP/XML Adapter)</div>
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-outline-warning w-100 text-start py-2" onclick="runScenario('C')">
+                        <div class="fw-bold"><i class="bi bi-play-fill text-warning"></i> Scenario C</div>
+                        <div class="small text-muted">Multi-Department Workflow & SLA Escalation</div>
+                    </button>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <button class="btn btn-outline-danger w-100 text-start py-2" onclick="runScenario('D')">
+                        <div class="fw-bold"><i class="bi bi-play-fill text-danger"></i> Scenario D</div>
+                        <div class="small text-muted">DPDP Consent Revocation & Access Denial (403)</div>
+                    </button>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <button class="btn btn-outline-info w-100 text-start py-2" onclick="runScenario('E')">
+                        <div class="fw-bold"><i class="bi bi-play-fill text-info"></i> Scenario E</div>
+                        <div class="small text-muted">Privacy-Preserving MDM Golden Record Deduplication</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Scenario Execution Output Display -->
+            <div id="scenario-output-container" style="display: none;">
+                <div class="card border-primary">
+                    <div class="card-header bg-light fw-bold text-primary d-flex justify-content-between">
+                        <span id="scenario-output-title">Scenario Output</span>
+                        <span class="badge bg-success" id="scenario-output-status">SUCCESS</span>
+                    </div>
+                    <div class="card-body">
+                        <pre id="scenario-output-json" class="bg-dark text-light p-3 rounded small mb-0" style="max-height: 250px; overflow-y: auto;"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Application Registry -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white fw-bold py-3 d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-table me-2"></i>Active Application Pipeline Registry</span>
+            <button class="btn btn-sm btn-outline-primary" onclick="loadPipelineStatus()"><i class="bi bi-arrow-clockwise me-1"></i>Refresh Data</button>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Tracking ID</th>
+                            <th>Service Code</th>
+                            <th>Consent ID</th>
+                            <th>Pipeline Stage</th>
+                            <th>Status</th>
+                            <th>Submitted At</th>
+                        </tr>
+                    </thead>
+                    <tbody id="application-registry-tbody">
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">Loading live pipeline data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function loadPipelineStatus() {
+    fetch('/api/v1/interop/pipeline-status')
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('metric-total-apps').innerText = data.metrics.total_applications;
+            document.getElementById('metric-approved-apps').innerText = data.metrics.approved_applications;
+            document.getElementById('metric-active-consents').innerText = data.metrics.active_consents;
+            document.getElementById('metric-queued-retries').innerText = data.metrics.pending_retry_queue;
+
+            const tbody = document.getElementById('application-registry-tbody');
+            if (data.applications.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No applications submitted yet. Run a scenario above to test!</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = data.applications.map(app => `
+                <tr>
+                    <td class="fw-bold text-primary">${app.tracking_id}</td>
+                    <td><code>${app.service_code}</code></td>
+                    <td><span class="badge bg-light text-dark border">${app.consent_id}</span></td>
+                    <td>Stage ${app.current_stage} / 3</td>
+                    <td>
+                        <span class="badge bg-${app.status === 'APPROVED' ? 'success' : app.status === 'QUEUED' ? 'warning' : 'info'}">
+                            ${app.status}
+                        </span>
+                    </td>
+                    <td class="small text-muted">${app.created_at}</td>
+                </tr>
+            `).join('');
+        })
+        .catch(err => console.error("Error loading pipeline status:", err));
+}
+
+function runScenario(scenarioId) {
+    fetch(`/api/v1/demo/run-scenario/${scenarioId}`, { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('scenario-output-container').style.display = 'block';
+            document.getElementById('scenario-output-title').innerText = data.scenario || `Scenario ${scenarioId}`;
+            document.getElementById('scenario-output-status').innerText = data.status || 'SUCCESS';
+            document.getElementById('scenario-output-json').innerText = JSON.stringify(data, null, 2);
+            loadPipelineStatus();
+        })
+        .catch(err => console.error("Scenario error:", err));
+}
+
+document.addEventListener('DOMContentLoaded', loadPipelineStatus);
+</script>
+{% endblock %}

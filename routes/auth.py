@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify, session, make_response
 from database.models import db, User
 from services.sso_service import SSOService
 import secrets
@@ -21,12 +21,12 @@ def login():
 
     token = SSOService.generate_token(user)
     
-    # Store session role
+    # Store session role & identity
     session['user_id'] = user.id
     session['username'] = user.username
     session['role'] = user.role
 
-    return jsonify({
+    resp = make_response(jsonify({
         'message': 'Authentication successful',
         'token': token,
         'user': {
@@ -36,7 +36,9 @@ def login():
             'email': user.email,
             'role': user.role
         }
-    }), 200
+    }), 200)
+    resp.set_cookie('sso_token', token, max_age=43200, path='/')
+    return resp
 
 @auth_bp.route('/register', methods=['POST'])
 def register():

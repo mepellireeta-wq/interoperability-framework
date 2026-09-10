@@ -69,31 +69,45 @@
 
                     <!-- Admin & Developer Links (VISIBLE ONLY IF LOGGED IN AS ADMIN/OFFICER) -->
                     {% if session.get('role') in ['ADMIN', 'OFFICER'] %}
+                    <li class="nav-item"><a class="nav-link px-2 fw-semibold text-warning" href="/interoperability-monitor"><i class="fa-solid fa-diagram-project me-1"></i> Interop Monitor</a></li>
                     <li class="nav-item"><a class="nav-link px-2 fw-semibold text-warning" href="/developer-tech"><i class="fa-solid fa-code me-1"></i> Developer Tech</a></li>
                     <li class="nav-item"><a class="nav-link px-2 fw-semibold text-warning" href="/admin-portal"><i class="fa-solid fa-lock me-1"></i> Admin Portal</a></li>
                     {% endif %}
 
                     <!-- Session Controls -->
                     {% if session.get('username') %}
-                    <li class="nav-item ms-lg-2 dropdown">
-                        <a class="btn btn-light text-primary fw-bold px-3 py-1 rounded-pill shadow-sm dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="fa-solid fa-user-circle me-1"></i> {{ session.get('username') }} ({{ session.get('role') }})
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow">
-                            <li><a class="dropdown-item fw-bold" href="/citizen-portal"><i class="fa-solid fa-id-card me-2 text-primary"></i> My Portal Profile</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><button id="btnLogout" class="dropdown-item text-danger fw-bold"><i class="fa-solid fa-right-from-bracket me-2"></i> Log Out Session</button></li>
-                        </ul>
-                    </li>
+                        {% if session.get('role') in ['ADMIN', 'OFFICER'] %}
+                        <li class="nav-item ms-lg-2">
+                            <a href="/admin-portal" class="btn btn-light text-dark fw-bold px-3 py-1 rounded-pill shadow-sm me-2">
+                                <i class="fa-solid fa-shield-halved text-warning me-1"></i> Admin: {{ session.get('username') }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <button id="btnNavbarLogoutAdmin" class="btn btn-danger text-white fw-bold px-3 py-1 rounded-pill shadow-sm">
+                                <i class="fa-solid fa-right-from-bracket me-1"></i> Sign Out Admin
+                            </button>
+                        </li>
+                        {% else %}
+                        <li class="nav-item ms-lg-2">
+                            <a href="/citizen-portal" class="btn btn-light text-primary fw-bold px-3 py-1 rounded-pill shadow-sm me-2">
+                                <i class="fa-solid fa-user me-1"></i> Citizen: {{ session.get('username') }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <button id="btnNavbarLogoutCitizen" class="btn btn-outline-light fw-bold px-3 py-1 rounded-pill shadow-sm">
+                                <i class="fa-solid fa-right-from-bracket me-1"></i> Sign Out Citizen
+                            </button>
+                        </li>
+                        {% endif %}
                     {% else %}
                     <li class="nav-item ms-lg-2">
                         <a href="/login-page" class="btn btn-light text-primary fw-bold px-3 py-1 rounded-pill shadow-sm me-1">
-                            <i class="fa-solid fa-right-to-bracket me-1"></i> Sign In
+                            <i class="fa-solid fa-user me-1"></i> Citizen Sign In
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="/register-page" class="btn btn-outline-light fw-bold px-3 py-1 rounded-pill">
-                            <i class="fa-solid fa-user-plus me-1"></i> Sign Up
+                            <i class="fa-solid fa-user-plus me-1"></i> Citizen Sign Up
                         </a>
                     </li>
                     {% endif %}
@@ -196,14 +210,27 @@
     <script src="{{ url_for('static', filename='js/portal.js') }}"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const btnLogout = document.getElementById('btnLogout');
-        if (btnLogout) {
-            btnLogout.addEventListener('click', async function() {
+        const btnAdminLogout = document.getElementById('btnNavbarLogoutAdmin');
+        if (btnAdminLogout) {
+            btnAdminLogout.addEventListener('click', async function() {
                 try {
                     await fetch('/api/v1/auth/logout', { method: 'POST' });
-                    localStorage.removeItem('sso_token');
-                    window.location.href = '/login-page';
-                } catch(e) { console.error(e); }
+                } catch(e) {}
+                localStorage.removeItem('sso_token');
+                document.cookie = 'sso_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+                window.location.href = '/admin-login';
+            });
+        }
+
+        const btnCitizenLogout = document.getElementById('btnNavbarLogoutCitizen');
+        if (btnCitizenLogout) {
+            btnCitizenLogout.addEventListener('click', async function() {
+                try {
+                    await fetch('/api/v1/auth/logout', { method: 'POST' });
+                } catch(e) {}
+                localStorage.removeItem('sso_token');
+                document.cookie = 'sso_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+                window.location.href = '/login-page';
             });
         }
     });

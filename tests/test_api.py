@@ -16,6 +16,7 @@ def client():
     
     with app.test_client() as client:
         with app.app_context():
+            db.drop_all()
             db.create_all()
             yield client
 
@@ -50,3 +51,24 @@ def test_application_submission(client):
     data = res.get_json()
     assert 'tracking_id' in data
     assert data['tracking_id'].startswith('GOV-2026-')
+
+def test_document_upload_and_admin_access(client):
+    """Test multipart file uploads and strict admin-only document access policy"""
+    from io import BytesIO
+    data = {
+        'service_code': 'EDU_SCHOLARSHIP_GRANT',
+        'service_title': 'National Merit Scholarship',
+        'full_name': 'Ananya Sharma',
+        'email': 'ananya@example.com',
+        'phone': '9876543210',
+        'doc_marks_memo': (BytesIO(b'Sample 10th Marks Memo PDF Content'), 'marks_memo.pdf')
+    }
+    res = client.post('/api/v1/applications/submit', data=data, content_type='multipart/form-data')
+    assert res.status_code == 201
+    res_data = res.get_json()
+    assert 'tracking_id' in res_data
+
+    # Unauthenticated document view attempt must return 403
+    unauth_res = client.get('/admin/document/doc_marks_memo_1_123_marks_memo.pdf')
+    assert unauth_res.status_code == 403
+

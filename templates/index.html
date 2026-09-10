@@ -3,7 +3,7 @@
 {% block title %}GovInterop - All-India Universal Digital Service Delivery Portal{% endblock %}
 
 {% block content %}
-<!-- Sky Blue Hero Section (Clean & Professional) -->
+<!-- Sky Blue Hero Section (Clean & Professional, No Canvas Animation) -->
 <section class="hero-section text-center position-relative">
     <div class="container position-relative z-1">
         <span class="stat-badge mb-3"><i class="fa-solid fa-building-columns me-2"></i>National E-Governance Interoperability Platform</span>
@@ -23,7 +23,7 @@
             <a href="/citizen-portal" class="btn btn-light text-primary btn-lg rounded-pill px-5 fw-bold shadow-lg">
                 <i class="fa-solid fa-user me-2"></i>Citizen Portal
             </a>
-            <a href="/admin-portal" class="btn btn-warning text-dark btn-lg rounded-pill px-4 fw-bold shadow">
+            <a href="/admin-login" class="btn btn-warning text-dark btn-lg rounded-pill px-4 fw-bold shadow">
                 <i class="fa-solid fa-lock me-2"></i>Official Admin Portal
             </a>
         </div>
@@ -31,7 +31,7 @@
 </section>
 
 <!-- GMRIT 3-Column Section Blocks (Matching Reference Screenshot) -->
-<div class="container mt-n4 position-relative z-2">
+<div class="container mt-n4 position-relative z-2 mb-5">
     <div class="row g-4">
         <!-- Column 1: Governance -->
         <div class="col-md-4">
@@ -78,7 +78,7 @@
                         <li><a href="/apply-page" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-primary me-2"></i> Submit Scheme Application</a></li>
                         <li><a href="/track-page" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-primary me-2"></i> 360° Real-Time Tracking</a></li>
                         <li><a href="/blockchain-verifier" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-primary me-2"></i> Blockchain Certificate Verification</a></li>
-                        <li><a href="/admin-portal" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-primary me-2"></i> Official Admin Portal Login</a></li>
+                        <li><a href="/schemes" class="text-decoration-none text-dark fw-semibold"><i class="fa-solid fa-caret-right text-primary me-2"></i> Explore All Schemes & Portals</a></li>
                     </ul>
                 </div>
             </div>
@@ -86,17 +86,79 @@
     </div>
 </div>
 
-<!-- Featured Schemes Section -->
-<section id="services" class="py-5 mt-4">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold text-dark"><i class="fa-solid fa-boxes-stacked text-primary me-2"></i>Featured Universal Schemes & Services</h2>
-            <p class="text-muted">Apply once; data automatically standardizes and routes across all necessary department workflow engines nation-wide.</p>
+<!-- Featured Universal Schemes & Services Section (Matching Reference Screenshot) -->
+<section class="py-4 position-relative">
+    <div class="emblem-watermark-bg"></div>
+    <div class="container position-relative z-1">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-dark mb-2">
+                <i class="fa-solid fa-boxes-stacked text-primary me-2"></i>Featured Universal Schemes & Services
+            </h2>
+            <p class="text-muted max-w-700 mx-auto">
+                Apply once; data automatically standardizes and routes across all necessary department workflow engines nation-wide.
+            </p>
         </div>
 
-        <!-- Scheme Cards Grid -->
-        <div class="row g-4" id="schemeContainer">
-            <!-- Dynamically populated via portal.js -->
+        <div class="row g-4" id="indexSchemeContainer">
+            <!-- Scheme 1 -->
+            <div class="col-md-4">
+                <div class="glass-card h-100 p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="badge bg-primary rounded-pill me-2">Education</span>
+                            <span class="badge bg-secondary rounded-pill">REST_API</span>
+                        </div>
+                        <h5 class="fw-bold text-dark">National Higher Education & Merit Scholarship Scheme</h5>
+                        <p class="text-muted small">Merit-cum-means scholarship for undergraduate & postgraduate students nationwide.</p>
+                        <small class="text-primary font-monospace d-block mb-2"><i class="fa-solid fa-building me-1"></i>Department of Higher Education</small>
+                    </div>
+                    <a href="/apply-page?service=EDU_SCHOLARSHIP_GRANT" class="btn btn-outline-primary rounded-pill fw-bold w-100 mt-3">
+                        Apply Now <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Scheme 2 -->
+            <div class="col-md-4">
+                <div class="glass-card h-100 p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="badge bg-primary rounded-pill me-2">Education</span>
+                            <span class="badge bg-secondary rounded-pill">INTEROP_WORKFLOW</span>
+                        </div>
+                        <h5 class="fw-bold text-dark">Central Education Loan Interest Subsidy Scheme</h5>
+                        <p class="text-muted small">Interest subsidy on educational loans for students from economically weaker sections during moratorium.</p>
+                        <small class="text-primary font-monospace d-block mb-2"><i class="fa-solid fa-building me-1"></i>Department of Higher Education & DFS</small>
+                    </div>
+                    <a href="/apply-page?service=UNIFIED_SKILL_TO_GRANT" class="btn btn-outline-primary rounded-pill fw-bold w-100 mt-3">
+                        Apply Now <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Scheme 3 -->
+            <div class="col-md-4">
+                <div class="glass-card h-100 p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="badge bg-danger rounded-pill me-2">Health</span>
+                            <span class="badge bg-secondary rounded-pill">REST_API</span>
+                        </div>
+                        <h5 class="fw-bold text-dark">Ayushman Bharat Universal Health Protection Scheme</h5>
+                        <p class="text-muted small">Health coverage of up to ₹5 Lakh per family per year for secondary and tertiary care hospitalization.</p>
+                        <small class="text-primary font-monospace d-block mb-2"><i class="fa-solid fa-building me-1"></i>National Health Authority</small>
+                    </div>
+                    <a href="/apply-page?service=HEALTH_AYUSHMAN_CARD" class="btn btn-outline-primary rounded-pill fw-bold w-100 mt-3">
+                        Apply Now <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/schemes" class="btn btn-primary rounded-pill px-5 fw-bold shadow">
+                View All Schemes & Portals <i class="fa-solid fa-arrow-right ms-2"></i>
+            </a>
         </div>
     </div>
 </section>

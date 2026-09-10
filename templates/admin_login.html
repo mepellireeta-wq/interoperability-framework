@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Official Admin Portal - Sign In | Government Interoperability Platform{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="glass-card p-4 p-md-5 border-start border-4 border-warning shadow-lg">
+                <div class="text-center mb-4">
+                    <span class="badge bg-warning text-dark rounded-pill px-3 py-2 mb-2"><i class="fa-solid fa-shield-halved me-1"></i>Official Governance Access</span>
+                    <h3 class="fw-bold text-dark"><i class="fa-solid fa-lock text-warning me-2"></i>Official Admin Sign In</h3>
+                    <p class="text-muted small">Authorized System Administrator & Officer Governance Portal</p>
+                </div>
+
+                <div id="adminAlertBox" class="alert alert-danger d-none mb-3 text-center small rounded-3"></div>
+
+                <form id="adminLoginForm">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold"><i class="fa-solid fa-user me-1 text-warning"></i> Admin / Officer Username</label>
+                        <input type="text" id="adminUsername" class="form-control form-control-lg border-warning" placeholder="e.g. admin or officer_skills" value="admin" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold"><i class="fa-solid fa-key me-1 text-warning"></i> Password</label>
+                        <input type="password" id="adminPassword" class="form-control form-control-lg border-warning" placeholder="Enter admin password" value="Admin@123" required>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-warning text-dark btn-lg rounded-pill fw-bold shadow">
+                            <i class="fa-solid fa-right-to-bracket me-2"></i> Authenticate & Enter Admin Portal
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-4 p-3 bg-light rounded text-center small text-dark border">
+                    <strong class="text-warning d-block mb-2"><i class="fa-solid fa-key me-1"></i> Quick Demo Login Buttons:</strong>
+                    <div class="d-flex justify-content-center gap-2 mb-1">
+                        <button type="button" class="btn btn-sm btn-outline-dark fw-bold rounded-pill" onclick="quickFillAdmin('admin', 'Admin@123')">
+                            👨‍💼 Admin (admin)
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-dark fw-bold rounded-pill" onclick="quickFillAdmin('officer_skills', 'Officer@123')">
+                            👮‍♂️ Officer (officer_skills)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <small class="text-muted d-block mb-1">Are you a Citizen applicant?</small>
+                    <a href="/login-page" class="btn btn-outline-primary rounded-pill px-4 fw-bold btn-sm">
+                        <i class="fa-solid fa-user me-1"></i> Go to Citizen Sign In Portal
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function doAdminLogin(u, p) {
+    const alertBox = document.getElementById('adminAlertBox');
+    if (alertBox) alertBox.classList.add('d-none');
+
+    const username = (u || document.getElementById('adminUsername').value).trim();
+    const password = (p || document.getElementById('adminPassword').value).trim();
+
+    try {
+        const res = await fetch('/api/v1/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+            if (data.user.role === 'ADMIN' || data.user.role === 'OFFICER') {
+                localStorage.setItem('sso_token', data.token);
+                document.cookie = `sso_token=${data.token}; path=/; max-age=43200`;
+                window.location.href = `/admin-portal?token=${encodeURIComponent(data.token)}`;
+            } else {
+                if (alertBox) {
+                    alertBox.innerText = "Access Denied: This portal is strictly for Official Admins & Officers. Use the Citizen Login Portal.";
+                    alertBox.classList.remove('d-none');
+                }
+            }
+        } else {
+            if (alertBox) {
+                alertBox.innerText = `Admin Authentication Failed: ${data.error}`;
+                alertBox.classList.remove('d-none');
+            } else {
+                alert(`Admin Authentication Error: ${data.error}`);
+            }
+        }
+    } catch (err) {
+        console.error(err);
+        if (alertBox) {
+            alertBox.innerText = "Server communication error during Admin authentication.";
+            alertBox.classList.remove('d-none');
+        }
+    }
+}
+
+function quickFillAdmin(u, p) {
+    document.getElementById('adminUsername').value = u;
+    document.getElementById('adminPassword').value = p;
+    doAdminLogin(u, p);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('adminLoginForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            doAdminLogin();
+        });
+    }
+});
+</script>
+{% endblock %}

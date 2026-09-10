@@ -1,69 +1,101 @@
 from database.models import db, Application, WorkflowStep, AuditLog
 from services.connectors import SystemConnectors
-from services.blockchain_service import blockchain_instance
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 
 class WorkflowEngine:
     """Configurable Multi-Department Workflow Orchestrator"""
     
     @staticmethod
-    def process_next_stage(application_id, decision="APPROVE", remarks="Passed Verification", officer_name="System Automated"):
+    def process_next_stage(application_id, decision="APPROVE", remarks="Passed Verification", officer_name="System Automated", force_approve=False):
         """Advance application through its multi-department workflow pipeline"""
-        app_record = Application.query.get(application_id)
+        app_record = db.session.get(Application, application_id)
         if not app_record:
             return False, "Application not found"
             
+        current_step = WorkflowStep.query.filter_by(
+            application_id=app_record.id, 
+            stage_number=app_record.current_stage
+        ).first()
+        
+        if not current_step:
+            return False, "Current workflow step not found"
+            
+        payload = json.loads(app_record.payload_json) if app_record.payload_json else {}
+        
         if decision == "REJECT":
+            current_step.status = 'REJECTED'
+            current_step.remarks = remarks
             app_record.status = 'REJECTED'
-            steps = WorkflowStep.query.filter_by(application_id=app_record.id).all()
-            for step in steps:
-                if step.status != 'COMPLETED':
-                    step.status = 'REJECTED'
-                    step.remarks = remarks
             db.session.commit()
             
             audit = AuditLog(
                 application_id=app_record.id,
                 actor=officer_name,
-                action="APPLICATION_REJECTED",
-                details=f"Application REJECTED by Admin/Officer: {remarks}"
+                action="WORKFLOW_STAGE_REJECTED",
+                details=f"Stage {app_record.current_stage} rejected: {remarks}"
             )
             db.session.add(audit)
             db.session.commit()
             return True, "Application Rejected"
 
-        # Direct Full Approval when Admin approves from Admin Portal
-        app_record.status = 'APPROVED'
-        app_record.current_stage = app_record.total_stages
-        
-        # Mark all steps as COMPLETED
-        steps = WorkflowStep.query.filter_by(application_id=app_record.id).all()
-        for step in steps:
-            step.status = 'COMPLETED'
-            step.remarks = remarks
-            step.updated_at = datetime.utcnow()
-
-        db.session.commit()
-
-        # Mine Immutable SHA-256 Blockchain Block for Approved Certificate
-        try:
-            blockchain_instance.add_application_record(
-                tracking_id=app_record.tracking_id,
-                applicant_name=app_record.applicant.full_name if app_record.applicant else 'Citizen Applicant',
-                scheme_title=app_record.service_title,
-                status='APPROVED'
+        if decision == "APPROVE" and force_approve:
+            current_step.status = 'COMPLETED'
+            current_step.remarks = remarks
+            current_step.updated_at = datetime.now(timezone.utc)
+            app_record.status = 'APPROVED'
+            app_record.current_stage = app_record.total_stages
+            
+            all_steps = WorkflowStep.query.filter_by(application_id=app_record.id).all()
+            for step in all_steps:
+                step.status = 'COMPLETED'
+                step.updated_at = datetime.now(timezone.utc)
+                
+            audit = AuditLog(
+                application_id=app_record.id,
+                actor=officer_name,
+                action="APPLICATION_APPROVED",
+                details=f"Application approved: {remarks}"
             )
-        except Exception as e:
-            print(f"[BLOCKCHAIN_LOG] Auto block mining notice: {e}")
+            db.session.add(audit)
+            db.session.commit()
+            return True, "Application Approved"
 
+        # Mark current step as COMPLETED
+        current_step.status = 'COMPLETED'
+        current_step.remarks = remarks
+        current_step.updated_at = datetime.now(timezone.utc)
+        
+        # Check if more stages exist
+        if app_record.current_stage < app_record.total_stages:
+            app_record.current_stage += 1
+            app_record.status = 'IN_WORKFLOW'
+            
+            next_step = WorkflowStep.query.filter_by(
+                application_id=app_record.id, 
+                stage_number=app_record.current_stage
+            ).first()
+            
+            if next_step:
+                next_step.status = 'IN_PROGRESS'
+                next_step.remarks = "Awaiting Department Approval"
+                
+                # Trigger Department Connector based on Stage Number
+                if app_record.current_stage == 2:
+                    SystemConnectors.send_to_dept_b_employment_legacy(payload, application_id=app_record.id)
+                elif app_record.current_stage == 3:
+                    SystemConnectors.send_to_dept_c_innovation(payload, application_id=app_record.id)
+        else:
+            # Final Stage Completed!
+            app_record.status = 'APPROVED'
+            
         audit = AuditLog(
             application_id=app_record.id,
             actor=officer_name,
-            action="APPLICATION_FULLY_APPROVED",
-            details=f"Application FULLY APPROVED & Sanction Certificate Issued by {officer_name}"
+            action=f"STAGE_{current_step.stage_number}_COMPLETED",
+            details=f"Passed Stage {current_step.stage_number} ({current_step.stage_name}) - {remarks}"
         )
         db.session.add(audit)
         db.session.commit()
         
-        return True, "Application Fully Approved & Sanctioned"
+        return True, f"Advanced to Stage {app_record.current_stage}"

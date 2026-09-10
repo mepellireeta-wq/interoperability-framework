@@ -7,21 +7,31 @@
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-5">
             <div class="glass-card p-4 p-md-5">
+                {% if request.args.get('required') or request.args.get('apply') %}
+                <div class="alert alert-warning border-warning text-center mb-4 shadow-sm">
+                    <i class="fa-solid fa-lock text-warning fs-3 mb-2 d-block"></i>
+                    <strong class="d-block text-dark fs-5">Sign In Required to Apply</strong>
+                    <small class="text-muted">You must sign in to your citizen account or register before applying for any welfare scheme.</small>
+                </div>
+                {% endif %}
+
                 <div class="text-center mb-4">
                     <span class="badge bg-primary rounded-pill px-3 py-2 mb-2">Federated SSO Identity</span>
                     <h3 class="fw-bold text-dark"><i class="fa-solid fa-right-to-bracket text-primary me-2"></i>Sign In to Portal</h3>
-                    <p class="text-muted small">Enter your credentials to log in. Citizens will navigate to the Citizen Portal; Admins to the Admin Portal.</p>
+                    <p class="text-muted small">Enter your credentials to log in to access your digital citizen services and scheme applications.</p>
                 </div>
+
+                <div id="citizenAlertBox" class="alert alert-danger d-none mb-3 text-center small rounded-3"></div>
 
                 <form id="pageLoginForm">
                     <div class="mb-3">
                         <label class="form-label fw-bold"><i class="fa-solid fa-user me-1 text-primary"></i> Username or Email</label>
-                        <input type="text" id="pageUsername" class="form-control form-control-lg" placeholder="Enter username or email" required>
+                        <input type="text" id="pageUsername" class="form-control form-control-lg" placeholder="e.g. citizen_demo" value="citizen_demo" required>
                     </div>
 
                     <div class="mb-4">
                         <label class="form-label fw-bold"><i class="fa-solid fa-lock me-1 text-primary"></i> Password</label>
-                        <input type="password" id="pagePassword" class="form-control form-control-lg" placeholder="Enter password" required>
+                        <input type="password" id="pagePassword" class="form-control form-control-lg" placeholder="Enter password" value="Citizen@123" required>
                     </div>
 
                     <div class="d-grid gap-2">
@@ -31,9 +41,16 @@
                     </div>
                 </form>
 
+                <div class="mt-4 p-3 bg-light rounded text-center small text-dark border">
+                    <strong class="text-primary d-block mb-2"><i class="fa-solid fa-bolt me-1"></i> Quick Demo Citizen Sign In:</strong>
+                    <button type="button" class="btn btn-sm btn-outline-primary fw-bold rounded-pill px-4" onclick="quickFillCitizen('citizen_demo', 'Citizen@123')">
+                        👤 1-Click Auto Sign In (citizen_demo)
+                    </button>
+                </div>
+
                 <div class="mt-4 text-center">
                     <p class="text-muted small mb-1">Don't have an account yet?</p>
-                    <a href="/register-page" class="btn btn-outline-primary rounded-pill px-4 fw-bold btn-sm">
+                    <a href="/register-page" class="btn btn-outline-secondary rounded-pill px-4 fw-bold btn-sm">
                         Create New Citizen Account (Sign Up)
                     </a>
                 </div>
@@ -45,13 +62,36 @@
 
 {% block scripts %}
 <script>
+function quickFillCitizen(u, p) {
+    document.getElementById('pageUsername').value = u;
+    document.getElementById('pagePassword').value = p;
+    document.getElementById('pageLoginForm').dispatchEvent(new Event('submit'));
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('pageLoginForm');
+    const alertBox = document.getElementById('citizenAlertBox');
+
+    // Auto-fill username if redirected from registration
+    const urlParams = new URLSearchParams(window.location.search);
+    const autoUser = urlParams.get('auto_username');
+    if (autoUser) {
+        document.getElementById('pageUsername').value = autoUser;
+        document.getElementById('pagePassword').value = '';
+        if (alertBox) {
+            alertBox.className = 'alert alert-success mb-3 text-center small rounded-3';
+            alertBox.innerText = `Account created successfully for '${autoUser}'! Enter your password to sign in.`;
+            alertBox.classList.remove('d-none');
+        }
+    }
+
     if (form) {
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const username = document.getElementById('pageUsername').value;
-            const password = document.getElementById('pagePassword').value;
+            if (alertBox) alertBox.classList.add('d-none');
+
+            const username = document.getElementById('pageUsername').value.trim();
+            const password = document.getElementById('pagePassword').value.trim();
 
             try {
                 const res = await fetch('/api/v1/auth/login', {
@@ -70,11 +110,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         window.location.href = '/citizen-portal';
                     }
                 } else {
-                    alert(`Authentication Error: ${data.error}`);
+                    if (alertBox) {
+                        alertBox.innerText = `Sign In Failed: ${data.error}`;
+                        alertBox.classList.remove('d-none');
+                    } else {
+                        alert(`Authentication Error: ${data.error}`);
+                    }
                 }
             } catch (err) {
                 console.error(err);
-                alert("Server error during login");
+                if (alertBox) {
+                    alertBox.innerText = "Server error during Citizen login. Please try again.";
+                    alertBox.classList.remove('d-none');
+                }
             }
         });
     }

@@ -13,7 +13,8 @@ def init_db():
     """Seed initial data into SQLite database"""
     app = create_app('dev')
     with app.app_context():
-        print("Creating all database tables...")
+        print("Recreating database tables with fresh schema...")
+        db.drop_all()
         db.create_all()
         
         # 1. Seed Default Admin & Sample Citizen Users
@@ -45,20 +46,20 @@ def init_db():
                 email='citizen@example.com',
                 password_hash=generate_password_hash('Citizen@123'),
                 role='CITIZEN',
-                full_name='Citizen Demo User',
+                full_name='Rahul Kumar',
                 phone='9123456789'
             )
             
             db.session.add_all([admin_user, officer_user, citizen_user])
             db.session.commit()
             
-            # Create Beneficiary Master Data (MDM) profile
+            # Create Beneficiary Master Data (MDM) profile for Rahul
             state_hash = hashlib.sha256('NAT-ID-9988'.encode()).hexdigest()
             mdm_profile = BeneficiaryMDM(
                 user_id=citizen_user.id,
                 state_id_hash=state_hash,
                 master_profile_json=json.dumps({
-                    'full_name': 'Citizen Demo User',
+                    'full_name': 'Rahul Kumar',
                     'dob': '1998-05-14',
                     'district': 'Central Zone',
                     'state': 'National Jurisdiction',
