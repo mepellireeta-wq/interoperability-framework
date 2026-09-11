@@ -274,3 +274,27 @@ main, header, footer, nav, section, .container, .container-fluid, .glass-card {
     .hero-section { padding: 45px 0 55px 0; border-radius: 0 0 20px 20px; }
     .glass-card { padding: 1.25rem !important; }
 }
+
+/* Enhanced Dropdown & Select Box Visibility */
+.overflow-visible {
+    overflow: visible !important;
+}
+
+select.form-select {
+    background-color: #ffffff !important;
+    color: #263238 !important;
+    border: 2px solid var(--primary-sky) !important;
+    border-radius: 8px !important;
+    cursor: pointer;
+}
+
+select.form-select option {
+    background-color: #ffffff !important;
+    color: #263238 !important;
+    padding: 10px;
+    font-size: 0.95rem;
+}
+
+.dropdown-menu {
+    z-index: 1060 !important;
+}

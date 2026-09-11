@@ -89,11 +89,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Dynamic Scheme Supporting Documents Handler
+    // Dynamic Scheme Supporting Documents & Duplicate Application Status Handler
     const serviceCodeSelect = document.getElementById('appServiceCode');
     if (serviceCodeSelect) {
         renderDynamicUploadFields();
-        serviceCodeSelect.addEventListener('change', renderDynamicUploadFields);
+        checkExistingSchemeStatus(serviceCodeSelect.value);
+        serviceCodeSelect.addEventListener('change', function() {
+            renderDynamicUploadFields();
+            checkExistingSchemeStatus(this.value);
+        });
     }
 
     // Unified Application Form Submission Handler
@@ -140,6 +144,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('trackLink').href = `/track-page?id=${data.tracking_id}`;
                     document.getElementById('submissionResult').classList.remove('d-none');
                     appForm.classList.add('d-none');
+                } else if (res.status === 409) {
+                    alert(`Duplicate Application: ${data.error}`);
+                    checkExistingSchemeStatus(document.getElementById('appServiceCode').value);
                 } else if (res.status === 401) {
                     alert("Authentication Required: Please Sign In or Sign Up before applying for a scheme.");
                     window.location.href = data.redirect || '/login-page';
@@ -476,4 +483,84 @@ function renderDynamicUploadFields() {
     }
 
     container.innerHTML = html;
+}
+
+async function checkExistingSchemeStatus(serviceCode) {
+    const alertContainer = document.getElementById('existingApplicationAlert');
+    if (!alertContainer) return;
+    
+    const submitBtn = document.querySelector('#unifiedApplicationForm button[type="submit"]');
+    
+    try {
+        const res = await fetch(`/api/v1/applications/check-duplicate?service_code=${serviceCode}`);
+        const data = await res.json();
+        
+        if (res.ok && data.exists) {
+            alertContainer.classList.remove('d-none');
+            
+            if (data.status === 'APPROVED' || data.status === 'SANCTIONED') {
+                alertContainer.innerHTML = `
+                    <div class="alert alert-success border-success shadow-sm p-4 text-center">
+                        <i class="fa-solid fa-circle-check fs-1 text-success mb-2"></i>
+                        <h5 class="fw-bold text-dark mb-1">Scheme Benefit Sanctioned & Approved!</h5>
+                        <p class="mb-2 text-muted small">You have already applied for <strong>${data.service_title}</strong> on ${data.created_at} and your application has been <span class="badge bg-success px-3 py-1">SANCTIONED / APPROVED</span>.</p>
+                        <div class="p-2 bg-light rounded border mb-3 font-monospace fw-bold text-primary">
+                            Tracking ID: ${data.tracking_id}
+                        </div>
+                        <a href="/track-page?id=${data.tracking_id}" class="btn btn-sm btn-outline-success rounded-pill fw-bold">
+                            <i class="fa-solid fa-eye me-1"></i> View Sanction Details & Timeline
+                        </a>
+                    </div>
+                `;
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = `<i class="fa-solid fa-circle-check me-2"></i> Already Applied & Sanctioned`;
+                }
+            } else if (data.status === 'REJECTED') {
+                alertContainer.innerHTML = `
+                    <div class="alert alert-warning border-warning shadow-sm p-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-triangle-exclamation fs-3 text-warning me-3"></i>
+                            <div>
+                                <strong class="d-block text-dark">Previous Application Status: REJECTED</strong>
+                                <small class="text-muted">Your prior application (${data.tracking_id}) for <strong>${data.service_title}</strong> was rejected. You may submit a fresh application below with updated supporting documents.</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane me-2"></i> Submit Re-Application Now`;
+                }
+            } else {
+                // In progress / submitted / pending
+                alertContainer.innerHTML = `
+                    <div class="alert alert-info border-info shadow-sm p-4 text-center">
+                        <i class="fa-solid fa-spinner fa-spin fs-1 text-primary mb-2"></i>
+                        <h5 class="fw-bold text-dark mb-1">Application Currently In Progress</h5>
+                        <p class="mb-2 text-muted small">You have already applied for <strong>${data.service_title}</strong> on ${data.created_at}. Current Status: <span class="badge bg-warning text-dark px-3 py-1">IN PROGRESS (Stage ${data.current_stage}/${data.total_stages})</span>.</p>
+                        <div class="p-2 bg-light rounded border mb-3 font-monospace fw-bold text-primary">
+                            Tracking ID: ${data.tracking_id}
+                        </div>
+                        <a href="/track-page?id=${data.tracking_id}" class="btn btn-sm btn-primary rounded-pill fw-bold">
+                            <i class="fa-solid fa-chart-line me-1"></i> Track Live Processing Timeline
+                        </a>
+                    </div>
+                `;
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = `<i class="fa-solid fa-clock me-2"></i> Application Processing In Progress`;
+                }
+            }
+        } else {
+            alertContainer.classList.add('d-none');
+            alertContainer.innerHTML = '';
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane me-2"></i> Submit Application Now`;
+            }
+        }
+    } catch (err) {
+        console.error(err);
+    }
 }

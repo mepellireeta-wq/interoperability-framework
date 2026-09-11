@@ -72,3 +72,33 @@ def test_document_upload_and_admin_access(client):
     unauth_res = client.get('/admin/document/doc_marks_memo_1_123_marks_memo.pdf')
     assert unauth_res.status_code == 403
 
+def test_duplicate_application_prevention(client):
+    """Test duplicate application prevention and duplicate check endpoint"""
+    payload = {
+        'service_code': 'BANKING_MUDRA_LOAN',
+        'service_title': 'Pradhan Mantri MUDRA Micro-Business Loan',
+        'applicant': {
+            'full_name': 'Test Citizen',
+            'email': 'test@example.com',
+            'phone': '9988776655',
+            'state_id_number': 'NAT-ID-TEST-002'
+        }
+    }
+    # 1. Initial submission
+    res = client.post('/api/v1/applications/submit', json=payload)
+    assert res.status_code == 201
+
+    # 2. Check duplicate endpoint
+    check_res = client.get('/api/v1/applications/check-duplicate?service_code=BANKING_MUDRA_LOAN')
+    assert check_res.status_code == 200
+    check_data = check_res.get_json()
+    assert check_data['exists'] is True
+    assert check_data['status'] == 'SUBMITTED'
+
+    # 3. Second submission attempt for same scheme must fail with 409 Conflict
+    dup_res = client.post('/api/v1/applications/submit', json=payload)
+    assert dup_res.status_code == 409
+    dup_data = dup_res.get_json()
+    assert dup_data.get('already_exists') is True
+
+

@@ -54,12 +54,12 @@
     </div>
 
     <!-- State & Sector Filter Bar -->
-    <div class="glass-card p-3 mb-4">
+    <div class="glass-card p-3 mb-4 overflow-visible">
         <div class="row g-3 align-items-center">
             <!-- State Selector -->
-            <div class="col-md-5">
-                <label class="form-label fw-bold small text-muted mb-1"><i class="fa-solid fa-map-location-dot text-primary me-1"></i> Select Your State or Union Territory:</label>
-                <select id="stateFilterSelect" class="form-select fw-bold border-primary">
+            <div class="col-md-4">
+                <label class="form-label fw-bold small text-muted mb-1"><i class="fa-solid fa-map-location-dot text-primary me-1"></i> Select State / UT:</label>
+                <select id="stateFilterSelect" class="form-select fw-bold border-primary shadow-sm">
                     <option value="ALL" selected>🇮🇳 All 28 States & Central Schemes</option>
                     <option value="Andhra Pradesh">Andhra Pradesh</option>
                     <option value="Telangana">Telangana</option>
@@ -81,17 +81,32 @@
                 </select>
             </div>
 
-            <!-- Sector Domain Tabs -->
-            <div class="col-md-7">
-                <label class="form-label fw-bold small text-muted mb-1"><i class="fa-solid fa-layer-group text-primary me-1"></i> Filter by Sector Domain:</label>
-                <div class="d-flex gap-2 flex-wrap" id="domainFilterTabs">
-                    <button class="btn btn-primary btn-sm rounded-pill px-3 fw-bold active-tab" onclick="filterDomain('ALL')">All Sectors</button>
-                    <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Education')">🎓 Education</button>
-                    <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Health')">🏥 Health</button>
-                    <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Banking')">🏦 Banking & Finance</button>
-                    <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Agriculture')">🌾 Agriculture</button>
-                    <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Innovation')">🚀 Startups & MSME</button>
-                    <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold" onclick="filterDomain('Infrastructure')">⚡ Infrastructure</button>
+            <!-- Quick Scheme Selection Dropdown -->
+            <div class="col-md-4">
+                <label class="form-label fw-bold small text-muted mb-1"><i class="fa-solid fa-list-check text-primary me-1"></i> Quick Scheme Selection Dropdown:</label>
+                <select id="schemeQuickSelect" class="form-select fw-bold border-primary shadow-sm" onchange="if(this.value) window.location.href='/apply-page?service=' + this.value;">
+                    <option value="" selected>-- Select Scheme to Apply --</option>
+                    <option value="UNIFIED_SKILL_TO_GRANT">🎓 Integrated Skill-to-Entrepreneurship Pathway</option>
+                    <option value="EDU_SCHOLARSHIP_GRANT">🎓 National Higher Education & Merit Scholarship</option>
+                    <option value="HEALTH_AYUSHMAN_CARD">🏥 Ayushman Bharat Universal Health Protection</option>
+                    <option value="BANKING_MUDRA_LOAN">🏦 Pradhan Mantri MUDRA Micro-Business Loan</option>
+                    <option value="AGRI_PM_KISAN_DBT">🌾 PM-KISAN Direct Benefit Income Support</option>
+                    <option value="INNOVATION_STARTUP_GRANT">🚀 National Startup & MSME Seed Grant</option>
+                    <option value="INFRA_SOLAR_ROOFTOP_SUBSIDY">⚡ PM Surya Ghar Rooftop Solar Subsidy</option>
+                    <option value="SKILL_TRAINING_SCHEME">⚙️ National Skill Development Certification</option>
+                </select>
+            </div>
+
+            <!-- Sector Domain Filter -->
+            <div class="col-md-4">
+                <label class="form-label fw-bold small text-muted mb-1"><i class="fa-solid fa-layer-group text-primary me-1"></i> Filter by Domain:</label>
+                <div class="d-flex gap-1 flex-wrap" id="domainFilterTabs">
+                    <button class="btn btn-primary btn-sm rounded-pill px-2 fw-bold active-tab" onclick="filterDomain('ALL')">All</button>
+                    <button class="btn btn-outline-primary btn-sm rounded-pill px-2 fw-bold" onclick="filterDomain('Education')">🎓 Edu</button>
+                    <button class="btn btn-outline-primary btn-sm rounded-pill px-2 fw-bold" onclick="filterDomain('Health')">🏥 Health</button>
+                    <button class="btn btn-outline-primary btn-sm rounded-pill px-2 fw-bold" onclick="filterDomain('Banking')">🏦 Bank</button>
+                    <button class="btn btn-outline-primary btn-sm rounded-pill px-2 fw-bold" onclick="filterDomain('Agriculture')">🌾 Agri</button>
+                    <button class="btn btn-outline-primary btn-sm rounded-pill px-2 fw-bold" onclick="filterDomain('Innovation')">🚀 Startup</button>
                 </div>
             </div>
         </div>

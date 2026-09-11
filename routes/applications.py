@@ -18,6 +18,42 @@ def generate_tracking_id():
     random_str = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
     return f"GOV-2026-{random_str}"
 
+@applications_bp.route('/check-duplicate', methods=['GET'])
+def check_duplicate():
+    """Check if the currently logged-in user has already applied for a scheme"""
+    from flask import current_app
+    user_id = session.get('user_id')
+    if not user_id and current_app.config.get('TESTING'):
+        user_id = 1
+        
+    service_code = request.args.get('service_code')
+    
+    if not user_id:
+        return jsonify({'exists': False, 'message': 'Not logged in'}), 200
+        
+    if not service_code:
+        return jsonify({'exists': False, 'error': 'Service code required'}), 400
+        
+    existing_app = Application.query.filter_by(
+        applicant_id=user_id,
+        service_code=service_code
+    ).order_by(Application.id.desc()).first()
+    
+    if existing_app:
+        return jsonify({
+            'exists': True,
+            'application_id': existing_app.id,
+            'tracking_id': existing_app.tracking_id,
+            'service_title': existing_app.service_title,
+            'service_code': existing_app.service_code,
+            'status': existing_app.status,
+            'current_stage': existing_app.current_stage,
+            'total_stages': existing_app.total_stages,
+            'created_at': existing_app.created_at.strftime('%Y-%m-%d %H:%M')
+        }), 200
+        
+    return jsonify({'exists': False}), 200
+
 @applications_bp.route('/submit', methods=['POST'])
 def submit_application():
     """Unified Service Application Submission Endpoint - Requires Active Citizen Session & Supports Dynamic Document Uploads"""
@@ -47,6 +83,28 @@ def submit_application():
             
     service_code = data.get('service_code', 'UNIFIED_SKILL_TO_GRANT')
     service_title = data.get('service_title', 'Universal Integrated Skill-to-Entrepreneurship Pathway')
+    
+    # Check for existing active/sanctioned application for this user & scheme
+    existing_app = Application.query.filter_by(
+        applicant_id=user_id,
+        service_code=service_code
+    ).order_by(Application.id.desc()).first()
+
+    if existing_app:
+        if existing_app.status in ['APPROVED', 'SANCTIONED']:
+            return jsonify({
+                'error': f"You have already applied for '{service_title}' and your application was SANCTIONED / APPROVED!",
+                'status': existing_app.status,
+                'tracking_id': existing_app.tracking_id,
+                'already_exists': True
+            }), 409
+        elif existing_app.status in ['SUBMITTED', 'IN_WORKFLOW', 'IN_PROGRESS', 'PENDING']:
+            return jsonify({
+                'error': f"You have already applied for '{service_title}'. Your application is currently IN PROGRESS (Stage {existing_app.current_stage}/{existing_app.total_stages}).",
+                'status': existing_app.status,
+                'tracking_id': existing_app.tracking_id,
+                'already_exists': True
+            }), 409
     
     # Process uploaded documents if present
     uploaded_documents = []
