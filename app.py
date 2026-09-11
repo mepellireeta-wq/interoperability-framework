@@ -110,20 +110,7 @@ def create_app(config_name='dev'):
     @app.route('/admin-login', methods=['GET', 'POST'])
     @app.route('/admin-login-page', methods=['GET', 'POST'])
     def admin_login_page():
-        if request.method == 'POST':
-            username = request.form.get('username', '').strip()
-            password = request.form.get('password', '').strip()
-            from services.sso_service import SSOService
-            user = SSOService.authenticate(username, password)
-            if user and user.role in ['ADMIN', 'OFFICER']:
-                token = SSOService.generate_token(user)
-                session['user_id'] = user.id
-                session['username'] = user.username
-                session['role'] = user.role
-                res = redirect(f'/admin-portal?token={token}')
-                res.set_cookie('sso_token', token, max_age=43200)
-                return res
-        return render_template('admin_login.html')
+        return redirect('/login-page')
 
     @app.route('/register-page', methods=['GET'])
     def register_page():

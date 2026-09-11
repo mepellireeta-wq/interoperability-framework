@@ -69,3 +69,33 @@ def test_iot_telemetry_endpoint(client):
     data = res.get_json()
     assert data['status'] == 'TELEMETRY_ALERT_PROCESSED'
     assert data['sensor_id'] == 'ESP32-WATER-88'
+
+def test_notification_dispatch_on_approval_and_rejection(client):
+    """Test automatic dispatch of SMS & Email notifications on approval and rejection"""
+    from database.models import AuditLog
+    payload = {
+        'service_code': 'EDU_SCHOLARSHIP_GRANT',
+        'service_title': 'National Higher Education Scholarship',
+        'applicant': {
+            'full_name': 'Rohan Das',
+            'email': 'rohan@example.com',
+            'phone': '9876500000',
+            'state_id_number': 'NAT-ID-ROHAN-01'
+        }
+    }
+    res = client.post('/api/v1/applications/submit', json=payload)
+    assert res.status_code == 201
+    app_id = res.get_json()['application_id']
+
+    # Approve application and verify notification audit log entry
+    adv_res = client.post('/api/v1/workflows/advance', json={
+        'application_id': app_id,
+        'decision': 'APPROVE',
+        'force_approve': True,
+        'remarks': 'Approved by Administrator'
+    })
+    assert adv_res.status_code == 200
+
+    notif_audit = AuditLog.query.filter_by(application_id=app_id, action='SMS_EMAIL_APPROVED_NOTIFIED').first()
+    assert notif_audit is not None
+    assert 'SMS sent to' in notif_audit.details

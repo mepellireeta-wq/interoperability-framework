@@ -77,6 +77,28 @@
         {% endif %}
     </div>
 
+    <!-- Real-Time SMS & Email Alerts Received Box -->
+    {% if notifications %}
+    <div class="glass-card p-4 mb-4 border-start border-4 border-info">
+        <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-bell text-info me-2"></i>Real-Time SMS & Email Notifications Inbox</h5>
+        <div class="list-group">
+            {% for n in notifications %}
+            <div class="list-group-item d-flex align-items-center justify-content-between flex-wrap gap-2 p-3 bg-light rounded border mb-2">
+                <div>
+                    {% if 'APPROVED' in n.action %}
+                    <span class="badge bg-success mb-1"><i class="fa-solid fa-envelope me-1"></i> SMS & Email Sent: APPROVED</span>
+                    {% else %}
+                    <span class="badge bg-danger mb-1"><i class="fa-solid fa-triangle-exclamation me-1"></i> SMS & Email Sent: REJECTED</span>
+                    {% endif %}
+                    <strong class="text-dark d-block">{{ n.details }}</strong>
+                </div>
+                <small class="text-muted font-monospace"><i class="fa-solid fa-clock me-1"></i>{{ n.timestamp }}</small>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Quick Services Grid -->
     <div class="row g-4">
         <div class="col-md-4">

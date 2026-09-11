@@ -37,6 +37,9 @@ class WorkflowEngine:
             )
             db.session.add(audit)
             db.session.commit()
+            
+            from services.notification_service import NotificationService
+            NotificationService.send_status_notification(app_record, 'REJECTED', remarks)
             return True, "Application Rejected"
 
         if decision == "APPROVE" and force_approve:
@@ -59,6 +62,9 @@ class WorkflowEngine:
             )
             db.session.add(audit)
             db.session.commit()
+            
+            from services.notification_service import NotificationService
+            NotificationService.send_status_notification(app_record, 'APPROVED', remarks)
             return True, "Application Approved"
 
         # Mark current step as COMPLETED
@@ -88,6 +94,8 @@ class WorkflowEngine:
         else:
             # Final Stage Completed!
             app_record.status = 'APPROVED'
+            from services.notification_service import NotificationService
+            NotificationService.send_status_notification(app_record, 'APPROVED', remarks)
             
         audit = AuditLog(
             application_id=app_record.id,

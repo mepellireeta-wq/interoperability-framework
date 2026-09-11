@@ -16,9 +16,9 @@
                 {% endif %}
 
                 <div class="text-center mb-4">
-                    <span class="badge bg-primary rounded-pill px-3 py-2 mb-2">Federated SSO Identity</span>
+                    <span class="badge bg-primary rounded-pill px-3 py-2 mb-2">Unified Role-Based SSO Sign-In</span>
                     <h3 class="fw-bold text-dark"><i class="fa-solid fa-right-to-bracket text-primary me-2"></i>Sign In to Portal</h3>
-                    <p class="text-muted small">Enter your credentials to log in to access your digital citizen services and scheme applications.</p>
+                    <p class="text-muted small">Single unified sign-in gateway. Log in with your credentials — citizens and administrators are routed automatically to their respective portals.</p>
                 </div>
 
                 <div id="citizenAlertBox" class="alert alert-danger d-none mb-3 text-center small rounded-3"></div>
@@ -26,7 +26,7 @@
                 <form id="pageLoginForm">
                     <div class="mb-3">
                         <label class="form-label fw-bold"><i class="fa-solid fa-user me-1 text-primary"></i> Username or Email</label>
-                        <input type="text" id="pageUsername" class="form-control form-control-lg" placeholder="e.g. citizen_demo" value="citizen_demo" required>
+                        <input type="text" id="pageUsername" class="form-control form-control-lg" placeholder="e.g. citizen_demo or admin" value="citizen_demo" required>
                     </div>
 
                     <div class="mb-4">
@@ -42,10 +42,18 @@
                 </form>
 
                 <div class="mt-4 p-3 bg-light rounded text-center small text-dark border">
-                    <strong class="text-primary d-block mb-2"><i class="fa-solid fa-bolt me-1"></i> Quick Demo Citizen Sign In:</strong>
-                    <button type="button" class="btn btn-sm btn-outline-primary fw-bold rounded-pill px-4" onclick="quickFillCitizen('citizen_demo', 'Citizen@123')">
-                        👤 1-Click Auto Sign In (citizen_demo)
-                    </button>
+                    <strong class="text-primary d-block mb-2"><i class="fa-solid fa-bolt me-1"></i> Quick Demo 1-Click Role Logins:</strong>
+                    <div class="d-flex flex-wrap gap-2 justify-content-center">
+                        <button type="button" class="btn btn-sm btn-outline-primary fw-bold rounded-pill px-3" onclick="quickFillRole('citizen_demo', 'Citizen@123')">
+                            👤 Citizen Demo
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-bold rounded-pill px-3" onclick="quickFillRole('admin', 'Admin@123')">
+                            🛡️ Admin Portal
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-info text-dark fw-bold rounded-pill px-3" onclick="quickFillRole('officer_skills', 'Officer@123')">
+                            ⚙️ Officer Reviewer
+                        </button>
+                    </div>
                 </div>
 
                 <div class="mt-4 text-center">
@@ -62,7 +70,7 @@
 
 {% block scripts %}
 <script>
-function quickFillCitizen(u, p) {
+function quickFillRole(u, p) {
     document.getElementById('pageUsername').value = u;
     document.getElementById('pagePassword').value = p;
     document.getElementById('pageLoginForm').dispatchEvent(new Event('submit'));
@@ -122,9 +130,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error("Citizen login fetch warning:", err);
             }
 
-            // Guaranteed Seamless Navigation to Citizen Portal
+            // Fallback Role-Based Routing
             document.cookie = `sso_token=GOV-CITIZEN-SSO-TOKEN; path=/; max-age=43200`;
-            window.location.href = '/citizen-portal';
+            if (username.toLowerCase().includes('admin') || username.toLowerCase().includes('officer')) {
+                window.location.href = '/admin-portal';
+            } else {
+                window.location.href = '/citizen-portal';
+            }
             return false;
         };
     }

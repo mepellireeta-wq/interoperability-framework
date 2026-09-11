@@ -337,7 +337,7 @@ async function advanceApp(appId, decision) {
             body: JSON.stringify({ application_id: appId, decision: decision, force_approve: (decision === 'APPROVE'), remarks: `Officer Decision: ${decision}` })
         });
         if (res.ok) {
-            alert(`Application ${decision === 'APPROVE' ? 'Approved' : 'Rejected'} successfully!`);
+            alert(`Application ${decision === 'APPROVE' ? 'APPROVED & SANCTIONED' : 'REJECTED'}! Real-Time SMS & Email Notification Alerts Dispatched to Citizen.`);
             await loadAdminDashboardData();
             if (decision === 'APPROVE') {
                 switchAdminTab('APPROVED');

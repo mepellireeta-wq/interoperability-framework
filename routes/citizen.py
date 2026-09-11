@@ -44,5 +44,11 @@ def citizen_portal_page():
         
     # Retrieve ONLY this specific citizen's applications
     my_applications = Application.query.filter_by(applicant_id=user.id).order_by(Application.id.desc()).all()
+    app_ids = [a.id for a in my_applications]
     
-    return render_template('citizen.html', user=user, applications=my_applications)
+    from database.models import AuditLog
+    my_notifications = AuditLog.query.filter(
+        AuditLog.application_id.in_(app_ids)
+    ).order_by(AuditLog.id.desc()).all() if app_ids else []
+    
+    return render_template('citizen.html', user=user, applications=my_applications, notifications=my_notifications)
